@@ -1,0 +1,21 @@
+POST http://localhost:3000/api/v1/users/signup
+Content-Type: application/json
+
+{
+    "username": "ramy",
+    "email": "ramy@gmail.bb",
+    "password": "YOOBROW12"
+}
+###
+
+POST http://localhost:3000/api/v1/users/token
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJhbXkiLCJpYXQiOjE3NTk2OTQzOTN9.PF0m3rAJwpR9RA5A5dNMqIQSboO8PgvJCepnyepRMao"
+}
+
+###
+
+GET http://localhost:3000/api/v1/users/temp
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJhbXkiLCJpYXQiOjE3NTk2OTQ0NTMsImV4cCI6MTc1OTY5NDQ2OH0.NBGVGQ714TZupT36JB0XBAhwn4KAlxG8rFjDq1xeuBs
