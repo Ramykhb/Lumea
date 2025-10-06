@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRouter from "./routers/authRouter.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -17,10 +18,9 @@ app.use(
 );
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/api/v1/users", authRouter);
-
-// app.use(authenticateToken);
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

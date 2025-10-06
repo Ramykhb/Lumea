@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import Settings from "./pages/Settings.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 function App() {
     const [darkMode, setDarkMode] = useState(false);
@@ -28,7 +29,14 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Homepage />} />
+                <Route
+                    path="/"
+                    element={
+                        <ProtectedRoute>
+                            <Homepage />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route
                     path="/settings"
                     element={

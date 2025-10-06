@@ -16,10 +16,20 @@ authRouter.post("/signup", checkSignup, signup);
 
 authRouter.post("/login", login);
 
+authRouter.get("/status", (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) return res.json({ loggedIn: false });
+
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) return res.json({ loggedIn: false });
+        res.json({ loggedIn: true });
+    });
+});
+
 authRouter.get("/temp", authenticateToken, (req, res) => {
     console.log(req.user);
 });
 
-authRouter.post("/token", authenticateRefreshToken, refreshToken);
+authRouter.post("/refresh", authenticateRefreshToken, refreshToken);
 
 export default authRouter;

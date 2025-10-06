@@ -46,7 +46,7 @@ export const authenticateToken = (req, res, next) => {
 };
 
 export const authenticateRefreshToken = async (req, res, next) => {
-    const token = req.body.token;
+    const token = req.cookies.refreshToken;
     if (token == null) {
         return res.status(401).json({
             error: "Unauthorized",

@@ -4,7 +4,6 @@ import {
     generateRefreshToken,
     usernameExists,
 } from "../services/authService.js";
-import jwt from "jsonwebtoken";
 
 export const signup = async (req, res) => {
     try {
@@ -15,11 +14,15 @@ export const signup = async (req, res) => {
             username: req.body.username,
         });
         await addUser(req.body, refreshToken);
-
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: false,
+            path: "/",
+            sameSite: "lax",
+        });
         res.status(201).json({
             message: "User created successfully",
             accessToken: accessToken,
-            refreshToken: refreshToken,
         });
     } catch (error) {
         res.status(500).json({

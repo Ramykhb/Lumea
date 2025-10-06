@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import api from "../api/axios";
+import { useEffect } from "react";
 
 const AuthForm = (props) => {
     const navigate = useNavigate();
@@ -12,6 +13,15 @@ const AuthForm = (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirm, setConfirm] = useState("");
+
+    useEffect(() => {
+        const checkLoggedIn = async () => {
+            const res = await api.get("/users/status");
+            if (res.data.loggedIn) navigate("/");
+        };
+
+        checkLoggedIn();
+    }, []);
 
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
@@ -62,14 +72,14 @@ const AuthForm = (props) => {
                 return;
             }
             try {
-                const res = await axios.post(
-                    "http://localhost:3000/api/v1/users/signup",
-                    {
-                        username: username,
-                        email: email,
-                        password: password,
-                    }
-                );
+                const res = await api.post("/users/signup", {
+                    username: username,
+                    email: email,
+                    password: password,
+                });
+                const { accessToken } = res.data;
+                localStorage.setItem("accessToken", accessToken);
+                navigate("/");
             } catch (err) {
                 if (err.response) {
                     const { error, message } = err.response.data;
