@@ -97,20 +97,18 @@ const AuthForm = (props) => {
                 return;
             }
             try {
-                const res = await axios.post(
-                    "http://localhost:3000/api/v1/users/login",
-                    {
-                        username: username,
-                        password: password,
-                    }
-                );
+                console.log("BEFORE");
+                const res = await api.post("/users/login", {
+                    username: username,
+                    password: password,
+                });
+                localStorage.setItem("accessToken", res.data.accessToken);
+                navigate("/");
             } catch (err) {
                 if (err.response) {
                     const { error, message } = err.response.data;
 
-                    if (error === "UsernameNotFound") {
-                        setUsernameError(message);
-                    } else if (error === "IncorrectPassword") {
+                    if (error === "IncorrectCredentials") {
                         setPasswordError(message);
                     }
                 }

@@ -1,8 +1,10 @@
 import jwt from "jsonwebtoken";
 import {
     emailExists,
+    getPassword,
     tokenExists,
     usernameExists,
+    verifyPassword,
 } from "../services/authService.js";
 
 export const checkSignup = async (req, res, next) => {
@@ -19,6 +21,24 @@ export const checkSignup = async (req, res, next) => {
         });
     }
 
+    next();
+};
+
+export const checkLogin = async (req, res, next) => {
+    const hashedPassword = await getPassword(req.body.username);
+    if (!hashedPassword) {
+        return res.status(400).json({
+            error: "IncorrectCredentials",
+            message: "Username or password is incorrect...",
+        });
+    }
+    const found = await verifyPassword(req.body.password, hashedPassword);
+    if (!found) {
+        return res.status(400).json({
+            error: "IncorrectCredentials",
+            message: "Username or password is incorrect...",
+        });
+    }
     next();
 };
 

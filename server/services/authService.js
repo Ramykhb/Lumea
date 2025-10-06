@@ -14,6 +14,27 @@ export async function usernameExists(username) {
     }
 }
 
+export async function getID(username) {
+    try {
+        const sql = "SELECT id FROM Users WHERE username = ?";
+        const [result] = await pool.query(sql, [username]);
+        return result[0].id;
+    } catch (err) {
+        console.error("Error Querying Database:", err);
+    }
+}
+
+export async function getPassword(username) {
+    try {
+        const sql = "SELECT password FROM Users WHERE username = ?";
+        const [result] = await pool.query(sql, [username]);
+        if (result.length == 0) return null;
+        return result[0].password;
+    } catch (err) {
+        console.error("Error Querying Database:", err);
+    }
+}
+
 export async function tokenExists(refreshToken) {
     try {
         const sql =
@@ -35,9 +56,18 @@ export async function emailExists(email) {
     }
 }
 
-export async function addUser({ username, email, password }, refreshToken) {
+export async function insertToken(username, refreshToken) {
+    let userID = await getID(username);
+    try {
+        const sql = "INSERT INTO Refresh_Tokens VALUES (?,?)";
+        const [result] = await pool.query(sql, [refreshToken, userID]);
+    } catch (err) {
+        console.error("Error Querying Database:", err);
+    }
+}
+
+export async function addUser({ username, email, password }) {
     const hashedPassword = await hashPassword(password);
-    let userID;
     try {
         const sql =
             "INSERT INTO Users (name, username, email, password, isPublic) VALUES ('Lumea User',?,?,?, TRUE)";
@@ -46,17 +76,19 @@ export async function addUser({ username, email, password }, refreshToken) {
             email,
             hashedPassword,
         ]);
-        userID = result.insertId;
-    } catch (err) {
-        console.error("Error Querying Database:", err);
-    }
-    try {
-        const sql = "INSERT INTO Refresh_Tokens VALUES (?,?)";
-        const [result] = await pool.query(sql, [refreshToken, userID]);
     } catch (err) {
         console.error("Error Querying Database:", err);
     }
 }
+
+export const deleteRefreshTokenFromDB = async (refreshToken) => {
+    try {
+        const sql = "DELETE FROM Refresh_Tokens WHERE token = ?";
+        const [result] = await pool.query(sql, [refreshToken]);
+    } catch (err) {
+        console.error("Error Querying Database:", err);
+    }
+};
 
 export async function hashPassword(plainPassword) {
     const hash = await bcrypt.hash(plainPassword, SALT_ROUNDS);

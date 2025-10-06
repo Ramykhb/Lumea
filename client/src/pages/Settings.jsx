@@ -1,9 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
+import api from "../api/axios";
 
 const Settings = (props) => {
-    const handleLogout = () => {
-        return;
+    const navigate = useNavigate();
+    const handleLogout = async () => {
+        try {
+            const res = await api.post("/users/logout");
+            localStorage.setItem("accessToken", "");
+            navigate("/login");
+        } catch (err) {
+            console.log("Error logging out");
+        }
     };
 
     const handleDeleteAccount = () => {
