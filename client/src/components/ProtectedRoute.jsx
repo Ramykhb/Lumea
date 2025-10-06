@@ -29,7 +29,7 @@ function ProtectedRoute({ children }) {
         try {
             const accessToken = localStorage.getItem("accessToken");
 
-            const response = await api.post("/users/refresh", {
+            const response = await api.post("/auth/refresh", {
                 accessToken: accessToken,
             });
 

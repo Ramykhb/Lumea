@@ -66,12 +66,13 @@ export async function insertToken(username, refreshToken) {
     }
 }
 
-export async function addUser({ username, email, password }) {
+export async function addUser({ username, name, email, password }) {
     const hashedPassword = await hashPassword(password);
     try {
         const sql =
-            "INSERT INTO Users (name, username, email, password, isPublic) VALUES ('Lumea User',?,?,?, TRUE)";
+            "INSERT INTO Users (name, username, email, password, isPublic) VALUES (?,?,?,?, TRUE)";
         const [result] = await pool.query(sql, [
+            name,
             username,
             email,
             hashedPassword,

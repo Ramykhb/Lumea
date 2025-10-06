@@ -11,12 +11,13 @@ const AuthForm = (props) => {
     const [emailError, setEmailError] = useState("");
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
+    const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [confirm, setConfirm] = useState("");
 
     useEffect(() => {
         const checkLoggedIn = async () => {
-            const res = await api.get("/users/status");
+            const res = await api.get("/auth/status");
             if (res.data.loggedIn) navigate("/");
         };
 
@@ -25,6 +26,10 @@ const AuthForm = (props) => {
 
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
+    };
+
+    const handleNameChange = (event) => {
+        setName(event.target.value);
     };
 
     const handleEmailChange = (event) => {
@@ -51,7 +56,7 @@ const AuthForm = (props) => {
         setEmailError("");
         setPasswordError("");
         if (props.method === "signup") {
-            if (!email || !username || !password || !confirm) {
+            if (!email || !username || !password || !confirm || !name) {
                 setPasswordError("Please fill out all the required data...");
                 return;
             }
@@ -72,8 +77,9 @@ const AuthForm = (props) => {
                 return;
             }
             try {
-                const res = await api.post("/users/signup", {
+                const res = await api.post("/auth/signup", {
                     username: username,
+                    name: name,
                     email: email,
                     password: password,
                 });
@@ -98,7 +104,7 @@ const AuthForm = (props) => {
             }
             try {
                 console.log("BEFORE");
-                const res = await api.post("/users/login", {
+                const res = await api.post("/auth/login", {
                     username: username,
                     password: password,
                 });
@@ -121,19 +127,58 @@ const AuthForm = (props) => {
             <h2 className="text-3xl mb-4 dark:text-white">
                 {props.method === "login" ? "Sign in" : "Sign up"}
             </h2>
-            <label
-                className="text-sm font-bold dark:text-gray-100 mb-1"
-                htmlFor="username"
-            >
-                Username
-            </label>
-            <input
-                className="h-7 text-xs p-2 mb-3 w-full rounded-md bg-primary-light dark:bg-primary-dark border-[1px] border-gray-500 dark:text-gray-100"
-                id="username"
-                name="username"
-                type="text"
-                onChange={handleUsernameChange}
-            />
+            {props.method === "signup" ? (
+                <>
+                    <div className="w-full flex justify-between">
+                        <div className="flex flex-col w-[50%]">
+                            <label
+                                className="text-sm font-bold dark:text-gray-100 mb-1"
+                                htmlFor="username"
+                            >
+                                Username
+                            </label>
+                            <input
+                                className="h-7 text-xs p-2 mb-3 w-[80%] rounded-md bg-primary-light dark:bg-primary-dark border-[1px] border-gray-500 dark:text-gray-100"
+                                id="username"
+                                name="username"
+                                type="text"
+                                onChange={handleUsernameChange}
+                            />
+                        </div>
+                        <div className="flex flex-col w-[50%]">
+                            <label
+                                className="text-sm font-bold dark:text-gray-100 mb-1 ml-[20%]"
+                                htmlFor="name"
+                            >
+                                Full Name
+                            </label>
+                            <input
+                                className="h-7 text-xs p-2 mb-3 w-[80%] ml-[20%] rounded-md bg-primary-light dark:bg-primary-dark border-[1px] border-gray-500 dark:text-gray-100"
+                                id="name"
+                                name="name"
+                                type="text"
+                                onChange={handleNameChange}
+                            />
+                        </div>
+                    </div>
+                </>
+            ) : (
+                <>
+                    <label
+                        className="text-sm font-bold dark:text-gray-100 mb-1"
+                        htmlFor="username"
+                    >
+                        Username
+                    </label>
+                    <input
+                        className="h-7 text-xs p-2 mb-3 w-full rounded-md bg-primary-light dark:bg-primary-dark border-[1px] border-gray-500 dark:text-gray-100"
+                        id="username"
+                        name="username"
+                        type="text"
+                        onChange={handleUsernameChange}
+                    />
+                </>
+            )}
             <p className="text-red-500 text-xs mb-1">{usernameError}</p>
             {props.method == "signup" ? (
                 <>

@@ -6,7 +6,7 @@ const Settings = (props) => {
     const navigate = useNavigate();
     const handleLogout = async () => {
         try {
-            const res = await api.post("/users/logout");
+            const res = await api.post("/auth/logout");
             localStorage.setItem("accessToken", "");
             navigate("/login");
         } catch (err) {

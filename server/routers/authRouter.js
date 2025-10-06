@@ -28,10 +28,6 @@ authRouter.post("/login", checkLogin, login);
 
 authRouter.get("/status", checkStatus);
 
-authRouter.get("/temp", authenticateToken, (req, res) => {
-    console.log(req.user);
-});
-
 authRouter.post("/refresh", authenticateRefreshToken, refreshToken);
 
 authRouter.post("/logout", logout);
