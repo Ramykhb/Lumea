@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useRef, useState } from "react";
 
-const Post = (event) => {
+const Post = (props) => {
     const [liked, setLiked] = useState(false);
     const [saved, setSaved] = useState(false);
     const [firstDivHeight, setFirstDivHeight] = useState(0);
@@ -34,9 +34,25 @@ const Post = (event) => {
     };
 
     useEffect(() => {
-        if (firstDivRef.current) {
-            setFirstDivHeight(firstDivRef.current.offsetHeight);
-        }
+        const el = firstDivRef.current;
+        if (!el) return;
+
+        const setHeight = () => setFirstDivHeight(el.offsetHeight);
+
+        const observer = new ResizeObserver(setHeight);
+        observer.observe(el);
+
+        const images = el.querySelectorAll("img");
+        images.forEach((img) => {
+            if (!img.complete) img.addEventListener("load", setHeight);
+        });
+
+        setHeight();
+
+        return () => {
+            observer.disconnect();
+            images.forEach((img) => img.removeEventListener("load", setHeight));
+        };
     }, []);
 
     return (
@@ -48,10 +64,10 @@ const Post = (event) => {
                         className="w-7 h-auto rounded-full mr-3"
                     />
                     <p className="text-sm font-semibold dark:text-gray-100">
-                        daburger
+                        {props.username}
                     </p>
                 </div>
-                <img src="/test.jpeg" className="w-full h-auto" />
+                <img src={props.postImage} className="w-full h-auto" />
                 <div className="w-full h-8 py-2 px-1 flex">
                     {liked ? (
                         <FontAwesomeIcon
@@ -87,11 +103,10 @@ const Post = (event) => {
                 </div>
                 <div className="w-full pt-3 pb-2 px-1">
                     <p className="text-xs dark:text-gray-100">
-                        <span className="font-semibold">daburger</span> Tried to
-                        start a diet, didn't turn out well
+                        {props.caption}
                     </p>
                     <p className="text-[0.65rem] text-gray-400 mt-3 dark:text-gray-500">
-                        12-07-2025
+                        {props.postedAt.split("T")[0]}
                     </p>
                 </div>
             </div>

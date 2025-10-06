@@ -1,5 +1,4 @@
 import express from "express";
-import jwt from "jsonwebtoken";
 import {
     checkSignup,
     authenticateToken,
@@ -13,10 +12,6 @@ import {
     refreshToken,
     signup,
 } from "../controllers/authController.js";
-import {
-    deleteRefreshTokenFromDB,
-    tokenExists,
-} from "../services/authService.js";
 
 const authRouter = express.Router();
 

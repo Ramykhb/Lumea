@@ -14,15 +14,23 @@ function App() {
     const [darkMode, setDarkMode] = useState(false);
 
     useEffect(() => {
+        const mode = localStorage.getItem("darkMode");
+        if (mode) {
+            setDarkMode(true);
+        }
+    }, []);
+
+    useEffect(() => {
         if (darkMode) {
             document.documentElement.classList.add("dark");
+            localStorage.setItem("darkMode", "true");
         } else {
             document.documentElement.classList.remove("dark");
+            localStorage.setItem("darkMode", "");
         }
     }, [darkMode]);
 
     const toggleDarkMode = () => {
-        console.log("CLICKED");
         setDarkMode(!darkMode);
     };
 
