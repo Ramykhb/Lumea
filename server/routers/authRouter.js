@@ -6,6 +6,7 @@ import {
     checkLogin,
 } from "../middleware/authMiddleware.js";
 import {
+    changePassword,
     checkStatus,
     login,
     logout,
@@ -20,6 +21,8 @@ authRouter.use(express.json());
 authRouter.post("/signup", checkSignup, signup);
 
 authRouter.post("/login", checkLogin, login);
+
+authRouter.put("/updatePassword", authenticateToken, changePassword);
 
 authRouter.get("/status", checkStatus);
 

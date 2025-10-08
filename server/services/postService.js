@@ -42,21 +42,20 @@ export const addPost = async (username, caption, filePath) => {
     }
 };
 
-export const addComment = async (username, content, postId) => {
+export const addComment = async (userID, content, postId, dateNow) => {
     try {
-        const userID = await getID(username);
-
         const sql =
             "INSERT INTO Commented_By (postId, userId, content, commentedAt) VALUES (?, ?, ?, ?)";
         const [result] = await pool.query(sql, [
             postId,
             userID,
             content,
-            new Date(),
+            dateNow,
         ]);
-        return true;
+        const sql2 = "SELECT profileImage FROM Users WHERE id = ?";
+        const [result2] = await pool.query(sql2, [userID]);
+        return { ...result, ...result2 };
     } catch (err) {
-        console.error(err);
-        return false;
+        throw err;
     }
 };

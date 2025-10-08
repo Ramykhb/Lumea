@@ -14,6 +14,29 @@ export async function usernameExists(username) {
     }
 }
 
+export async function updatePassword(username, currentPass, newPass) {
+    const userID = await getID(username);
+    try {
+        const sql = "SELECT password FROM Users WHERE id = ?";
+        const [result] = await pool.query(sql, [userID]);
+        const match = await verifyPassword(currentPass, result[0].password);
+        if (!match) {
+            return false;
+        }
+    } catch (err) {
+        console.error("Error Querying Database:", err);
+    }
+    const newPassHash = await hashPassword(newPass);
+
+    try {
+        const sql = "UPDATE Users SET password = ? WHERE id = ?";
+        const [result] = await pool.query(sql, [newPassHash, userID]);
+        return true;
+    } catch (err) {
+        console.error("Error Querying Database:", err);
+    }
+}
+
 export async function getID(username) {
     try {
         const sql = "SELECT id FROM Users WHERE username = ?";

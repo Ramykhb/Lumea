@@ -1,19 +1,55 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
-import { useRef, useState } from "react";
+import { useState } from "react";
+import api from "../api/axios";
 
 const ChangePassword = () => {
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
-    const oldPasswordRef = useRef(null);
-    const newPasswordRef = useRef(null);
-    const confirmRef = useRef(null);
+    const [oldPassword, setOldPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirm, setConfirm] = useState("");
 
-    const handleSubmit = (event) => {
+    const handleOldChange = (event) => {
+        setError("");
+        setOldPassword(event.target.value);
+    };
+    const handleNewChange = (event) => {
+        setError("");
+        setNewPassword(event.target.value);
+    };
+    const handleConfirmChange = (event) => {
+        setError("");
+        setConfirm(event.target.value);
+    };
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
         setError("");
-        if (newPasswordRef.current.value != confirmRef.current.value) {
+        console.log(oldPassword + newPassword + confirm);
+        if (!oldPassword || !newPassword || !confirm) {
+            setError("Please fill out all required fields.");
+            return;
+        }
+        if (newPassword != confirm) {
             setError("Passwords do not match.");
+            return;
+        }
+        if (newPassword.length < 8) {
+            setError("Password must be at least 8 characters.");
+            return;
+        }
+        try {
+            const res = await api.put("/auth/updatePassword", {
+                currentPass: oldPassword,
+                newPass: newPassword,
+            });
+            navigate("/");
+        } catch (err) {
+            if (err.status == 401) {
+                setError("Current password is incorrect.");
+            } else setError("Server is unreachable at the moment.");
         }
     };
 
@@ -29,14 +65,14 @@ const ChangePassword = () => {
                         className="text-sm font-bold dark:text-gray-100 mb-1"
                         htmlFor="old-password"
                     >
-                        Old Password
+                        Current Password
                     </label>
                     <input
                         className="h-7 text-xs p-2 mb-5 w-full rounded-md bg-primary-light dark:bg-primary-dark border-[1px] border-gray-500 dark:text-gray-100"
                         id="old-password"
                         name="old-password"
                         type="password"
-                        ref={oldPasswordRef}
+                        onChange={handleOldChange}
                     />
                     <label
                         className="text-sm font-bold dark:text-gray-100 mb-1"
@@ -49,7 +85,7 @@ const ChangePassword = () => {
                         id="new-password"
                         name="new-password"
                         type="password"
-                        ref={newPasswordRef}
+                        onChange={handleNewChange}
                     />
                     <label
                         className="text-sm font-bold dark:text-gray-100 mb-1"
@@ -62,7 +98,7 @@ const ChangePassword = () => {
                         id="confirm-password"
                         name="confirm-password"
                         type="password"
-                        ref={confirmRef}
+                        onChange={handleConfirmChange}
                     />
                     <p className="text-red-500 text-sm">{error}</p>
                     <Link to={"/reset-password"}>

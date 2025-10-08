@@ -42,7 +42,7 @@ const CommentSection = forwardRef((props, ref) => {
                 postId: props.postId,
                 content: newComment,
             });
-            getComments();
+            setComments([res.data.newComment, ...comments]);
             setNewComment("");
             setPostButton("text-md text-blue-200");
         } catch (error) {

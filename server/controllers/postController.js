@@ -1,3 +1,4 @@
+import { getID } from "../services/authService.js";
 import {
     addPost,
     retrieveAllPosts,
@@ -43,12 +44,24 @@ export const createPost = async (req, res) => {
 
 export const postComment = async (req, res) => {
     const { username } = req.user;
+    const userID = await getID(username);
     const { content, postId } = req.body;
-    const success = await addComment(username, content, postId);
-    if (success) {
-        return res.status(200).json({ message: "Comment added Successfully" });
+    const dateNow = new Date();
+    try {
+        const result = await addComment(userID, content, postId, dateNow);
+        return res.status(200).json({
+            message: "Comment added Successfully",
+            newComment: {
+                id: result.insertId,
+                profileImage: result["0"].profileImage,
+                postId: postId,
+                userId: userID,
+                posted_by: username,
+                content: content,
+                commentedAt: dateNow,
+            },
+        });
+    } catch (err) {
+        res.status(500).message("Server is unreachable...");
     }
-    return res
-        .status(500)
-        .json({ error: "ServerError", message: "Comment failed" });
 };

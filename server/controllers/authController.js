@@ -4,6 +4,7 @@ import {
     generateAccessToken,
     generateRefreshToken,
     insertToken,
+    updatePassword,
     usernameExists,
 } from "../services/authService.js";
 
@@ -53,6 +54,27 @@ export const checkStatus = (req, res) => {
         if (err) return res.json({ loggedIn: false });
         res.json({ loggedIn: true });
     });
+};
+
+export const changePassword = async (req, res) => {
+    const { username } = req.user;
+    const { currentPass, newPass } = req.body;
+    try {
+        const result = await updatePassword(username, currentPass, newPass);
+        if (!result) {
+            return res.status(401).json({
+                title: "IncorrectPassword",
+                message: "Current password is incorrect.",
+            });
+        }
+        return res.status(200).json({
+            message: "Password updated successfully.",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            message: "Server is unreachable at the moment.",
+        });
+    }
 };
 
 export const login = async (req, res) => {
