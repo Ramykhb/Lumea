@@ -94,6 +94,8 @@ const AuthForm = (props) => {
                         setEmailError(message);
                     } else if (error === "UsernameAlreadyUsed") {
                         setUsernameError(message);
+                    } else {
+                        setPasswordError(message);
                     }
                 }
             }
@@ -103,7 +105,6 @@ const AuthForm = (props) => {
                 return;
             }
             try {
-                console.log("BEFORE");
                 const res = await api.post("/auth/login", {
                     username: username,
                     password: password,
@@ -114,9 +115,7 @@ const AuthForm = (props) => {
                 if (err.response) {
                     const { error, message } = err.response.data;
 
-                    if (error === "IncorrectCredentials") {
-                        setPasswordError(message);
-                    }
+                    setPasswordError(message);
                 }
             }
         }

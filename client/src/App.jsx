@@ -1,14 +1,13 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
-import SideBar from "./components/SideBar.jsx";
-import Post from "./components/Post.jsx";
 import Homepage from "./pages/Homepage.jsx";
 import { useEffect, useState } from "react";
 import Settings from "./pages/Settings.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import CreatePost from "./pages/CreatePost.jsx";
 
 function App() {
     const [darkMode, setDarkMode] = useState(false);
@@ -60,6 +59,14 @@ function App() {
                     element={<ResetPassword logged={true} />}
                 />
                 <Route path="/login" element={<Login />} />
+                <Route
+                    path="/create"
+                    element={
+                        <ProtectedRoute>
+                            <CreatePost />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route path="/signup" element={<Signup />} />
             </Routes>
         </BrowserRouter>

@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 import authRouter from "./routers/authRouter.js";
 import cookieParser from "cookie-parser";
 import postRouter from "./routers/postRouter.js";
@@ -20,6 +22,11 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/posts", postRouter);

@@ -57,25 +57,29 @@ export async function emailExists(email) {
 }
 
 export async function insertToken(username, refreshToken) {
-    let userID = await getID(username);
+    const userID = await getID(username);
     try {
         const sql = "INSERT INTO Refresh_Tokens VALUES (?,?)";
         const [result] = await pool.query(sql, [refreshToken, userID]);
+        return true;
     } catch (err) {
         console.error("Error Querying Database:", err);
+        return false;
     }
 }
 
 export async function addUser({ username, name, email, password }) {
+    username = username.toLowerCase();
     const hashedPassword = await hashPassword(password);
     try {
         const sql =
-            "INSERT INTO Users (name, username, email, password, isPublic) VALUES (?,?,?,?, TRUE)";
+            "INSERT INTO Users (name, username, email, password, profileImage, isPublic) VALUES (?,?,?,?,?, TRUE)";
         const [result] = await pool.query(sql, [
             name,
             username,
             email,
             hashedPassword,
+            "/uploads/avatar.svg",
         ]);
     } catch (err) {
         console.error("Error Querying Database:", err);

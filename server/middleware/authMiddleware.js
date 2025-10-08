@@ -8,7 +8,7 @@ import {
 } from "../services/authService.js";
 
 export const checkSignup = async (req, res, next) => {
-    if (await usernameExists(req.body.username)) {
+    if (await usernameExists(req.body.username.toLowerCase())) {
         return res.status(400).json({
             error: "UsernameAlreadyUsed",
             message: "The username is already taken...",
@@ -25,7 +25,7 @@ export const checkSignup = async (req, res, next) => {
 };
 
 export const checkLogin = async (req, res, next) => {
-    const hashedPassword = await getPassword(req.body.username);
+    const hashedPassword = await getPassword(req.body.username.toLowerCase());
     if (!hashedPassword) {
         return res.status(400).json({
             error: "IncorrectCredentials",

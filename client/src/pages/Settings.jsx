@@ -57,7 +57,7 @@ const Settings = (props) => {
                         <p className="font-bold">Log out</p>
                     </div>
                     <div
-                        className="text-black w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-md h-[2.5em] my-2 hover:bg-[#EF4444] hover:cursor-pointer dark:text-white dark:hover:bg-red-600"
+                        className="text-red-500 w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-md h-[2.5em] my-2 hover:bg-[#dfdfe0] hover:cursor-pointer dark:hover:bg-[#2c2c2c]"
                         onClick={handleDeleteAccount}
                     >
                         <p className="font-bold">Delete Account</p>

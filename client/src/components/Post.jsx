@@ -56,18 +56,21 @@ const Post = (props) => {
     }, []);
 
     return (
-        <div className="w-[50%] h-auto bg-primary-light dark:bg-primary-dark flex flex-row rounded-2xl border-gray-200 border-[1px] my-[2em] dark:border-border-dark">
+        <div className="w-[60%] h-auto bg-primary-light dark:bg-primary-dark flex flex-row rounded-2xl border-gray-200 border-[1px] my-[2em] dark:border-border-dark">
             <div ref={firstDivRef} className="w-[50%] flex flex-col">
                 <div className="w-full  h-15 flex py-3 px-3 items-center justify-start">
                     <img
-                        src="/test.jpeg"
+                        src={`http://localhost:3000${props.profileImage}`}
                         className="w-7 h-auto rounded-full mr-3"
                     />
                     <p className="text-sm font-semibold dark:text-gray-100">
                         {props.username}
                     </p>
                 </div>
-                <img src={props.postImage} className="w-full h-auto" />
+                <img
+                    src={`http://localhost:3000${props.postImage}`}
+                    className="w-full h-auto"
+                />
                 <div className="w-full h-8 py-2 px-1 flex">
                     {liked ? (
                         <FontAwesomeIcon
@@ -110,7 +113,11 @@ const Post = (props) => {
                     </p>
                 </div>
             </div>
-            <CommentSection ref={commentInput} maxHeight={firstDivHeight} />
+            <CommentSection
+                ref={commentInput}
+                maxHeight={firstDivHeight}
+                postId={props.id}
+            />
         </div>
     );
 };

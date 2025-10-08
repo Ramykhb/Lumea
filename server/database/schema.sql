@@ -4,14 +4,14 @@ CREATE TABLE Users (
     username VARCHAR(40) UNIQUE,
     email VARCHAR(40) UNIQUE,
     password VARCHAR(60),
-    profileImage VARCHAR(200),,
+    profileImage VARCHAR(100),
     isPublic BOOLEAN
 );
 
 CREATE TABLE Posts (
     id INT PRIMARY KEY AUTO_INCREMENT,
     userId INT,
-    postImage VARCHAR(200),
+    postImage VARCHAR(100),
     caption VARCHAR(255),
     postedAt DATETIME,
     FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE

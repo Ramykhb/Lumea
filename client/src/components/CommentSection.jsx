@@ -1,72 +1,52 @@
 import { forwardRef, useEffect, useState } from "react";
+import api from "../api/axios";
 
 const CommentSection = forwardRef((props, ref) => {
     const [comments, setComments] = useState([]);
-    const [postButton, setPostButton] = useState("");
+    const [postButton, setPostButton] = useState(
+        "text-md text-blue-200 dark:text-blue-200"
+    );
     const [newComment, setNewComment] = useState("");
 
+    const getComments = async () => {
+        try {
+            const res = await api.get("/posts/comments", {
+                params: {
+                    postId: props.postId,
+                },
+            });
+            const comments = res.data;
+            setComments(comments);
+        } catch (error) {
+            console.log("Error getting comments");
+        }
+    };
+
     useEffect(() => {
-        setComments([
-            {
-                message: "This is a great post! Thanks for sharing.",
-                posted_by: "Alice",
-                posted_at: "2025-09-27_14:35:00",
-            },
-            {
-                message: "I totally agree with your point.",
-                posted_by: "Bob",
-                posted_at: "2025-09-27_15:10:00",
-            },
-            {
-                message: "Can you explain more about this?",
-                posted_by: "Charlie",
-                posted_at: "2025-09-27_15:45:00",
-            },
-            {
-                message: "Nice photo! Where was this taken?",
-                posted_by: "Diana",
-                posted_at: "2025-09-27_16:20:00",
-            },
-            {
-                message: "Love the details you added here 👏",
-                posted_by: "Ethan",
-                posted_at: "2025-09-27_16:55:00",
-            },
-            {
-                message: "This is a great post! Thanks for sharing.",
-                posted_by: "Alice",
-                posted_at: "2025-09-27_14:35:00",
-            },
-            {
-                message: "I totally agree with your point.",
-                posted_by: "Bob",
-                posted_at: "2025-09-27_15:10:00",
-            },
-            {
-                message: "Can you explain more about this?",
-                posted_by: "Charlie",
-                posted_at: "2025-09-27_15:45:00",
-            },
-            {
-                message: "Nice photo! Where was this taken?",
-                posted_by: "Diana",
-                posted_at: "2025-09-27_16:20:00",
-            },
-            {
-                message: "Love the details you added here 👏",
-                posted_by: "Ethan",
-                posted_at: "2025-09-27_16:55:00",
-            },
-        ]);
-        setPostButton("text-md text-blue-200");
+        getComments();
     }, []);
 
     const handleCommentChange = (e) => {
         setNewComment(e.target.value);
         if (e.target.value.length == 0) {
-            setPostButton("text-md text-blue-200");
+            setPostButton("text-md text-blue-200 dark:text-blue-200");
         } else {
             setPostButton("hover:cursor-pointer text-md text-blue-600");
+        }
+    };
+
+    const handleCommentPost = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await api.post("posts/comment", {
+                postId: props.postId,
+                content: newComment,
+            });
+            getComments();
+            setNewComment("");
+            setPostButton("text-md text-blue-200");
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -77,7 +57,6 @@ const CommentSection = forwardRef((props, ref) => {
                 height: props.maxHeight ? `${props.maxHeight}px` : "auto",
             }}
         >
-            {/* Comments container */}
             <div
                 style={{
                     height: props.maxHeight
@@ -93,10 +72,10 @@ const CommentSection = forwardRef((props, ref) => {
                 </div>
                 {comments.length > 0 ? (
                     comments.map((comment, i) => (
-                        <div key={i}>
-                            <div className="w-[100%] px-6 py-2 flex dark:text-gray-300">
+                        <div key={comment.id}>
+                            <div className="w-[100%] px-6 py-2 flex dark:text-gray-300 h-auto">
                                 <img
-                                    src="/avatar.svg"
+                                    src={`http://localhost:3000${comment.profileImage}`}
                                     className="w-[40px] rounded-full mr-5"
                                 />
                                 <div>
@@ -104,10 +83,10 @@ const CommentSection = forwardRef((props, ref) => {
                                         <b className="dark:text-white text-gray-700">
                                             {comment.posted_by}
                                         </b>
-                                        {` ${comment.message}`}
+                                        {` ${comment.content}`}
                                     </p>
                                     <p className="text-gray-500 text-[0.6rem] mt-2">
-                                        {comment.posted_at}
+                                        {comment.commentedAt.split("T")[0]}
                                     </p>
                                 </div>
                             </div>
@@ -122,15 +101,19 @@ const CommentSection = forwardRef((props, ref) => {
                     </div>
                 )}
             </div>
-            <div className="bg-primary-light dark:bg-primary-dark w-full h-10 flex items-center justify-around border-t-[1px] border-gray-200 dark:border-border-dark">
-                <input
-                    ref={ref}
-                    className="bg-transparent focus:border-none focus:outline-none text-sm dark:caret-white dark:placeholder-gray-300 dark:text-gray-100"
-                    placeholder="Add a comment..."
-                    onChange={handleCommentChange}
-                    value={newComment}
-                />
-                <p className={postButton}>Post</p>
+            <div>
+                <form className="bg-primary-light dark:bg-primary-dark w-full h-10 flex items-center justify-around border-t-[1px] border-gray-200 dark:border-border-dark">
+                    <input
+                        ref={ref}
+                        className="bg-transparent focus:border-none focus:outline-none text-sm dark:caret-white dark:placeholder-gray-300 dark:text-gray-100"
+                        placeholder="Add a comment..."
+                        onChange={handleCommentChange}
+                        value={newComment}
+                    />
+                    <button className={postButton} onClick={handleCommentPost}>
+                        Post
+                    </button>
+                </form>
             </div>
         </div>
     );

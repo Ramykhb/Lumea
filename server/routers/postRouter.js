@@ -1,11 +1,41 @@
 import express from "express";
+import path from "path";
+import multer from "multer";
 import { authenticateToken } from "../middleware/authMiddleware.js";
-import { getAllPosts } from "../controllers/postController.js";
+import {
+    createPost,
+    getAllPosts,
+    getComments,
+    postComment,
+} from "../controllers/postController.js";
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/");
+    },
+    filename: (req, file, cb) => {
+        const uniqueName = Date.now() + path.extname(file.originalname);
+        cb(null, uniqueName);
+    },
+});
+
+const upload = multer({ storage });
 
 const postRouter = express.Router();
 
 postRouter.use(express.json());
 
 postRouter.get("/", authenticateToken, getAllPosts);
+
+postRouter.get("/comments", authenticateToken, getComments);
+
+postRouter.post("/comment", authenticateToken, postComment);
+
+postRouter.post(
+    "/upload",
+    authenticateToken,
+    upload.single("image"),
+    createPost
+);
 
 export default postRouter;

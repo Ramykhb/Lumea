@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Post from "../components/Post";
 import api from "../api/axios";
 import SideBar from "../components/SideBar";
+import React from "react";
 
 const Homepage = () => {
     const [posts, setposts] = useState([]);
@@ -76,16 +77,17 @@ const Homepage = () => {
                     </div>
                 </div>
                 {posts.map((post) => (
-                    <>
+                    <React.Fragment key={post.id}>
                         <Post
+                            id={post.id}
                             caption={post.caption}
                             postedAt={post.postedAt}
                             username={post.username}
                             postImage={post.postImage}
-                            key={post.id}
+                            profileImage={post.profileImage}
                         />
                         <hr className="w-[50%] border-t-1 border-gray-400 dark:border-border-dark" />
-                    </>
+                    </React.Fragment>
                 ))}
             </div>
         </div>

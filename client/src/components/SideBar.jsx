@@ -39,7 +39,7 @@ const SideBar = () => {
                     </div>
                 </Link>
 
-                <Link to={"/"}>
+                <Link to={"/search"}>
                     <div className="text-black w-[90%] mx-[5%] rounded-xl flex items-center justify-start px-2 text-xl h-[2.5em] my-7 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]">
                         <FontAwesomeIcon
                             icon={faMagnifyingGlass}
@@ -49,7 +49,7 @@ const SideBar = () => {
                     </div>
                 </Link>
 
-                <Link to={"/"}>
+                <Link to={"/create"}>
                     <div className="text-black w-[90%] mx-[5%] rounded-xl flex items-center justify-start px-[10px] text-xl h-[2.5em] my-7 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]">
                         <FontAwesomeIcon
                             icon={faPlus}
@@ -59,7 +59,7 @@ const SideBar = () => {
                     </div>
                 </Link>
 
-                <Link to={"/"}>
+                <Link to={"/saved"}>
                     <div className="text-black w-[90%] mx-[5%] rounded-xl flex items-center justify-start px-2 text-xl h-[2.5em] my-5 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]">
                         <FontAwesomeIcon
                             icon={faBookmark}

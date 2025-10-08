@@ -10,25 +10,33 @@ import {
 import jwt from "jsonwebtoken";
 
 export const signup = async (req, res) => {
+    const username = req.body.username.toLowerCase();
     try {
         const accessToken = generateAccessToken({
-            username: req.body.username,
+            username: username,
         });
         const refreshToken = generateRefreshToken({
-            username: req.body.username,
+            username: username,
         });
         await addUser(req.body);
-        await insertToken(req.body.username, refreshToken);
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: false,
-            path: "/",
-            sameSite: "lax",
-        });
-        res.status(201).json({
-            message: "User created successfully",
-            accessToken: accessToken,
-        });
+        const success = await insertToken(username, refreshToken);
+        if (success) {
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                secure: false,
+                path: "/",
+                sameSite: "lax",
+            });
+            res.status(201).json({
+                message: "User created successfully",
+                accessToken: accessToken,
+            });
+        } else {
+            res.status(500).json({
+                error: "ServerError",
+                message: "Something went wrong",
+            });
+        }
     } catch (error) {
         res.status(500).json({
             error: "ServerError",
@@ -48,27 +56,37 @@ export const checkStatus = (req, res) => {
 };
 
 export const login = async (req, res) => {
+    const username = req.body.username.toLowerCase();
     const accessToken = generateAccessToken({
-        username: req.body.username,
+        username: username,
     });
     const refreshToken = generateRefreshToken({
-        username: req.body.username,
+        username: username,
     });
-    await insertToken(req.body.username, refreshToken);
-    res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: false,
-        path: "/",
-        sameSite: "lax",
-    });
-    res.status(201).json({
-        message: "User logged in successfully",
-        accessToken: accessToken,
-    });
+    const success = await insertToken(username, refreshToken);
+    if (success) {
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: false,
+            path: "/",
+            sameSite: "lax",
+        });
+        res.status(201).json({
+            message: "User logged in successfully",
+            accessToken: accessToken,
+        });
+    } else {
+        res.status(500).json({
+            error: "ServerError",
+            message: "Something went wrong",
+        });
+    }
 };
 
 export const refreshToken = (req, res) => {
-    const accessToken = generateAccessToken({ username: req.user.username });
+    const accessToken = generateAccessToken({
+        username: req.user.username.toLowerCase(),
+    });
     res.json({ accessToken: accessToken });
 };
 
