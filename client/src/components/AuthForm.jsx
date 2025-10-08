@@ -51,6 +51,8 @@ const AuthForm = (props) => {
     };
 
     const handleSubmit = async (event) => {
+        const emailRegex =
+            /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
         event.preventDefault();
         setUsernameError("");
         setEmailError("");
@@ -68,7 +70,7 @@ const AuthForm = (props) => {
                 setUsernameError("Username cannot contain blank characters...");
                 return;
             }
-            if (!email.includes("@")) {
+            if (!emailRegex.test(email)) {
                 setEmailError("Invalid email...");
                 return;
             }
