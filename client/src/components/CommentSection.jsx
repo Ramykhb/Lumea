@@ -86,7 +86,18 @@ const CommentSection = forwardRef((props, ref) => {
                                         {` ${comment.content}`}
                                     </p>
                                     <p className="text-gray-500 text-[0.6rem] mt-2">
-                                        {comment.commentedAt.split("T")[0]}
+                                        {comment.commentedAt.split("T")[0]} at{" "}
+                                        {
+                                            comment.commentedAt
+                                                .split("T")[1]
+                                                .split(":")[0]
+                                        }
+                                        :
+                                        {
+                                            comment.commentedAt
+                                                .split("T")[1]
+                                                .split(":")[1]
+                                        }
                                     </p>
                                 </div>
                             </div>

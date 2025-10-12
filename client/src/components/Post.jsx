@@ -15,6 +15,7 @@ import api from "../api/axios.js";
 
 const Post = (props) => {
     const [liked, setLiked] = useState(false);
+    const [likes, setLikes] = useState(0);
     const [saved, setSaved] = useState(props.isSaved);
     const [firstDivHeight, setFirstDivHeight] = useState(0);
 
@@ -93,40 +94,45 @@ const Post = (props) => {
                         <FontAwesomeIcon
                             icon={faHeartSolid}
                             onClick={handleLike}
-                            className="text-red-500 mr-2 text-2xl hover:cursor-pointer"
+                            className="text-red-500 mr-2 text-xl hover:cursor-pointer"
                         />
                     ) : (
                         <FontAwesomeIcon
                             icon={faHeart}
                             onClick={handleLike}
-                            className="text-black mr-2 text-2xl hover:cursor-pointer dark:text-gray-100"
+                            className="text-black mr-2 text-xl hover:cursor-pointer dark:text-gray-100"
                         />
                     )}
                     <FontAwesomeIcon
                         icon={faComment}
                         onClick={handleComment}
-                        className="text-black mr-2 text-2xl hover:cursor-pointer dark:text-gray-100"
+                        className="text-black mr-2 text-xl hover:cursor-pointer dark:text-gray-100"
                     />
                     {saved ? (
                         <FontAwesomeIcon
                             icon={faBookmarkSolid}
                             onClick={handleSave}
-                            className="text-black mr-2 text-2xl hover:cursor-pointer dark:text-gray-100"
+                            className="text-black mr-2 text-xl hover:cursor-pointer dark:text-gray-100"
                         />
                     ) : (
                         <FontAwesomeIcon
                             icon={faBookmark}
                             onClick={handleSave}
-                            className="text-black mr-2 text-2xl hover:cursor-pointer dark:text-gray-100"
+                            className="text-black mr-2 text-xl hover:cursor-pointer dark:text-gray-100"
                         />
                     )}
                 </div>
+                <p className="text-sm mt-2 ml-1 dark:text-gray-100">
+                    {likes} likes
+                </p>
                 <div className="w-full pt-3 pb-2 px-1">
                     <p className="text-xs dark:text-gray-100">
                         {props.caption}
                     </p>
                     <p className="text-[0.65rem] text-gray-400 mt-3 dark:text-gray-500">
-                        {props.postedAt.split("T")[0]}
+                        {props.postedAt.split("T")[0]} at{" "}
+                        {props.postedAt.split("T")[1].split(":")[0]}:
+                        {props.postedAt.split("T")[1].split(":")[1]}
                     </p>
                 </div>
             </div>
