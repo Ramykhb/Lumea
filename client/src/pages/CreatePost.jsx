@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 function CreatePost() {
     const [file, setFile] = useState(null);
-    const [filePath, setFilePath] = useState("imagePlaceholder.png");
+    const [filePath, setFilePath] = useState("placeholder-image.png");
     const [caption, setCaption] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -76,7 +76,7 @@ function CreatePost() {
 
                         <label
                             htmlFor="fileUpload"
-                            className="w-[50vh] h-[50vh] border-2 border-dashed border-gray-400 rounded-lg bg-cover bg-center flex items-center justify-center cursor-pointer hover:border-gray-500 hover:bg-gray-100/20 transition relative"
+                            className="w-[50vh] h-[50vh] border-2 border-dashed border-gray-400 rounded-lg bg-cover bg-center flex items-center justify-center cursor-pointer hover:border-gray-500 hover:bg-gray-100/20 transition relative bg-gray-200"
                             style={{
                                 backgroundImage: file
                                     ? `url(http://localhost:3000${filePath})`
