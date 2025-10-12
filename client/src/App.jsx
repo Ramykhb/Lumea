@@ -8,6 +8,8 @@ import ChangePassword from "./pages/ChangePassword.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import CreatePost from "./pages/CreatePost.jsx";
+import Profile from "./pages/Profile.jsx";
+import SavedPosts from "./pages/SavedPosts.jsx";
 
 function App() {
     const [darkMode, setDarkMode] = useState(false);
@@ -45,6 +47,14 @@ function App() {
                     }
                 />
                 <Route
+                    path="/saved"
+                    element={
+                        <ProtectedRoute>
+                            <SavedPosts />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
                     path="/settings"
                     element={
                         <Settings
@@ -64,6 +74,14 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <CreatePost />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/profile/:username"
+                    element={
+                        <ProtectedRoute>
+                            <Profile />
                         </ProtectedRoute>
                     }
                 />

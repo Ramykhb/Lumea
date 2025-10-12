@@ -6,7 +6,11 @@ import {
     createPost,
     getAllPosts,
     getComments,
+    getSavedPosts,
     postComment,
+    savePost,
+    unSavePost,
+    uploadImage,
 } from "../controllers/postController.js";
 
 const storage = multer.diskStorage({
@@ -29,13 +33,21 @@ postRouter.get("/", authenticateToken, getAllPosts);
 
 postRouter.get("/comments", authenticateToken, getComments);
 
+postRouter.get("/saved", authenticateToken, getSavedPosts);
+
+postRouter.post("/savePost", authenticateToken, savePost);
+
+postRouter.delete("/savePost", authenticateToken, unSavePost);
+
 postRouter.post("/comment", authenticateToken, postComment);
 
 postRouter.post(
     "/upload",
     authenticateToken,
     upload.single("image"),
-    createPost
+    uploadImage
 );
+
+postRouter.post("/create", authenticateToken, createPost);
 
 export default postRouter;

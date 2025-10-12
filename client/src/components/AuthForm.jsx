@@ -116,7 +116,6 @@ const AuthForm = (props) => {
             } catch (err) {
                 if (err.response) {
                     const { error, message } = err.response.data;
-
                     setPasswordError(message);
                 }
             }

@@ -10,7 +10,7 @@ export async function usernameExists(username) {
         const [result] = await pool.query(sql, [username]);
         return result[0].count > 0;
     } catch (err) {
-        console.error("Error Querying Database:", err);
+        throw err;
     }
 }
 
@@ -24,7 +24,7 @@ export async function updatePassword(username, currentPass, newPass) {
             return false;
         }
     } catch (err) {
-        console.error("Error Querying Database:", err);
+        throw err;
     }
     const newPassHash = await hashPassword(newPass);
 
@@ -33,7 +33,7 @@ export async function updatePassword(username, currentPass, newPass) {
         const [result] = await pool.query(sql, [newPassHash, userID]);
         return true;
     } catch (err) {
-        console.error("Error Querying Database:", err);
+        throw err;
     }
 }
 
@@ -43,7 +43,7 @@ export async function getID(username) {
         const [result] = await pool.query(sql, [username]);
         return result[0].id;
     } catch (err) {
-        console.error("Error Querying Database:", err);
+        throw err;
     }
 }
 
@@ -54,7 +54,7 @@ export async function getPassword(username) {
         if (result.length == 0) return null;
         return result[0].password;
     } catch (err) {
-        console.error("Error Querying Database:", err);
+        throw err;
     }
 }
 
@@ -65,7 +65,7 @@ export async function tokenExists(refreshToken) {
         const [result] = await pool.query(sql, [refreshToken]);
         return result[0].count > 0;
     } catch (err) {
-        console.error("Error Querying Database:", err);
+        throw err;
     }
 }
 
@@ -75,7 +75,7 @@ export async function emailExists(email) {
         const [result] = await pool.query(sql, [email]);
         return result[0].count > 0;
     } catch (err) {
-        console.error("Error Querying Database:", err);
+        throw err;
     }
 }
 
@@ -86,7 +86,7 @@ export async function insertToken(username, refreshToken) {
         const [result] = await pool.query(sql, [refreshToken, userID]);
         return true;
     } catch (err) {
-        console.error("Error Querying Database:", err);
+        throw err;
         return false;
     }
 }
@@ -105,7 +105,7 @@ export async function addUser({ username, name, email, password }) {
             "/uploads/avatar.svg",
         ]);
     } catch (err) {
-        console.error("Error Querying Database:", err);
+        throw err;
     }
 }
 
@@ -114,7 +114,7 @@ export const deleteRefreshTokenFromDB = async (refreshToken) => {
         const sql = "DELETE FROM Refresh_Tokens WHERE token = ?";
         const [result] = await pool.query(sql, [refreshToken]);
     } catch (err) {
-        console.error("Error Querying Database:", err);
+        throw err;
     }
 };
 

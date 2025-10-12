@@ -8,38 +8,64 @@ import {
 } from "../services/authService.js";
 
 export const checkSignup = async (req, res, next) => {
-    if (await usernameExists(req.body.username.toLowerCase())) {
-        return res.status(400).json({
-            error: "UsernameAlreadyUsed",
-            message: "The username is already taken...",
-        });
+    const { username, email, name, password } = req.body;
+    if (!username || !email || !name || !password) {
+        return res.status(400).json({ message: "Please fill out all fields" });
     }
-    if (await emailExists(req.body.email)) {
-        return res.status(400).json({
-            error: "EmailAlreadyUsed",
-            message: "The email you provided is already registered...",
-        });
-    }
+    try {
+        const usernameFound = await usernameExists(
+            req.body.username.toLowerCase()
+        );
+        if (usernameFound) {
+            return res.status(400).json({
+                error: "UsernameAlreadyUsed",
+                message: "The username is already taken...",
+            });
+        }
+        const emailFound = await emailExists(req.body.email());
+        if (emailFound) {
+            return res.status(400).json({
+                error: "EmailAlreadyUsed",
+                message: "The email you provided is already registered...",
+            });
+        }
 
-    next();
+        next();
+    } catch (error) {
+        return res
+            .status(500)
+            .json({ message: "Server is unreachable at the moment." });
+    }
 };
 
 export const checkLogin = async (req, res, next) => {
-    const hashedPassword = await getPassword(req.body.username.toLowerCase());
-    if (!hashedPassword) {
-        return res.status(400).json({
-            error: "IncorrectCredentials",
-            message: "Username or password is incorrect...",
-        });
+    const { username, password } = req.body;
+    if (!username || !password) {
+        return res.status(400).json({ message: "Please fill out all fields" });
     }
-    const found = await verifyPassword(req.body.password, hashedPassword);
-    if (!found) {
-        return res.status(400).json({
-            error: "IncorrectCredentials",
-            message: "Username or password is incorrect...",
-        });
+    try {
+        const hashedPassword = await getPassword(
+            req.body.username.toLowerCase()
+        );
+        if (!hashedPassword) {
+            return res.status(400).json({
+                error: "IncorrectCredentials",
+                message: "Invalid Credentials.",
+            });
+        }
+        const found = await verifyPassword(req.body.password, hashedPassword);
+        if (!found) {
+            return res.status(400).json({
+                error: "IncorrectCredentials",
+                message: "Invalid Credentials.",
+            });
+        }
+        next();
+    } catch (err) {
+        return res
+            .status(500)
+            .json({ message: "Server is unreachable at the moment." });
     }
-    next();
 };
 
 export const authenticateToken = (req, res, next) => {

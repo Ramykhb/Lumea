@@ -4,17 +4,12 @@ import api from "../api/axios";
 import SideBar from "../components/SideBar";
 import React from "react";
 
-const Homepage = () => {
+const SavedPosts = () => {
     const [posts, setposts] = useState([]);
-    const [allPosts, setAllPosts] = useState(true);
 
     const fetchPosts = async () => {
         try {
-            const res = await api.get("/posts", {
-                params: {
-                    allPosts: allPosts,
-                },
-            });
+            const res = await api.get("/posts/saved");
             setposts(res.data);
         } catch (err) {
             console.error("Error fetching posts:", err);
@@ -25,45 +20,14 @@ const Homepage = () => {
         fetchPosts();
     }, []);
 
-    useEffect(() => {
-        fetchPosts();
-    }, [allPosts]);
-
-    const turnOnAllPosts = () => {
-        setAllPosts(true);
-    };
-
-    const turnOffAllPosts = () => {
-        setAllPosts(false);
-    };
-
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
             <SideBar />
             <div className="w-[80%] ml-[20%] min-h-[100vh] flex flex-col items-center overflow-y-auto">
-                <div className="h-10 flex flex-row justify-center items-center w-full py-5 mt-5">
-                    <div className="flex justify-between w-[20%]">
-                        <p
-                            className={
-                                allPosts
-                                    ? "hover:cursor-pointer hover:underline text-lg text-black dark:text-white font-bold"
-                                    : "hover:cursor-pointer hover:underline text-lg text-[#474645] dark:text-[#757574]"
-                            }
-                            onClick={turnOnAllPosts}
-                        >
-                            All Posts
-                        </p>
-                        <p
-                            className={
-                                !allPosts
-                                    ? "hover:cursor-pointer hover:underline text-lg text-black dark:text-white font-bold"
-                                    : "hover:cursor-pointer hover:underline text-lg text-[#474645] dark:text-[#757574]"
-                            }
-                            onClick={turnOffAllPosts}
-                        >
-                            My Following
-                        </p>
-                    </div>
+                <div className="h-10 flex flex-row justify-center items-center w-full py-7 mt-5">
+                    <h1 className="text-2xl font-bold dark:text-gray-100">
+                        Saved Posts
+                    </h1>
                 </div>
                 {posts.length > 0 ? (
                     posts.map((post) => (
@@ -83,7 +47,7 @@ const Homepage = () => {
                 ) : (
                     <div className="h-[90vh] flex items-center justify-center">
                         <h1 className="text-lg dark:text-gray-300 text-gray-800">
-                            No posts available
+                            No saved posts available
                         </h1>
                     </div>
                 )}
@@ -92,4 +56,4 @@ const Homepage = () => {
     );
 };
 
-export default Homepage;
+export default SavedPosts;

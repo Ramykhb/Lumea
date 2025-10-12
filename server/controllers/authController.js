@@ -59,6 +59,9 @@ export const checkStatus = (req, res) => {
 export const changePassword = async (req, res) => {
     const { username } = req.user;
     const { currentPass, newPass } = req.body;
+    if (!username || !currentPass || !newPass) {
+        res.status(400).json({ message: "Please fill out all fields" });
+    }
     try {
         const result = await updatePassword(username, currentPass, newPass);
         if (!result) {
@@ -98,7 +101,7 @@ export const login = async (req, res) => {
             accessToken: accessToken,
         });
     } else {
-        res.status(500).json({
+        return res.status(500).json({
             error: "ServerError",
             message: "Something went wrong",
         });

@@ -10,10 +10,12 @@ import {
     faHeart as faHeartSolid,
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import api from "../api/axios.js";
 
 const Post = (props) => {
     const [liked, setLiked] = useState(false);
-    const [saved, setSaved] = useState(false);
+    const [saved, setSaved] = useState(props.isSaved);
     const [firstDivHeight, setFirstDivHeight] = useState(0);
 
     const firstDivRef = useRef(null);
@@ -23,8 +25,21 @@ const Post = (props) => {
         setLiked(!liked);
     };
 
-    const handleSave = () => {
-        setSaved(!saved);
+    const handleSave = async () => {
+        try {
+            if (saved) {
+                const res = await api.delete("/posts/savePost", {
+                    data: { postId: props.id },
+                });
+            } else {
+                const res = await api.post("/posts/savePost", {
+                    postId: props.id,
+                });
+            }
+            setSaved((prev) => !prev);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleComment = () => {
@@ -58,15 +73,17 @@ const Post = (props) => {
     return (
         <div className="w-[60%] h-auto bg-primary-light dark:bg-primary-dark flex flex-row rounded-2xl border-gray-200 border-[1px] my-[2em] dark:border-border-dark">
             <div ref={firstDivRef} className="w-[50%] flex flex-col">
-                <div className="w-full  h-15 flex py-3 px-3 items-center justify-start">
-                    <img
-                        src={`http://localhost:3000${props.profileImage}`}
-                        className="w-7 h-auto rounded-full mr-3"
-                    />
-                    <p className="text-sm font-semibold dark:text-gray-100">
-                        {props.username}
-                    </p>
-                </div>
+                <Link to={`/profile/${props.username}`}>
+                    <div className="w-full  h-15 flex py-3 px-3 items-center justify-start">
+                        <img
+                            src={`http://localhost:3000${props.profileImage}`}
+                            className="w-7 h-auto rounded-full mr-3"
+                        />
+                        <p className="text-sm font-semibold dark:text-gray-100">
+                            {props.username}
+                        </p>
+                    </div>
+                </Link>
                 <img
                     src={`http://localhost:3000${props.postImage}`}
                     className="w-full h-auto"
