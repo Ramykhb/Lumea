@@ -50,6 +50,7 @@ export async function getID(username) {
 export async function getPassword(username) {
     try {
         const sql = "SELECT password FROM Users WHERE username = ?";
+        console.log("Running query:", sql, "with username:", username);
         const [result] = await pool.query(sql, [username]);
         if (result.length == 0) return null;
         return result[0].password;
@@ -64,6 +65,37 @@ export async function tokenExists(refreshToken) {
             "SELECT COUNT(*) AS count FROM Refresh_Tokens WHERE token = ?";
         const [result] = await pool.query(sql, [refreshToken]);
         return result[0].count > 0;
+    } catch (err) {
+        throw err;
+    }
+}
+
+export async function fetchProfile(username, loggedInUsername) {
+    const userID = await getID(loggedInUsername);
+    try {
+        const sql = `SELECT name, username, profileImage, isPublic, (SELECT COUNT(*) FROM Posts WHERE userId = Users.id) AS postCount, (SELECT COUNT(*) FROM Followed_By WHERE followingId = Users.id) AS followerCount, (SELECT COUNT(*) FROM Followed_By WHERE followerId = Users.id) AS followingCount, EXISTS (SELECT 1 FROM Followed_By WHERE followerId = ? AND followingId = Users.id) AS isFollowed FROM Users WHERE username = ?`;
+        const [result] = await pool.query(sql, [userID, username]);
+        if (result.length > 0) {
+            const newRes = {
+                ...result[0],
+                isMe: username === loggedInUsername,
+            };
+            return newRes;
+        }
+        throw new Error();
+    } catch (err) {
+        throw err;
+    }
+}
+
+export async function fetchProfiles(searchVal) {
+    try {
+        const sql = `SELECT id, username, profileImage FROM Users WHERE username LIKE ?`;
+        const [result] = await pool.query(sql, [`%${searchVal}%`]);
+        if (result.length > 0) {
+            return result;
+        }
+        throw new Error();
     } catch (err) {
         throw err;
     }
@@ -113,6 +145,16 @@ export const deleteRefreshTokenFromDB = async (refreshToken) => {
     try {
         const sql = "DELETE FROM Refresh_Tokens WHERE token = ?";
         const [result] = await pool.query(sql, [refreshToken]);
+    } catch (err) {
+        throw err;
+    }
+};
+
+export const deleteUser = async (username) => {
+    const userID = await getID(username);
+    try {
+        const sql = "DELETE FROM Users WHERE id = ?";
+        const [result] = await pool.query(sql, [userID]);
     } catch (err) {
         throw err;
     }

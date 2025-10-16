@@ -1,4 +1,4 @@
-import { getID } from "../services/authService.js";
+import { getID } from "../services/userService.js";
 import {
     addPost,
     retrieveAllPosts,
@@ -7,12 +7,28 @@ import {
     addSave,
     deleteSave,
     retrieveSaved,
+    deleteLike,
+    addLike,
+    retrieveUserPosts,
 } from "../services/postService.js";
 
 export const getAllPosts = async (req, res) => {
     const allPosts = req.query.allPosts;
     const { username } = req.user;
     const posts = await retrieveAllPosts(allPosts, username);
+    if (!posts) {
+        return res.status(400).json({
+            title: "Invalid Request",
+            message: "The request data is not valid. Please check your input.",
+        });
+    }
+    res.json(posts);
+};
+
+export const getUserPosts = async (req, res) => {
+    const user = req.params.username;
+    const username = req.user.username;
+    const posts = await retrieveUserPosts(user, username);
     if (!posts) {
         return res.status(400).json({
             title: "Invalid Request",
@@ -43,9 +59,27 @@ export const savePost = async (req, res) => {
     }
 };
 
+export const likePost = async (req, res) => {
+    try {
+        await addLike(req.user.username, req.body.postId);
+        return res.status(200).json({ success: true });
+    } catch (err) {
+        return res.status(500).json({ message: "Error performing action." });
+    }
+};
+
 export const unSavePost = async (req, res) => {
     try {
         await deleteSave(req.user.username, req.body.postId);
+        return res.status(200).json({ success: true });
+    } catch (err) {
+        return res.status(500).json({ message: "Error performing action." });
+    }
+};
+
+export const unLikePost = async (req, res) => {
+    try {
+        await deleteLike(req.user.username, req.body.postId);
         return res.status(200).json({ success: true });
     } catch (err) {
         return res.status(500).json({ message: "Error performing action." });

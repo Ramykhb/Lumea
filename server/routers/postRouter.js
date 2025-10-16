@@ -1,16 +1,19 @@
 import express from "express";
 import path from "path";
 import multer from "multer";
-import { authenticateToken } from "../middleware/authMiddleware.js";
+import { authenticateToken } from "../middleware/userMiddleware.js";
 import {
     createPost,
     getAllPosts,
     getComments,
     getSavedPosts,
+    likePost,
     postComment,
     savePost,
+    unLikePost,
     unSavePost,
     uploadImage,
+    getUserPosts,
 } from "../controllers/postController.js";
 
 const storage = multer.diskStorage({
@@ -31,6 +34,8 @@ postRouter.use(express.json());
 
 postRouter.get("/", authenticateToken, getAllPosts);
 
+postRouter.get("/getposts/:username", authenticateToken, getUserPosts);
+
 postRouter.get("/comments", authenticateToken, getComments);
 
 postRouter.get("/saved", authenticateToken, getSavedPosts);
@@ -38,6 +43,10 @@ postRouter.get("/saved", authenticateToken, getSavedPosts);
 postRouter.post("/savePost", authenticateToken, savePost);
 
 postRouter.delete("/savePost", authenticateToken, unSavePost);
+
+postRouter.post("/likePost", authenticateToken, likePost);
+
+postRouter.delete("/likePost", authenticateToken, unLikePost);
 
 postRouter.post("/comment", authenticateToken, postComment);
 

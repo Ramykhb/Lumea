@@ -1,12 +1,14 @@
 import {
     addUser,
     deleteRefreshTokenFromDB,
+    deleteUser,
     generateAccessToken,
     generateRefreshToken,
     insertToken,
     updatePassword,
-    usernameExists,
-} from "../services/authService.js";
+    fetchProfile,
+    fetchProfiles,
+} from "../services/userService.js";
 
 import jwt from "jsonwebtoken";
 
@@ -54,6 +56,31 @@ export const checkStatus = (req, res) => {
         if (err) return res.json({ loggedIn: false });
         res.json({ loggedIn: true });
     });
+};
+
+export const getProfile = async (req, res) => {
+    const username = req.params.username;
+
+    if (!username) return res.status(403).json({ message: "Invalid Request" });
+
+    try {
+        const profile = await fetchProfile(username, req.user.username);
+        return res.status(200).json(profile);
+    } catch (err) {
+        return res.status(403).json({ message: "Invalid Request" });
+    }
+};
+
+export const getProfiles = async (req, res) => {
+    const searchVal = req.query.searchVal;
+    if (!searchVal) return res.status(403).json({ message: "Invalid Request" });
+
+    try {
+        const profiles = await fetchProfiles(searchVal);
+        return res.status(200).json(profiles);
+    } catch (err) {
+        return res.status(403).json({ message: "Invalid Request" });
+    }
 };
 
 export const changePassword = async (req, res) => {
@@ -129,5 +156,23 @@ export const logout = async (req, res) => {
         res.status(200).json({ message: "Logged out successfully" });
     } catch (err) {
         res.status(500).json({ message: "Logout failed" });
+    }
+};
+
+export const accountDeletion = async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) return res.sendStatus(204);
+    try {
+        await deleteRefreshTokenFromDB(refreshToken);
+        await deleteUser(req.user.username);
+        res.cookie("refreshToken", "", {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            expires: new Date(0),
+        });
+        res.status(200).json({ message: "Account deleted successfully" });
+    } catch (err) {
+        res.status(500).json({ message: "Account deletion failed" });
     }
 };

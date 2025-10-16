@@ -1,3 +1,4 @@
+import ClickSpark from "./components/ClickSpark.jsx";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
@@ -10,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import CreatePost from "./pages/CreatePost.jsx";
 import Profile from "./pages/Profile.jsx";
 import SavedPosts from "./pages/SavedPosts.jsx";
+import Search from "./pages/Search.jsx";
 
 function App() {
     const [darkMode, setDarkMode] = useState(false);
@@ -42,7 +44,15 @@ function App() {
                     path="/"
                     element={
                         <ProtectedRoute>
-                            <Homepage />
+                            <ClickSpark
+                                sparkColor={darkMode ? "#fff" : "#000"}
+                                sparkSize={10}
+                                sparkRadius={15}
+                                sparkCount={8}
+                                duration={400}
+                            >
+                                <Homepage />
+                            </ClickSpark>
                         </ProtectedRoute>
                     }
                 />
@@ -50,17 +60,51 @@ function App() {
                     path="/saved"
                     element={
                         <ProtectedRoute>
-                            <SavedPosts />
+                            <ClickSpark
+                                sparkColor={darkMode ? "#fff" : "#000"}
+                                sparkSize={10}
+                                sparkRadius={15}
+                                sparkCount={8}
+                                duration={400}
+                            >
+                                <SavedPosts />
+                            </ClickSpark>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/search"
+                    element={
+                        <ProtectedRoute>
+                            <ClickSpark
+                                sparkColor={darkMode ? "#fff" : "#000"}
+                                sparkSize={10}
+                                sparkRadius={15}
+                                sparkCount={8}
+                                duration={400}
+                            >
+                                <Search />
+                            </ClickSpark>
                         </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/settings"
                     element={
-                        <Settings
-                            onToggleDarkMode={toggleDarkMode}
-                            darkModeOn={darkMode}
-                        />
+                        <ProtectedRoute>
+                            <ClickSpark
+                                sparkColor={darkMode ? "#fff" : "#000"}
+                                sparkSize={10}
+                                sparkRadius={15}
+                                sparkCount={8}
+                                duration={400}
+                            >
+                                <Settings
+                                    onToggleDarkMode={toggleDarkMode}
+                                    darkModeOn={darkMode}
+                                />
+                            </ClickSpark>
+                        </ProtectedRoute>
                     }
                 />
                 <Route path="/change-password" element={<ChangePassword />} />
@@ -73,7 +117,15 @@ function App() {
                     path="/create"
                     element={
                         <ProtectedRoute>
-                            <CreatePost />
+                            <ClickSpark
+                                sparkColor={darkMode ? "#fff" : "#000"}
+                                sparkSize={10}
+                                sparkRadius={15}
+                                sparkCount={8}
+                                duration={400}
+                            >
+                                <CreatePost />
+                            </ClickSpark>
                         </ProtectedRoute>
                     }
                 />
@@ -81,7 +133,15 @@ function App() {
                     path="/profile/:username"
                     element={
                         <ProtectedRoute>
-                            <Profile />
+                            <ClickSpark
+                                sparkColor={darkMode ? "#fff" : "#000"}
+                                sparkSize={10}
+                                sparkRadius={15}
+                                sparkCount={8}
+                                duration={400}
+                            >
+                                <Profile />
+                            </ClickSpark>
                         </ProtectedRoute>
                     }
                 />

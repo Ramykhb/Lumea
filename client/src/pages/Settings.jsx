@@ -1,21 +1,34 @@
 import { Link, useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import api from "../api/axios";
+import { useRef } from "react";
 
 const Settings = (props) => {
     const navigate = useNavigate();
+    const confimationRef = useRef(null);
+
     const handleLogout = async () => {
         try {
             const res = await api.post("/auth/logout");
-            localStorage.setItem("accessToken", "");
-            navigate("/login");
+            if (res.status === 200) {
+                localStorage.removeItem("accessToken");
+                navigate("/login");
+            }
         } catch (err) {
             console.log("Error logging out");
         }
     };
 
-    const handleDeleteAccount = () => {
-        return;
+    const handleDeleteAccount = async () => {
+        try {
+            const res = await api.delete("/auth/deleteAccount");
+            if (res.status === 200) {
+                localStorage.removeItem("accessToken");
+                navigate("/login");
+            }
+        } catch (err) {
+            console.log("Error deleting account");
+        }
     };
 
     return (
@@ -58,9 +71,35 @@ const Settings = (props) => {
                     </div>
                     <div
                         className="text-red-500 w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-md h-[2.5em] my-2 hover:bg-[#dfdfe0] hover:cursor-pointer dark:hover:bg-[#2c2c2c]"
-                        onClick={handleDeleteAccount}
+                        onClick={() => {
+                            confimationRef.current.style.display = "flex";
+                        }}
                     >
                         <p className="font-bold">Delete Account</p>
+                    </div>
+                </div>
+            </div>
+            <div
+                ref={confimationRef}
+                className="w-[80%] h-[100vh] ml-[20%] hidden flex-col items-center overflow-y-auto justify-center backdrop-blur-md bg-white/30 p-4 rounded-lg absolute top-0 left-0"
+            >
+                <div className="w-[350px] py-7 dark:bg-primary-dark bg-primary-light dark:border-border-dark rounded-2xl border-gray-300 border-[1px] flex-col flex items-center">
+                    <p className="text-1xl font-bold text-black dark:text-white mb-7 w-full text-center">
+                        Are you sure?
+                    </p>
+                    <div
+                        className="text-black w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-md h-[2.5em] my-2 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]"
+                        onClick={() => {
+                            confimationRef.current.style.display = "none";
+                        }}
+                    >
+                        <p className="font-bold">No</p>
+                    </div>
+                    <div
+                        className="text-red-500 w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-md h-[2.5em] my-2 hover:bg-[#dfdfe0] hover:cursor-pointer dark:hover:bg-[#2c2c2c]"
+                        onClick={handleDeleteAccount}
+                    >
+                        <p className="font-bold">Yes</p>
                     </div>
                 </div>
             </div>

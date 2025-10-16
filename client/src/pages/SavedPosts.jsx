@@ -5,15 +5,19 @@ import SideBar from "../components/SideBar";
 import React from "react";
 
 const SavedPosts = () => {
-    const [posts, setposts] = useState([]);
+    const [posts, setPosts] = useState([]);
 
     const fetchPosts = async () => {
         try {
             const res = await api.get("/posts/saved");
-            setposts(res.data);
+            setPosts(res.data);
         } catch (err) {
             console.error("Error fetching posts:", err);
         }
+    };
+
+    const filterPosts = (ID) => {
+        setPosts(posts.filter((post) => post.id !== ID));
     };
 
     useEffect(() => {
@@ -39,7 +43,10 @@ const SavedPosts = () => {
                                 username={post.username}
                                 postImage={post.postImage}
                                 profileImage={post.profileImage}
+                                likes={post.likes}
+                                isLiked={post.isLiked}
                                 isSaved={post.isSaved}
+                                onFilter={filterPosts}
                             />
                             <hr className="w-[50%] border-t-1 border-gray-400 dark:border-border-dark" />
                         </React.Fragment>

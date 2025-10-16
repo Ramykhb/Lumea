@@ -3,6 +3,7 @@ import Post from "../components/Post";
 import api from "../api/axios";
 import SideBar from "../components/SideBar";
 import React from "react";
+import ClickSpark from "@/components/ClickSpark";
 
 const Homepage = () => {
     const [posts, setposts] = useState([]);
@@ -15,7 +16,11 @@ const Homepage = () => {
                     allPosts: allPosts,
                 },
             });
-            setposts(res.data);
+            setposts(
+                res.data.filter((post) => {
+                    return post.isFollowed || post.isPublic;
+                })
+            );
         } catch (err) {
             console.error("Error fetching posts:", err);
         }
@@ -75,6 +80,8 @@ const Homepage = () => {
                                 username={post.username}
                                 postImage={post.postImage}
                                 profileImage={post.profileImage}
+                                likes={post.likes}
+                                isLiked={post.isLiked}
                                 isSaved={post.isSaved}
                             />
                             <hr className="w-[50%] border-t-1 border-gray-400 dark:border-border-dark" />
@@ -87,6 +94,15 @@ const Homepage = () => {
                         </h1>
                     </div>
                 )}
+                <ClickSpark
+                    sparkColor="#000"
+                    sparkSize={10}
+                    sparkRadius={15}
+                    sparkCount={8}
+                    duration={400}
+                >
+                    <div>TEST</div>
+                </ClickSpark>
             </div>
         </div>
     );

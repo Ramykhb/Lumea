@@ -3,7 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
-import authRouter from "./routers/authRouter.js";
+import userRouter from "./routers/userRouter.js";
 import cookieParser from "cookie-parser";
 import postRouter from "./routers/postRouter.js";
 
@@ -28,7 +28,7 @@ const __dirname = path.dirname(__filename);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/auth", userRouter);
 app.use("/api/v1/posts", postRouter);
 
 app.listen(port, () => {

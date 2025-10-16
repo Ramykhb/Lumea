@@ -16,14 +16,29 @@ import api from "../api/axios.js";
 const Post = (props) => {
     const [liked, setLiked] = useState(false);
     const [likes, setLikes] = useState(0);
-    const [saved, setSaved] = useState(props.isSaved);
+    const [saved, setSaved] = useState(false);
     const [firstDivHeight, setFirstDivHeight] = useState(0);
 
     const firstDivRef = useRef(null);
     const commentInput = useRef(null);
 
-    const handleLike = () => {
-        setLiked(!liked);
+    const handleLike = async () => {
+        try {
+            if (liked) {
+                const res = await api.delete("/posts/likePost", {
+                    data: { postId: props.id },
+                });
+                setLikes(likes - 1);
+            } else {
+                const res = await api.post("/posts/likePost", {
+                    postId: props.id,
+                });
+                setLikes(likes + 1);
+            }
+            setLiked((prev) => !prev);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleSave = async () => {
@@ -38,6 +53,9 @@ const Post = (props) => {
                 });
             }
             setSaved((prev) => !prev);
+            if (props.onFilter) {
+                props.onFilter(props.id);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -52,6 +70,10 @@ const Post = (props) => {
     useEffect(() => {
         const el = firstDivRef.current;
         if (!el) return;
+
+        setLikes(props.likes);
+        setLiked(props.isLiked);
+        setSaved(props.isSaved);
 
         const setHeight = () => setFirstDivHeight(el.offsetHeight);
 

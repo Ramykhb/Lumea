@@ -5,7 +5,7 @@ import {
     tokenExists,
     usernameExists,
     verifyPassword,
-} from "../services/authService.js";
+} from "../services/userService.js";
 
 export const checkSignup = async (req, res, next) => {
     const { username, email, name, password } = req.body;
@@ -22,7 +22,7 @@ export const checkSignup = async (req, res, next) => {
                 message: "The username is already taken...",
             });
         }
-        const emailFound = await emailExists(req.body.email());
+        const emailFound = await emailExists(req.body.email);
         if (emailFound) {
             return res.status(400).json({
                 error: "EmailAlreadyUsed",
