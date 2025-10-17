@@ -66,7 +66,7 @@ const Profile = (props) => {
                         </div>
                     </div>
                     <div className="w-[60%] h-full flex flex-col py-10">
-                        <div className="flex mb-10 justify-between">
+                        <div className="flex mb-2 justify-between">
                             <h2 className="text-xl dark:text-gray-100">
                                 {profile.username}
                             </h2>
@@ -94,7 +94,10 @@ const Profile = (props) => {
                                 <></>
                             )}
                         </div>
-                        <div className="flex mb-10">
+                        <h2 className="text-sm font-bold dark:text-gray-100 mb-5">
+                            {profile.name}
+                        </h2>
+                        <div className="flex mb-5">
                             <h2 className="text-lg mr-5 text-gray-600 dark:text-gray-400">
                                 <span className="font-bold text-black dark:text-gray-100">
                                     {profile.postCount}{" "}
@@ -114,7 +117,7 @@ const Profile = (props) => {
                                 following
                             </h2>
                         </div>
-                        <h2 className="text-lg font-bold dark:text-gray-100">
+                        <h2 className="text-xs dark:text-gray-100">
                             {profile.bio}
                         </h2>
                     </div>

@@ -36,7 +36,7 @@ const Search = (props) => {
                 </p>
                 <input
                     placeholder="Enter username"
-                    className="w-[60%] rounded-xl text-center my-[2em] h-10 bg-[#ededed] dark:bg-[#353535] focus:border-none focus:outline-none dark:placeholder:text-gray-100"
+                    className="w-[60%] rounded-xl text-center my-[2em] h-10 bg-[#ededed] dark:bg-[#353535] focus:border-none focus:outline-none dark:placeholder-gray-100 dark:text-gray-100"
                     value={searchVal}
                     onChange={(event) => {
                         setSearchVal(event.target.value);
@@ -65,7 +65,7 @@ const Search = (props) => {
                 ) : (
                     <div className="h-[60vh] flex items-center justify-center">
                         <h1 className="text-lg dark:text-gray-300 text-gray-800">
-                            {searchVal ? "User not found" : ""}
+                            {searchVal ? "No users found." : ""}
                         </h1>
                     </div>
                 )}

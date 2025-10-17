@@ -64,7 +64,6 @@ const EditProfile = (props) => {
     }, [file]);
 
     const handleSaveChanges = async () => {
-        console.log("HERE");
         try {
             const res = await api.put("/auth/editProfile", {
                 name: name,
@@ -117,11 +116,7 @@ const EditProfile = (props) => {
                                 htmlFor="fileUpload"
                                 className="w-[25vh] h-[25vh] border-2 border-dashed border-gray-400 rounded-full bg-cover bg-center flex items-center justify-center cursor-pointer hover:border-gray-500 hover:bg-gray-100/20 transition relative bg-gray-200 mx-auto"
                                 style={{
-                                    backgroundImage: !filePath.includes(
-                                        "avatar"
-                                    )
-                                        ? `url(http://localhost:3000${filePath})`
-                                        : `url(${filePath})`,
+                                    backgroundImage: `url(http://localhost:3000${filePath})`,
                                 }}
                             />
                         </div>
