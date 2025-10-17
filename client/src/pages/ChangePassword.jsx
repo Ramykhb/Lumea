@@ -3,7 +3,7 @@ import SideBar from "../components/SideBar";
 import { useState } from "react";
 import api from "../api/axios";
 
-const ChangePassword = () => {
+const ChangePassword = (props) => {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
@@ -55,7 +55,7 @@ const ChangePassword = () => {
 
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
-            <SideBar />
+            <SideBar onUser={props.onUser} username={props.username} />
             <div className="w-[80%] h-[100vh] ml-[20%] flex flex-col items-center overflow-y-auto justify-center">
                 <form className="w-[40%] flex flex-col border-gray-300 border-solid border-[1px] py-6 px-8 rounded-xl dark:border-border-dark">
                     <h2 className="text-3xl mb-4 dark:text-white">

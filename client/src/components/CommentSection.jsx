@@ -1,5 +1,8 @@
 import { forwardRef, useEffect, useState } from "react";
 import api from "../api/axios";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { comment } from "postcss";
 
 const CommentSection = forwardRef((props, ref) => {
     const [comments, setComments] = useState([]);
@@ -32,6 +35,17 @@ const CommentSection = forwardRef((props, ref) => {
             setPostButton("text-md text-blue-200 dark:text-blue-200");
         } else {
             setPostButton("hover:cursor-pointer text-md text-blue-600");
+        }
+    };
+
+    const handleCommentDeletion = async (id) => {
+        try {
+            const res = await api.delete("/posts/deleteComment", {
+                data: { commentId: id },
+            });
+            setComments(comments.filter((comment) => comment.id !== id));
+        } catch (err) {
+            console.log(err);
         }
     };
 
@@ -71,12 +85,12 @@ const CommentSection = forwardRef((props, ref) => {
                     </p>
                 </div>
                 {comments.length > 0 ? (
-                    comments.map((comment, i) => (
+                    comments.map((comment) => (
                         <div key={comment.id}>
                             <div className="w-[100%] px-6 py-2 flex dark:text-gray-300 h-auto">
                                 <img
                                     src={`http://localhost:3000${comment.profileImage}`}
-                                    className="w-[40px] rounded-full mr-5"
+                                    className="w-[40px] h-[40px] my-auto rounded-full mr-5"
                                 />
                                 <div>
                                     <p className="text-xs">
@@ -100,6 +114,21 @@ const CommentSection = forwardRef((props, ref) => {
                                         }
                                     </p>
                                 </div>
+                                {comment.isMe ? (
+                                    <div className="ml-auto flex items-center">
+                                        <FontAwesomeIcon
+                                            icon={faTrash}
+                                            className="text-red-500 hover:cursor-pointer"
+                                            onClick={() =>
+                                                handleCommentDeletion(
+                                                    comment.id
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
                             </div>
                             <hr className="w-[70%] ml-[15%] border-t-1 border-gray-200 dark:border-border-dark" />
                         </div>

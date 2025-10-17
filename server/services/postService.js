@@ -9,7 +9,7 @@ export const retrieveAllPosts = async (allPosts, username) => {
             "SELECT Posts.*, Users.username, Users.profileImage, Users.isPublic, EXISTS (SELECT 1 FROM Liked_By WHERE Liked_By.postId = Posts.id AND Liked_By.userId = ?) AS isLiked, EXISTS (SELECT 1 FROM Saved_By WHERE Saved_By.postId = Posts.id AND Saved_By.userId = ?) AS isSaved, (SELECT COUNT(*) FROM Liked_By WHERE Liked_By.postId = Posts.id) as likes, EXISTS (SELECT 1 FROM Followed_By WHERE followerId = ? AND followingId = Users.id) AS isFollowed FROM Posts JOIN Users ON Users.id = Posts.userId ORDER BY postedAt DESC";
     } else {
         sql =
-            "SELECT Posts.*, Users.username, Users.profileImage, Users.isPublic, EXISTS (SELECT 1 FROM Liked_By WHERE Liked_By.postId = Posts.id AND Liked_By.userId = ?) AS isLiked, EXISTS (SELECT 1 FROM Saved_By WHERE Saved_By.postId = Posts.id AND Saved_By.userId = ?) AS isSaved, (SELECT COUNT(*) FROM Liked_By WHERE Liked_By.postId = Posts.id) as likes FROM Posts JOIN Users ON Users.id = Posts.userId WHERE Posts.userId IN (SELECT followingId FROM Followed_by WHERE followerId = ?) ORDER BY postedAt DESC";
+            "SELECT Posts.*, Users.username, Users.profileImage, Users.isPublic, EXISTS (SELECT 1 FROM Liked_By WHERE Liked_By.postId = Posts.id AND Liked_By.userId = ?) AS isLiked, EXISTS (SELECT 1 FROM Saved_By WHERE Saved_By.postId = Posts.id AND Saved_By.userId = ?) AS isSaved, (SELECT COUNT(*) FROM Liked_By WHERE Liked_By.postId = Posts.id) as likes, 1 as isFollowed FROM Posts JOIN Users ON Users.id = Posts.userId WHERE Posts.userId IN (SELECT followingId FROM Followed_by WHERE followerId = ?) ORDER BY postedAt DESC";
     }
     try {
         const [result] = await pool.query(sql, [userID, userID, userID]);
@@ -44,11 +44,12 @@ export const retrieveSaved = async (username) => {
     }
 };
 
-export const retrieveComments = async (postId) => {
+export const retrieveComments = async (postId, username) => {
+    const userID = await getID(username);
     try {
         const sql =
-            "SELECT Commented_By.*, Users.username AS posted_by, Users.profileImage AS profileImage FROM Commented_By JOIN Users ON Users.id = Commented_By.userId WHERE postId = ? ORDER BY commentedAt DESC";
-        const [result] = await pool.query(sql, [postId]);
+            "SELECT Commented_By.*, Users.username AS posted_by, Users.profileImage AS profileImage, IF(Commented_By.userId = ?, 1, 0) AS isMe FROM Commented_By JOIN Users ON Users.id = Commented_By.userId WHERE postId = ? ORDER BY commentedAt DESC";
+        const [result] = await pool.query(sql, [userID, postId]);
         return result;
     } catch (err) {
         console.error("Error Querying Database:", err);
@@ -92,6 +93,46 @@ export const deleteLike = async (username, postId) => {
         const userID = await getID(username);
         const sql = "DELETE FROM Liked_By WHERE postId = ? AND userId = ?";
         const [result] = await pool.query(sql, [postId, userID]);
+    } catch (err) {
+        throw err;
+    }
+};
+
+export const deleteComment = async (commentId) => {
+    try {
+        const sql = "DELETE FROM Commented_By WHERE id = ?";
+        const [result] = await pool.query(sql, [commentId]);
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+};
+
+export const deletePost = async (postId) => {
+    try {
+        const sql = "DELETE FROM Posts WHERE id = ?";
+        const [result] = await pool.query(sql, [postId]);
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+};
+
+export const getCommentAuthor = async (commentId) => {
+    try {
+        const sql = "SELECT userId FROM Commented_By WHERE id = ?";
+        const [result] = await pool.query(sql, [commentId]);
+        return result;
+    } catch (err) {
+        throw err;
+    }
+};
+
+export const getPostAuthor = async (postId) => {
+    try {
+        const sql = "SELECT userId FROM Posts WHERE id = ?";
+        const [result] = await pool.query(sql, [postId]);
+        return result;
     } catch (err) {
         throw err;
     }

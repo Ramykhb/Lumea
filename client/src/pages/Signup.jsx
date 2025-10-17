@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import AuthForm from "../components/AuthForm";
 
-const Signup = () => {
+const Signup = (props) => {
     return (
         <div className="w-full h-[100vh] flex justify-center items-center h-f bg-primary-light dark:bg-primary-dark">
             <div className="w-[25%]">
@@ -17,7 +17,7 @@ const Signup = () => {
                         alt="Logo"
                     />
                 </Link>
-                <AuthForm method="signup" />
+                <AuthForm method="signup" onAuth={props.onAuth} />
             </div>
         </div>
     );

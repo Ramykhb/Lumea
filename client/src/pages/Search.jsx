@@ -3,7 +3,7 @@ import SideBar from "../components/SideBar";
 import api from "../api/axios";
 import { Link } from "react-router-dom";
 
-const Search = () => {
+const Search = (props) => {
     const [searchVal, setSearchVal] = useState("");
     const [profiles, setProfiles] = useState([]);
 
@@ -29,14 +29,14 @@ const Search = () => {
 
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
-            <SideBar />
+            <SideBar onUser={props.onUser} username={props.username} />
             <div className="w-[80%] ml-[20%] min-h-[100vh] flex flex-col items-center overflow-y-auto">
                 <p className="mt-10 text-3xl font-bold dark:text-gray-100">
                     Search
                 </p>
                 <input
                     placeholder="Enter username"
-                    className="w-[60%] rounded-xl text-center my-[2em] h-10 bg-[#ededed] dark:bg-gray-600 focus:border-none focus:outline-none dark:placeholder:text-gray-100"
+                    className="w-[60%] rounded-xl text-center my-[2em] h-10 bg-[#ededed] dark:bg-[#353535] focus:border-none focus:outline-none dark:placeholder:text-gray-100"
                     value={searchVal}
                     onChange={(event) => {
                         setSearchVal(event.target.value);

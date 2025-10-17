@@ -8,6 +8,7 @@ import {
 import {
     faBookmark as faBookmarkSolid,
     faHeart as faHeartSolid,
+    faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
@@ -96,8 +97,8 @@ const Post = (props) => {
     return (
         <div className="w-[60%] h-auto bg-primary-light dark:bg-primary-dark flex flex-row rounded-2xl border-gray-200 border-[1px] my-[2em] dark:border-border-dark">
             <div ref={firstDivRef} className="w-[50%] flex flex-col">
-                <Link to={`/profile/${props.username}`}>
-                    <div className="w-full  h-15 flex py-3 px-3 items-center justify-start">
+                <Link to={`/profile/${props.username}`} className="w-[25%]">
+                    <div className="w-[50%] h-15 flex py-3 px-3 items-center justify-start">
                         <img
                             src={`http://localhost:3000${props.profileImage}`}
                             className="w-7 h-auto rounded-full mr-3"
@@ -151,11 +152,26 @@ const Post = (props) => {
                     <p className="text-xs dark:text-gray-100">
                         {props.caption}
                     </p>
-                    <p className="text-[0.65rem] text-gray-400 mt-3 dark:text-gray-500">
-                        {props.postedAt.split("T")[0]} at{" "}
-                        {props.postedAt.split("T")[1].split(":")[0]}:
-                        {props.postedAt.split("T")[1].split(":")[1]}
-                    </p>
+                    {props.isMe ? (
+                        <div className="ml-auto flex mt-3 items-center justify-between">
+                            <p className="text-[0.65rem] text-gray-400 dark:text-gray-500">
+                                {props.postedAt.split("T")[0]} at{" "}
+                                {props.postedAt.split("T")[1].split(":")[0]}:
+                                {props.postedAt.split("T")[1].split(":")[1]}
+                            </p>
+                            <FontAwesomeIcon
+                                icon={faTrash}
+                                className="text-red-500 mr-3 mb-2 hover:cursor-pointer"
+                                onClick={() => props.onPostDeletion(props.id)}
+                            />
+                        </div>
+                    ) : (
+                        <p className="text-[0.65rem] text-gray-400 mt-3 dark:text-gray-500">
+                            {props.postedAt.split("T")[0]} at{" "}
+                            {props.postedAt.split("T")[1].split(":")[0]}:
+                            {props.postedAt.split("T")[1].split(":")[1]}
+                        </p>
+                    )}
                 </div>
             </div>
             <CommentSection

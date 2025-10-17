@@ -7,6 +7,7 @@ import {
     insertToken,
     updatePassword,
     fetchProfile,
+    editUser,
     fetchProfiles,
 } from "../services/userService.js";
 
@@ -58,6 +59,18 @@ export const checkStatus = (req, res) => {
     });
 };
 
+export const editProfile = async (req, res) => {
+    const { username } = req.user;
+    try {
+        await editUser(req.body, username);
+        return res
+            .status(200)
+            .json({ message: "Profile updated successfully" });
+    } catch (err) {
+        return res.status(500).json({ message: "Unable to update profile" });
+    }
+};
+
 export const getProfile = async (req, res) => {
     const username = req.params.username;
 
@@ -81,6 +94,10 @@ export const getProfiles = async (req, res) => {
     } catch (err) {
         return res.status(403).json({ message: "Invalid Request" });
     }
+};
+
+export const getUser = async (req, res) => {
+    return res.status(200).json({ username: req.user.username });
 };
 
 export const changePassword = async (req, res) => {

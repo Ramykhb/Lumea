@@ -4,7 +4,7 @@ import api from "../api/axios";
 import SideBar from "../components/SideBar";
 import React from "react";
 
-const SavedPosts = () => {
+const SavedPosts = (props) => {
     const [posts, setPosts] = useState([]);
 
     const fetchPosts = async () => {
@@ -26,7 +26,7 @@ const SavedPosts = () => {
 
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
-            <SideBar />
+            <SideBar onUser={props.onUser} username={props.username} />
             <div className="w-[80%] ml-[20%] min-h-[100vh] flex flex-col items-center overflow-y-auto">
                 <div className="h-[14vh] flex flex-row justify-center items-center w-full">
                     <h1 className="text-2xl font-bold dark:text-gray-100">

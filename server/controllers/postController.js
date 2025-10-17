@@ -9,7 +9,9 @@ import {
     retrieveSaved,
     deleteLike,
     addLike,
+    deleteComment,
     retrieveUserPosts,
+    deletePost,
 } from "../services/postService.js";
 
 export const getAllPosts = async (req, res) => {
@@ -86,15 +88,34 @@ export const unLikePost = async (req, res) => {
     }
 };
 
+export const commentDeletion = async (req, res) => {
+    try {
+        await deleteComment(req.body.commentId);
+        return res.status(200).json({ success: true });
+    } catch (err) {
+        return res.status(500).json({ message: "Error performing action." });
+    }
+};
+
+export const postDeletion = async (req, res) => {
+    try {
+        await deletePost(req.body.postId);
+        return res.status(200).json({ success: true });
+    } catch (err) {
+        return res.status(500).json({ message: "Error performing action." });
+    }
+};
+
 export const getComments = async (req, res) => {
     const postId = req.query.postId;
+    const username = req.user.username;
     if (!postId) {
         return res.status(400).json({
             title: "Invalid Request",
             message: "The request data is not valid. Please check your input.",
         });
     }
-    const comments = await retrieveComments(postId);
+    const comments = await retrieveComments(postId, username);
     if (!comments) {
         return res.status(400).json({
             title: "Invalid Request",
@@ -149,6 +170,7 @@ export const postComment = async (req, res) => {
                 posted_by: username,
                 content: content,
                 commentedAt: dateNow,
+                isMe: true,
             },
         });
     } catch (err) {

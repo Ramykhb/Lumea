@@ -3,9 +3,8 @@ import Post from "../components/Post";
 import api from "../api/axios";
 import SideBar from "../components/SideBar";
 import React from "react";
-import ClickSpark from "@/components/ClickSpark";
 
-const Homepage = () => {
+const Homepage = (props) => {
     const [posts, setposts] = useState([]);
     const [allPosts, setAllPosts] = useState(true);
 
@@ -18,7 +17,11 @@ const Homepage = () => {
             });
             setposts(
                 res.data.filter((post) => {
-                    return post.isFollowed || post.isPublic;
+                    return (
+                        post.isFollowed ||
+                        post.isPublic ||
+                        post.username === props.username
+                    );
                 })
             );
         } catch (err) {
@@ -29,6 +32,10 @@ const Homepage = () => {
     useEffect(() => {
         fetchPosts();
     }, []);
+
+    useEffect(() => {
+        fetchPosts();
+    }, [props.username]);
 
     useEffect(() => {
         fetchPosts();
@@ -44,7 +51,7 @@ const Homepage = () => {
 
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
-            <SideBar />
+            <SideBar onUser={props.onUser} username={props.username} />
             <div className="w-[80%] ml-[20%] min-h-[100vh] flex flex-col items-center overflow-y-auto">
                 <div className="h-10 flex flex-row justify-center items-center w-full py-5 mt-5">
                     <div className="flex justify-between w-[20%]">
@@ -94,15 +101,6 @@ const Homepage = () => {
                         </h1>
                     </div>
                 )}
-                <ClickSpark
-                    sparkColor="#000"
-                    sparkSize={10}
-                    sparkRadius={15}
-                    sparkCount={8}
-                    duration={400}
-                >
-                    <div>TEST</div>
-                </ClickSpark>
             </div>
         </div>
     );

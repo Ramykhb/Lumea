@@ -14,7 +14,13 @@ import {
     unSavePost,
     uploadImage,
     getUserPosts,
+    commentDeletion,
+    postDeletion,
 } from "../controllers/postController.js";
+import {
+    commentDeletionMiddleware,
+    postDeletionMiddleware,
+} from "../middleware/postMiddleware.js";
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -49,6 +55,20 @@ postRouter.post("/likePost", authenticateToken, likePost);
 postRouter.delete("/likePost", authenticateToken, unLikePost);
 
 postRouter.post("/comment", authenticateToken, postComment);
+
+postRouter.delete(
+    "/deleteComment",
+    authenticateToken,
+    commentDeletionMiddleware,
+    commentDeletion
+);
+
+postRouter.delete(
+    "/deletePost",
+    authenticateToken,
+    postDeletionMiddleware,
+    postDeletion
+);
 
 postRouter.post(
     "/upload",

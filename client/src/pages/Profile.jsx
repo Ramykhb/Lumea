@@ -5,12 +5,23 @@ import Post from "../components/Post";
 import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
 
-const Profile = () => {
+const Profile = (props) => {
     const { username } = useParams();
     const [posts, setPosts] = useState([]);
     const [profile, setProfile] = useState({});
     const [followerCount, setFollowerCount] = useState();
     const navigate = useNavigate();
+
+    const handlePostDeletion = async (id) => {
+        try {
+            const res = await api.delete("/posts/deletePost", {
+                data: { postId: id },
+            });
+            setPosts(posts.filter((post) => post.id !== id));
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -28,24 +39,20 @@ const Profile = () => {
         const fetchPosts = async () => {
             try {
                 const res = await api.get(`/posts/getposts/${username}`);
-                console.log(res.data);
                 setPosts(res.data);
             } catch (err) {
                 console.log(err);
             }
         };
         setFollowerCount(profile.followerCount);
-        if (profile.isMe) {
-            navigate("/profile");
-        }
-        if (profile.isPublic || profile.isFollowed) {
+        if (profile.isPublic || profile.isFollowed || profile.isMe) {
             fetchPosts();
         }
     }, [profile]);
 
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
-            <SideBar />
+            <SideBar onUser={props.onUser} username={props.username} />
             <div className="w-[80%] ml-[20%] min-h-[100vh] flex flex-col items-center overflow-y-auto">
                 <div className="h-auto w-[60%] flex">
                     <div className="w-[40%] h-full flex items-center">
@@ -63,7 +70,17 @@ const Profile = () => {
                             <h2 className="text-xl dark:text-gray-100">
                                 {profile.username}
                             </h2>
-                            {profile.isPublic || profile.isFollowed ? (
+
+                            {profile.isMe ? (
+                                <button
+                                    className=" w-24 h-8 rounded-md bg-yellow-400 text-sm hover:bg-yellow-500 mr-20"
+                                    onClick={() => {
+                                        navigate("/editProfile");
+                                    }}
+                                >
+                                    Edit Profile
+                                </button>
+                            ) : profile.isPublic || profile.isFollowed ? (
                                 profile.isFollowed ? (
                                     <button className="w-16 h-8 rounded-md bg-yellow-400 text-sm hover:bg-yellow-500 mr-20">
                                         Unfollow
@@ -98,7 +115,7 @@ const Profile = () => {
                             </h2>
                         </div>
                         <h2 className="text-lg font-bold dark:text-gray-100">
-                            {profile.name}
+                            {profile.bio}
                         </h2>
                     </div>
                 </div>
@@ -121,6 +138,8 @@ const Profile = () => {
                                 likes={post.likes}
                                 isLiked={post.isLiked}
                                 isSaved={post.isSaved}
+                                isMe={profile.isMe}
+                                onPostDeletion={handlePostDeletion}
                             />
                             <hr className="w-[50%] border-t-1 border-gray-400 dark:border-border-dark" />
                         </React.Fragment>
@@ -128,7 +147,7 @@ const Profile = () => {
                 ) : (
                     <div className="h-[50vh] flex items-center justify-center">
                         <h1 className="text-lg dark:text-gray-300 text-gray-800">
-                            {profile.isPublic
+                            {profile.isPublic || profile.isMe
                                 ? "No posts available."
                                 : "The following profile is private."}
                         </h1>

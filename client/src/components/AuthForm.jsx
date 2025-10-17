@@ -58,7 +58,7 @@ const AuthForm = (props) => {
         setEmailError("");
         setPasswordError("");
         if (props.method === "signup") {
-            if (!email || !username || !password || !confirm || !name) {
+            if (!email || !username || !password || !confirm) {
                 setPasswordError("Please fill out all the required data...");
                 return;
             }
@@ -87,7 +87,8 @@ const AuthForm = (props) => {
                 });
                 const { accessToken } = res.data;
                 localStorage.setItem("accessToken", accessToken);
-                navigate("/");
+                props.onAuth(username);
+                navigate("/editProfile");
             } catch (err) {
                 if (err.response) {
                     const { error, message } = err.response.data;
@@ -112,6 +113,7 @@ const AuthForm = (props) => {
                     password: password,
                 });
                 localStorage.setItem("accessToken", res.data.accessToken);
+                props.onAuth(username);
                 navigate("/");
             } catch (err) {
                 if (err.response) {

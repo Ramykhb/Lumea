@@ -10,8 +10,24 @@ import {
     faPlus,
     faGear,
 } from "@fortawesome/free-solid-svg-icons";
+import { useEffect } from "react";
+import api from "@/api/axios";
 
-const SideBar = () => {
+const SideBar = (props) => {
+    useEffect(() => {
+        const getUser = async () => {
+            if (!props.username) {
+                try {
+                    const res = await api.get("/auth/user");
+                    props.onUser(res.data.username);
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        };
+        getUser();
+    }, []);
+
     return (
         <div className="h-[100vh] fixed left-0 top-0 w-[20%] bg-primary-light py-2 flex flex-col justify-between border-r-[1px] border-gray-300 dark:bg-primary-dark dark:border-border-dark">
             <div className="w-full h-auto">
@@ -69,7 +85,7 @@ const SideBar = () => {
                     </div>
                 </Link>
 
-                <Link to={"/"}>
+                <Link to={`/profile/${props.username}`}>
                     <div className="text-black w-[90%] mx-[5%] rounded-xl flex items-center justify-start px-2 text-xl h-[2.5em] my-7 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]">
                         <FontAwesomeIcon
                             icon={faUser}
