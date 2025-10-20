@@ -12,6 +12,7 @@ import {
     deleteComment,
     retrieveUserPosts,
     deletePost,
+    retrieveLikes,
 } from "../services/postService.js";
 
 export const getAllPosts = async (req, res) => {
@@ -122,7 +123,25 @@ export const getComments = async (req, res) => {
             message: "The request data is not valid. Please check your input.",
         });
     }
-    res.status(200).json(comments);
+    return res.status(200).json(comments);
+};
+
+export const getLikes = async (req, res) => {
+    const postId = req.query.postId;
+    if (!postId) {
+        return res.status(400).json({
+            title: "Invalid Request",
+            message: "The request data is not valid. Please check your input.",
+        });
+    }
+    const likes = await retrieveLikes(postId);
+    if (!likes) {
+        return res.status(400).json({
+            title: "Invalid Request",
+            message: "The request data is not valid. Please check your input.",
+        });
+    }
+    return res.status(200).json(likes);
 };
 
 export const uploadImage = async (req, res) => {

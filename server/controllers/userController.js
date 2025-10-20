@@ -9,6 +9,10 @@ import {
     fetchProfile,
     editUser,
     fetchProfiles,
+    unfollowUser,
+    followUser,
+    retrieveFollowers,
+    retrieveFollowing,
 } from "../services/userService.js";
 
 import jwt from "jsonwebtoken";
@@ -68,6 +72,68 @@ export const editProfile = async (req, res) => {
             .json({ message: "Profile updated successfully" });
     } catch (err) {
         return res.status(500).json({ message: "Unable to update profile" });
+    }
+};
+
+export const followProfile = async (req, res) => {
+    const myUsername = req.user.username;
+    const profileUsername = req.body.username;
+    if (!profileUsername || myUsername === profileUsername) {
+        return res.status(403).json({ message: "Invalid Request." });
+    }
+    try {
+        await followUser(myUsername, profileUsername);
+        return res
+            .status(200)
+            .json({ message: "Profile followed successfully" });
+    } catch (err) {
+        return res.status(500).json({ message: "Unable to follow profile" });
+    }
+};
+
+export const getFollowers = async (req, res) => {
+    const profileUsername = req.query.username;
+    if (!profileUsername) {
+        return res.status(403).json({ message: "Invalid Request." });
+    }
+    try {
+        let followers = await retrieveFollowers(profileUsername);
+        return res.status(200).json(followers);
+    } catch (err) {
+        return res
+            .status(500)
+            .json({ message: "Unable to retrieve followers." });
+    }
+};
+
+export const getFollowing = async (req, res) => {
+    const profileUsername = req.query.username;
+    if (!profileUsername) {
+        return res.status(403).json({ message: "Invalid Request." });
+    }
+    try {
+        let following = await retrieveFollowing(profileUsername);
+        res.status(200).json(following);
+    } catch (err) {
+        return res
+            .status(500)
+            .json({ message: "Unable to retrieve following." });
+    }
+};
+
+export const unfollowProfile = async (req, res) => {
+    const myUsername = req.user.username;
+    const profileUsername = req.body.username;
+    if (!profileUsername || myUsername === profileUsername) {
+        return res.status(403).json({ message: "Invalid Request." });
+    }
+    try {
+        await unfollowUser(myUsername, profileUsername);
+        return res
+            .status(200)
+            .json({ message: "Profile unfollowed successfully" });
+    } catch (err) {
+        return res.status(500).json({ message: "Unable to unfollow profile" });
     }
 };
 
@@ -180,7 +246,7 @@ export const accountDeletion = async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) return res.sendStatus(204);
     try {
-        await deleteRefreshTokenFromDB(refreshToken);
+        await deleteRefreshTokenFromDB(refreshToken, req.user.username);
         await deleteUser(req.user.username);
         res.cookie("refreshToken", "", {
             httpOnly: true,

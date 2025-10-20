@@ -2,7 +2,6 @@ import { forwardRef, useEffect, useState } from "react";
 import api from "../api/axios";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { comment } from "postcss";
 
 const CommentSection = forwardRef((props, ref) => {
     const [comments, setComments] = useState([]);
@@ -69,6 +68,7 @@ const CommentSection = forwardRef((props, ref) => {
             className="md:w-[50%] w-full relative flex flex-col border-t-[1px] border-gray-200 dark:border-border-dark md:border-t-0"
             style={{
                 height: props.maxHeight ? `${props.maxHeight}px` : "auto",
+                display: props.showLikes ? "none" : "block",
             }}
         >
             <div
@@ -79,7 +79,7 @@ const CommentSection = forwardRef((props, ref) => {
                 }}
                 className="w-full bg-primary-light dark:bg-primary-dark flex flex-col overflow-y-auto rounded-tr-2xl rounded-br-2xl border-gray-200 border-r-[1px] dark:border-border-dark"
             >
-                <div className="w-full sticky left-0 top-0 flex py-3 items-center justify-center border-b-[1px] border-gray-300 dark:border-border-dark bg-primary-light dark:bg-primary-dark">
+                <div className="w-full sticky left-0 top-0 flex py-2 items-center justify-center border-b-[1px] border-gray-300 dark:border-border-dark bg-primary-light dark:bg-primary-dark">
                     <p className="text-sm font-semibold dark:text-gray-100 py-1">
                         Comments
                     </p>

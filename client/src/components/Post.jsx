@@ -13,13 +13,14 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios.js";
+import LikeSection from "./LikeSection.jsx";
 
 const Post = (props) => {
     const [liked, setLiked] = useState(false);
     const [likes, setLikes] = useState(0);
     const [saved, setSaved] = useState(false);
     const [firstDivHeight, setFirstDivHeight] = useState(0);
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [showLikes, setShowLikes] = useState(false);
 
     const firstDivRef = useRef(null);
     const commentInput = useRef(null);
@@ -67,6 +68,10 @@ const Post = (props) => {
         if (commentInput.current) {
             commentInput.current.focus();
         }
+    };
+
+    const toggleShowLikes = () => {
+        setShowLikes(!showLikes);
     };
 
     useEffect(() => {
@@ -154,7 +159,10 @@ const Post = (props) => {
                         />
                     )}
                 </div>
-                <p className="text-sm mt-2 ml-1 dark:text-gray-100">
+                <p
+                    className="text-sm mt-2 ml-1 dark:text-gray-100 hover:cursor-pointer"
+                    onClick={toggleShowLikes}
+                >
                     {likes} likes
                 </p>
                 <div className="w-full pt-3 pb-2 px-1">
@@ -187,7 +195,14 @@ const Post = (props) => {
                 ref={commentInput}
                 maxHeight={firstDivHeight}
                 postId={props.id}
+                showLikes={showLikes}
             />
+            <LikeSection
+                maxHeight={firstDivHeight}
+                postId={props.id}
+                showLikes={showLikes}
+            />
+            <div></div>
         </div>
     );
 };

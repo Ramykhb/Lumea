@@ -54,6 +54,13 @@ function ProtectedRoute({ children }) {
         setIsLoading(false);
     }, []);
 
+    useEffect(() => {
+        auth().catch(() => {
+            setIsAuthenticated(false);
+        });
+        setIsLoading(false);
+    }, [location.pathname]);
+
     if (isLoading) {
         return <h1>Loading...</h1>;
     }

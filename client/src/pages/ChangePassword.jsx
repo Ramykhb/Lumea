@@ -101,11 +101,6 @@ const ChangePassword = (props) => {
                         onChange={handleConfirmChange}
                     />
                     <p className="text-red-500 text-sm">{error}</p>
-                    <Link to={"/reset-password"}>
-                        <p className="text-sm text-blue-600 text-center my-1">
-                            Forgot password?
-                        </p>
-                    </Link>
                     <button
                         className="w-full h-8 mt-4 rounded-full bg-yellow-400 text-sm hover:bg-yellow-500 mb-5"
                         onClick={handleSubmit}

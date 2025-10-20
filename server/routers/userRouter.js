@@ -18,6 +18,10 @@ import {
     getUser,
     editProfile,
     accountDeletion,
+    followProfile,
+    unfollowProfile,
+    getFollowers,
+    getFollowing,
 } from "../controllers/userController.js";
 
 const storage = multer.diskStorage({
@@ -53,6 +57,14 @@ userRouter.get("/status", checkStatus);
 userRouter.get("/user", authenticateToken, getUser);
 
 userRouter.post("/refresh", authenticateRefreshToken, refreshToken);
+
+userRouter.post("/follow", authenticateToken, followProfile);
+
+userRouter.get("/followers", authenticateToken, getFollowers);
+
+userRouter.get("/following", authenticateToken, getFollowing);
+
+userRouter.delete("/follow", authenticateToken, unfollowProfile);
 
 userRouter.post("/logout", logout);
 

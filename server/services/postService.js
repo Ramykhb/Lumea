@@ -56,6 +56,17 @@ export const retrieveComments = async (postId, username) => {
     }
 };
 
+export const retrieveLikes = async (postId) => {
+    try {
+        const sql =
+            "SELECT Liked_By.*, Users.username AS posted_by, Users.profileImage AS profileImage FROM Liked_By JOIN Users ON Users.id = Liked_By.userId WHERE postId = ? ORDER BY Users.username ASC";
+        const [result] = await pool.query(sql, [postId]);
+        return result;
+    } catch (err) {
+        console.error("Error Querying Database:", err);
+    }
+};
+
 export const addSave = async (username, postId) => {
     try {
         const userID = await getID(username);

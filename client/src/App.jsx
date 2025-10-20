@@ -143,10 +143,7 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-                <Route
-                    path="/reset-password"
-                    element={<ResetPassword logged={true} />}
-                />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route
                     path="/login"
                     element={

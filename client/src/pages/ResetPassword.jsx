@@ -3,7 +3,7 @@ import SideBar from "../components/SideBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 
-const ResetPassword = (props) => {
+const ResetPassword = () => {
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
 
@@ -22,19 +22,8 @@ const ResetPassword = (props) => {
 
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
-            {props.logged ? <SideBar /> : ""}
-            <div
-                className="h-[100vh] flex flex-col items-center overflow-y-auto justify-center"
-                style={
-                    props.logged
-                        ? { width: "80%", marginLeft: "20%" }
-                        : { width: "100%" }
-                }
-            >
-                <form
-                    className="flex flex-col border-gray-300 border-solid border-[1px] py-6 px-8 rounded-xl dark:border-border-dark"
-                    style={props.logged ? { width: "40%" } : { width: "30%" }}
-                >
+            <div className="h-[100vh] flex flex-col items-center overflow-y-auto justify-center w-full">
+                <form className="flex flex-col border-gray-300 border-solid border-[1px] py-6 px-8 rounded-xl dark:border-border-dark md:w-[30%] sm:w-[40%] xs:w-[50%] w-[60%]">
                     <div className="w-full flex flex-col items-center">
                         <FontAwesomeIcon
                             icon={faLock}

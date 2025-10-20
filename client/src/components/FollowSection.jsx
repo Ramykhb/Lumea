@@ -1,0 +1,103 @@
+import { forwardRef, useEffect, useState } from "react";
+import api from "../api/axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
+
+const FollowSection = forwardRef((props, ref) => {
+    const [follows, setFollows] = useState([]);
+    const navigate = useNavigate();
+
+    const getFollows = async () => {
+        const path = props.showFollowers
+            ? "/auth/followers"
+            : "/auth/following";
+        try {
+            const res = await api.get(path, {
+                params: {
+                    username: props.username,
+                },
+            });
+            setFollows(res.data);
+        } catch (error) {
+            console.log("Error getting likes.");
+        }
+    };
+
+    useEffect(() => {
+        setFollows([]);
+        if (props.showFollowers || props.showFollowings) {
+            getFollows();
+        }
+    }, [props.showFollowers]);
+
+    useEffect(() => {
+        setFollows([]);
+        if (props.showFollowers || props.showFollowings) {
+            getFollows();
+        }
+    }, [props.showFollowings]);
+
+    return (
+        <div
+            style={{
+                height: props.maxHeight ? `${props.maxHeight - 40}px` : "auto",
+            }}
+            className="w-[50%] bg-primary-light dark:bg-primary-dark flex flex-col overflow-y-auto border-gray-200 border-[1px] dark:border-border-dark min-h-[70vh] h-[70vh] rounded-3xl"
+        >
+            <div className="w-full sticky left-0 top-0 flex py-2 items-center justify-between border-b-[1px] border-gray-300 dark:border-border-dark bg-primary-light dark:bg-primary-dark">
+                <FontAwesomeIcon
+                    icon={faClose}
+                    className="text-white ml-3 opacity-0"
+                />
+                <p className="text-sm font-semibold dark:text-gray-100 py-1">
+                    {props.showFollowers ? "Followers" : "Following"}
+                </p>
+                <FontAwesomeIcon
+                    icon={faClose}
+                    className="dark:text-white mr-3 hover:cursor-pointer"
+                    onClick={
+                        props.showFollowers
+                            ? props.onToggleFollowers
+                            : props.onToggleFollowings
+                    }
+                />
+            </div>
+            {follows.length > 0 ? (
+                follows.map((follow) => (
+                    <div key={follow.username}>
+                        <div
+                            className="w-[100%] md:px-6 py-2 px-2 flex dark:text-gray-300 h-auto items-center hover:cursor-pointer"
+                            onClick={() => {
+                                navigate(`/profile/${follow.username}`);
+                            }}
+                        >
+                            <img
+                                src={`http://localhost:3000${follow.profileImage}`}
+                                className="w-[40px] h-[40px] my-auto rounded-full mr-5"
+                            />
+                            <div>
+                                <p className="text-sm">
+                                    <b className="dark:text-white text-gray-700">
+                                        {follow.username}
+                                    </b>
+                                </p>
+                            </div>
+                        </div>
+                        <hr className="w-[70%] ml-[15%] border-t-1 border-gray-200 dark:border-border-dark" />
+                    </div>
+                ))
+            ) : (
+                <div className="w-full h-full flex justify-center items-center">
+                    <h3 className="text-center md:text-sm text-xs text-gray-500 dark:text-gray-100">
+                        {props.showFollowers
+                            ? "No followers available."
+                            : "No following available."}
+                    </h3>
+                </div>
+            )}
+        </div>
+    );
+});
+
+export default FollowSection;

@@ -16,6 +16,7 @@ import {
     getUserPosts,
     commentDeletion,
     postDeletion,
+    getLikes,
 } from "../controllers/postController.js";
 import {
     commentDeletionMiddleware,
@@ -43,6 +44,8 @@ postRouter.get("/", authenticateToken, getAllPosts);
 postRouter.get("/getposts/:username", authenticateToken, getUserPosts);
 
 postRouter.get("/comments", authenticateToken, getComments);
+
+postRouter.get("/likes", authenticateToken, getLikes);
 
 postRouter.get("/saved", authenticateToken, getSavedPosts);
 
