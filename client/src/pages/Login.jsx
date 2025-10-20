@@ -4,7 +4,7 @@ import AuthForm from "../components/AuthForm";
 const Login = (props) => {
     return (
         <div className="w-full h-[100vh] flex justify-center items-center h-f bg-primary-light dark:bg-primary-dark">
-            <div className="w-[25%]">
+            <div className="w-[80%] xs:w-[55%] sm:w-[45%] md:w-[35%] lg:w-[30%] xl:w-[25%]">
                 <Link to={"/"}>
                     <img
                         src="/Lumea.png"

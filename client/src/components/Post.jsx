@@ -19,6 +19,7 @@ const Post = (props) => {
     const [likes, setLikes] = useState(0);
     const [saved, setSaved] = useState(false);
     const [firstDivHeight, setFirstDivHeight] = useState(0);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     const firstDivRef = useRef(null);
     const commentInput = useRef(null);
@@ -76,10 +77,18 @@ const Post = (props) => {
         setLiked(props.isLiked);
         setSaved(props.isSaved);
 
-        const setHeight = () => setFirstDivHeight(el.offsetHeight);
+        const setHeight = (temp = false) => {
+            if (temp) setFirstDivHeight(5);
+            setFirstDivHeight(el.offsetHeight);
+        };
 
         const observer = new ResizeObserver(setHeight);
         observer.observe(el);
+
+        const handleResize = () => {
+            setHeight(true);
+        };
+        window.addEventListener("resize", handleResize);
 
         const images = el.querySelectorAll("img");
         images.forEach((img) => {
@@ -95,13 +104,13 @@ const Post = (props) => {
     }, []);
 
     return (
-        <div className="w-[60%] h-auto bg-primary-light dark:bg-primary-dark flex flex-row rounded-2xl border-gray-200 border-[1px] my-[2em] dark:border-border-dark">
-            <div ref={firstDivRef} className="w-[50%] flex flex-col">
+        <div className="md:w-[60%] w-[80%] h-auto bg-primary-light dark:bg-primary-dark flex md:flex-row rounded-2xl border-gray-200 border-[1px] my-[2em] dark:border-border-dark flex-col items-start">
+            <div ref={firstDivRef} className="md:w-[50%] w-full flex flex-col">
                 <Link to={`/profile/${props.username}`} className="w-[25%]">
-                    <div className="w-[50%] h-15 flex py-3 px-3 items-center justify-start">
+                    <div className="w-[50%] h-15 flex p-1 py-2 items-center justify-start">
                         <img
                             src={`http://localhost:3000${props.profileImage}`}
-                            className="w-7 h-auto rounded-full mr-3"
+                            className="md:w-7 sm:w-10 w-14 h-auto rounded-full mr-3"
                         />
                         <p className="text-sm font-semibold dark:text-gray-100">
                             {props.username}

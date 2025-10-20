@@ -54,9 +54,9 @@ const Profile = (props) => {
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
             <SideBar onUser={props.onUser} username={props.username} />
             <div className="w-[80%] ml-[20%] min-h-[100vh] flex flex-col items-center overflow-y-auto">
-                <div className="h-auto w-[60%] flex">
-                    <div className="w-[40%] h-full flex items-center">
-                        <div className="relative ml-10 w-[10em] h-[10em] rounded-full p-[3px] bg-gradient-to-r from-yellow-400 to-orange-500">
+                <div className="h-auto lg:w-[60%] md:w-[80%] w-[90%] flex">
+                    <div className="w-[40%] mr-1 md:mr-0 h-full flex items-center">
+                        <div className="relative md:ml-10 xs:ml-5 sm:ml-7 w-[5em] h-[5em] sm:w-[7em] sm:h-[7em] lg:w-[10em] lg:h-[10em] md:w-[8em] md:h-[8em] rounded-full p-[3px] bg-gradient-to-r from-yellow-400 to-orange-500">
                             <div className="w-full h-full rounded-full bg-primary-light dark:bg-primary-dark p-[4px]">
                                 <img
                                     src={`http://localhost:3000${profile.profileImage}`}
@@ -66,14 +66,14 @@ const Profile = (props) => {
                         </div>
                     </div>
                     <div className="w-[60%] h-full flex flex-col py-10">
-                        <div className="flex mb-2 justify-between">
-                            <h2 className="text-xl dark:text-gray-100">
+                        <div className="flex md:mb-2 mb-1 justify-between items-center">
+                            <h2 className="md:text-xl text-sm dark:text-gray-100">
                                 {profile.username}
                             </h2>
 
                             {profile.isMe ? (
                                 <button
-                                    className=" w-24 h-8 rounded-md bg-yellow-400 text-sm hover:bg-yellow-500 mr-20"
+                                    className=" md:w-24 h-8 rounded-md bg-yellow-400 md:text-sm hover:bg-yellow-500 ml-10 text-xs w-36"
                                     onClick={() => {
                                         navigate("/editProfile");
                                     }}
@@ -82,11 +82,11 @@ const Profile = (props) => {
                                 </button>
                             ) : profile.isPublic || profile.isFollowed ? (
                                 profile.isFollowed ? (
-                                    <button className="w-16 h-8 rounded-md bg-yellow-400 text-sm hover:bg-yellow-500 mr-20">
+                                    <button className="md:w-16 h-8 rounded-md bg-yellow-400 md:text-sm text-xs hover:bg-yellow-500 ml-10">
                                         Unfollow
                                     </button>
                                 ) : (
-                                    <button className="w-16 h-8 rounded-md bg-yellow-400 text-sm hover:bg-yellow-500 mr-20">
+                                    <button className="md:w-16 h-8 rounded-md bg-yellow-400 md:text-sm text-xs hover:bg-yellow-500 ml-10">
                                         Follow
                                     </button>
                                 )
@@ -94,23 +94,23 @@ const Profile = (props) => {
                                 <></>
                             )}
                         </div>
-                        <h2 className="text-sm font-bold dark:text-gray-100 mb-5">
+                        <h2 className="text-sm font-bold dark:text-gray-100 md:mb-5 mb-2">
                             {profile.name}
                         </h2>
                         <div className="flex mb-5">
-                            <h2 className="text-lg mr-5 text-gray-600 dark:text-gray-400">
+                            <h2 className="md:text-lg text-xs mr-5 text-gray-600 dark:text-gray-400">
                                 <span className="font-bold text-black dark:text-gray-100">
                                     {profile.postCount}{" "}
                                 </span>
                                 posts
                             </h2>
-                            <h2 className="text-lg mr-5 text-gray-600 dark:text-gray-400">
+                            <h2 className="md:text-lg text-xs mr-5 text-gray-600 dark:text-gray-400">
                                 <span className="font-bold text-black dark:text-gray-100">
                                     {followerCount}{" "}
                                 </span>
                                 followers
                             </h2>
-                            <h2 className="text-lg mr-5 text-gray-600 dark:text-gray-400">
+                            <h2 className="md:text-lg text-xs mr-5 text-gray-600 dark:text-gray-400">
                                 <span className="font-bold text-black dark:text-gray-100">
                                     {profile.followingCount}{" "}
                                 </span>
@@ -124,7 +124,9 @@ const Profile = (props) => {
                 </div>
                 <hr className="w-[50%] border-t-1 border-gray-400 dark:border-border-dark" />
                 {posts.length > 0 ? (
-                    <h1 className="text-center text-xl mt-10">Latest Posts</h1>
+                    <h1 className="text-center text-xl mt-10 dark:text-gray-100">
+                        Latest Posts
+                    </h1>
                 ) : (
                     ""
                 )}

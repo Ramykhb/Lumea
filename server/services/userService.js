@@ -133,12 +133,17 @@ export async function emailExists(email) {
 export async function insertToken(username, refreshToken) {
     const userID = await getID(username);
     try {
+        const sql = "DELETE FROM Refresh_Tokens WHERE userId = ?";
+        const [result] = await pool.query(sql, [userID]);
+    } catch (err) {
+        throw err;
+    }
+    try {
         const sql = "INSERT INTO Refresh_Tokens VALUES (?,?)";
         const [result] = await pool.query(sql, [refreshToken, userID]);
         return true;
     } catch (err) {
         throw err;
-        return false;
     }
 }
 

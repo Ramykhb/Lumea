@@ -7,7 +7,7 @@ import { comment } from "postcss";
 const CommentSection = forwardRef((props, ref) => {
     const [comments, setComments] = useState([]);
     const [postButton, setPostButton] = useState(
-        "text-md text-blue-200 dark:text-blue-200"
+        "md:text-md text-blue-200 dark:text-blue-200 text-xs"
     );
     const [newComment, setNewComment] = useState("");
 
@@ -66,7 +66,7 @@ const CommentSection = forwardRef((props, ref) => {
 
     return (
         <div
-            className="w-[50%] relative flex flex-col"
+            className="md:w-[50%] w-full relative flex flex-col border-t-[1px] border-gray-200 dark:border-border-dark md:border-t-0"
             style={{
                 height: props.maxHeight ? `${props.maxHeight}px` : "auto",
             }}
@@ -87,7 +87,7 @@ const CommentSection = forwardRef((props, ref) => {
                 {comments.length > 0 ? (
                     comments.map((comment) => (
                         <div key={comment.id}>
-                            <div className="w-[100%] px-6 py-2 flex dark:text-gray-300 h-auto">
+                            <div className="w-[100%] md:px-6 py-2 px-2 flex dark:text-gray-300 h-auto">
                                 <img
                                     src={`http://localhost:3000${comment.profileImage}`}
                                     className="w-[40px] h-[40px] my-auto rounded-full mr-5"
@@ -135,7 +135,7 @@ const CommentSection = forwardRef((props, ref) => {
                     ))
                 ) : (
                     <div className="w-full h-full flex justify-center items-center">
-                        <h3 className="text-center text-sm text-gray-500 dark:text-gray-100">
+                        <h3 className="text-center md:text-sm text-xs text-gray-500 dark:text-gray-100">
                             No comments available...
                         </h3>
                     </div>
@@ -145,7 +145,7 @@ const CommentSection = forwardRef((props, ref) => {
                 <form className="bg-primary-light dark:bg-primary-dark w-full h-10 flex items-center justify-around border-t-[1px] border-gray-200 dark:border-border-dark">
                     <input
                         ref={ref}
-                        className="bg-transparent focus:border-none focus:outline-none text-sm dark:caret-white dark:placeholder-gray-300 dark:text-gray-100"
+                        className="bg-transparent focus:border-none focus:outline-none md:text-sm dark:caret-white dark:placeholder-gray-300 dark:text-gray-100 text-xs"
                         placeholder="Add a comment..."
                         onChange={handleCommentChange}
                         value={newComment}

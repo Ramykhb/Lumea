@@ -35,7 +35,7 @@ const Settings = (props) => {
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
             <SideBar onUser={props.onUser} username={props.username} />
             <div className="w-[80%] h-[100vh] ml-[20%] flex flex-col items-center overflow-y-auto justify-center">
-                <div className="w-[350px] py-7 dark:bg-primary-dark bg-primary-light dark:border-border-dark rounded-2xl border-gray-300 border-[1px] flex-col flex items-center">
+                <div className="md:w-[350px] sm:w-[300px] w-[230px] py-7 dark:bg-primary-dark bg-primary-light dark:border-border-dark rounded-2xl border-gray-300 border-[1px] flex-col flex items-center">
                     <p className="text-2xl font-bold text-black dark:text-white mb-7 w-full text-center">
                         Settings
                     </p>

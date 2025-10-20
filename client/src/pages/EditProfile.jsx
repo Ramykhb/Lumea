@@ -164,7 +164,6 @@ const EditProfile = (props) => {
                         </h2>
                     </Step>
                 </Stepper>
-                ;
             </div>
         </div>
     );

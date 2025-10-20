@@ -54,12 +54,12 @@ const Homepage = (props) => {
             <SideBar onUser={props.onUser} username={props.username} />
             <div className="w-[80%] ml-[20%] min-h-[100vh] flex flex-col items-center overflow-y-auto">
                 <div className="h-10 flex flex-row justify-center items-center w-full py-5 mt-5">
-                    <div className="flex justify-between w-[20%]">
+                    <div className="flex justify-between xl:w-[20%] w-[60%]">
                         <p
                             className={
                                 allPosts
-                                    ? "hover:cursor-pointer hover:underline text-lg text-black dark:text-white font-bold"
-                                    : "hover:cursor-pointer hover:underline text-lg text-[#474645] dark:text-[#757574]"
+                                    ? "hover:cursor-pointer hover:underline sm:text-lg text-xs text-black dark:text-white font-bold"
+                                    : "hover:cursor-pointer hover:underline sm:text-lg text-xs text-[#474645] dark:text-[#757574]"
                             }
                             onClick={turnOnAllPosts}
                         >
@@ -68,8 +68,8 @@ const Homepage = (props) => {
                         <p
                             className={
                                 !allPosts
-                                    ? "hover:cursor-pointer hover:underline text-lg text-black dark:text-white font-bold"
-                                    : "hover:cursor-pointer hover:underline text-lg text-[#474645] dark:text-[#757574]"
+                                    ? "hover:cursor-pointer hover:underline sm:text-lg text-xs text-black dark:text-white font-bold"
+                                    : "hover:cursor-pointer hover:underline sm:text-lg text-xs text-[#474645] dark:text-[#757574]"
                             }
                             onClick={turnOffAllPosts}
                         >
