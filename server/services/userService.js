@@ -139,7 +139,7 @@ export async function unfollowUser(myusername, username) {
 export async function fetchProfile(username, loggedInUsername) {
     const userID = await getID(loggedInUsername);
     try {
-        const sql = `SELECT bio,name, username, profileImage, isPublic, (SELECT COUNT(*) FROM Posts WHERE userId = Users.id) AS postCount, (SELECT COUNT(*) FROM Followed_By WHERE followingId = Users.id) AS followerCount, (SELECT COUNT(*) FROM Followed_By WHERE followerId = Users.id) AS followingCount, EXISTS (SELECT 1 FROM Followed_By WHERE followerId = ? AND followingId = Users.id) AS isFollowed FROM Users WHERE username = ?`;
+        const sql = `SELECT id, bio,name, username, profileImage, isPublic, (SELECT COUNT(*) FROM Posts WHERE userId = Users.id) AS postCount, (SELECT COUNT(*) FROM Followed_By WHERE followingId = Users.id) AS followerCount, (SELECT COUNT(*) FROM Followed_By WHERE followerId = Users.id) AS followingCount, EXISTS (SELECT 1 FROM Followed_By WHERE followerId = ? AND followingId = Users.id) AS isFollowed FROM Users WHERE username = ?`;
         const [result] = await pool.query(sql, [userID, username]);
         if (result.length > 0) {
             const newRes = {

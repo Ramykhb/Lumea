@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import SideBar from "../components/SideBar";
 import api from "../api/axios";
 import { Link } from "react-router-dom";
+import { uploadsPath } from "@/config/imagesConfig";
 
 const Search = (props) => {
     const [searchVal, setSearchVal] = useState("");
@@ -51,7 +52,7 @@ const Search = (props) => {
                             >
                                 <div className="w-[60%] h-15 rounded-xl p-2 my-1 flex hover:bg-gray-200 hover:cursor-pointer dark:hover:bg-gray-700">
                                     <img
-                                        src={`http://localhost:3000${profile.profileImage}`}
+                                        src={`${uploadsPath}${profile.profileImage}`}
                                         className="w-14 h-14 rounded-full border-[2px] border-yellow-400"
                                     />
                                     <div className="h-full flex flex-col justify-center items-center ml-5 text-md dark:text-gray-100">

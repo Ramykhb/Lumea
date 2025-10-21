@@ -3,6 +3,7 @@ import api from "../api/axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { uploadsPath } from "@/config/imagesConfig";
 
 const FollowSection = forwardRef((props, ref) => {
     const [follows, setFollows] = useState([]);
@@ -43,7 +44,7 @@ const FollowSection = forwardRef((props, ref) => {
             style={{
                 height: props.maxHeight ? `${props.maxHeight - 40}px` : "auto",
             }}
-            className="w-[50%] bg-primary-light dark:bg-primary-dark flex flex-col overflow-y-auto border-gray-200 border-[1px] dark:border-border-dark min-h-[70vh] h-[70vh] rounded-3xl"
+            className="xl:w-[50%] sm:w-[80%] md:w-[70%] lg:w-[60%] w-[90%] bg-primary-light dark:bg-primary-dark flex flex-col overflow-y-auto border-gray-200 border-[1px] dark:border-border-dark min-h-[70vh] h-[70vh] rounded-3xl"
         >
             <div className="w-full sticky left-0 top-0 flex py-2 items-center justify-between border-b-[1px] border-gray-300 dark:border-border-dark bg-primary-light dark:bg-primary-dark">
                 <FontAwesomeIcon
@@ -73,7 +74,7 @@ const FollowSection = forwardRef((props, ref) => {
                             }}
                         >
                             <img
-                                src={`http://localhost:3000${follow.profileImage}`}
+                                src={`${uploadsPath}${follow.profileImage}`}
                                 className="w-[40px] h-[40px] my-auto rounded-full mr-5"
                             />
                             <div>

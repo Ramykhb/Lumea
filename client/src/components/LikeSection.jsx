@@ -1,5 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import api from "../api/axios";
+import { uploadsPath } from "@/config/imagesConfig";
 
 const LikeSection = forwardRef((props, ref) => {
     const [likes, setLikes] = useState([]);
@@ -61,7 +62,7 @@ const LikeSection = forwardRef((props, ref) => {
                                 }}
                             >
                                 <img
-                                    src={`http://localhost:3000${like.profileImage}`}
+                                    src={`${uploadsPath}${like.profileImage}`}
                                     className="w-[40px] h-[40px] my-auto rounded-full mr-5"
                                 />
                                 <div>

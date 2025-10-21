@@ -4,7 +4,10 @@ import SideBar from "../components/SideBar";
 import Post from "../components/Post";
 import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMessage } from "@fortawesome/free-regular-svg-icons";
 import FollowSection from "@/components/FollowSection";
+import { uploadsPath } from "@/config/imagesConfig";
 
 const Profile = (props) => {
     const { username } = useParams();
@@ -120,7 +123,7 @@ const Profile = (props) => {
                         <div className="relative md:ml-10 xs:ml-5 sm:ml-7 w-[5em] h-[5em] sm:w-[7em] sm:h-[7em] lg:w-[10em] lg:h-[10em] md:w-[8em] md:h-[8em] rounded-full p-[3px] bg-gradient-to-r from-yellow-400 to-orange-500">
                             <div className="w-full h-full rounded-full bg-primary-light dark:bg-primary-dark p-[4px]">
                                 <img
-                                    src={`http://localhost:3000${profile.profileImage}`}
+                                    src={`${uploadsPath}${profile.profileImage}`}
                                     className="w-full h-full rounded-full object-cover"
                                 />
                             </div>
@@ -143,19 +146,45 @@ const Profile = (props) => {
                                 </button>
                             ) : profile.isPublic || profile.isFollowed ? (
                                 profile.isFollowed ? (
-                                    <button
-                                        className="md:w-16 h-8 rounded-md bg-yellow-400 md:text-sm text-xs hover:bg-yellow-500 ml-10"
-                                        onClick={handleUnfollowProfile}
-                                    >
-                                        Unfollow
-                                    </button>
+                                    <div className="flex items-center justify-center">
+                                        <div className="flex mr-5 dark:text-white">
+                                            <FontAwesomeIcon
+                                                icon={faMessage}
+                                                className="dark:text-white text-xl hover:cursor-pointer"
+                                                onClick={() => {
+                                                    navigate(
+                                                        `/chat/${profile.username}`
+                                                    );
+                                                }}
+                                            />
+                                        </div>
+                                        <button
+                                            className="md:w-16 h-8 rounded-md bg-yellow-400 md:text-sm text-xs hover:bg-yellow-500"
+                                            onClick={handleUnfollowProfile}
+                                        >
+                                            Unfollow
+                                        </button>
+                                    </div>
                                 ) : (
-                                    <button
-                                        className="md:w-16 h-8 rounded-md bg-yellow-400 md:text-sm text-xs hover:bg-yellow-500 ml-10"
-                                        onClick={handleFollowProfile}
-                                    >
-                                        Follow
-                                    </button>
+                                    <div className="flex items-center justify-center">
+                                        <div className="flex mr-5 dark:text-white">
+                                            <FontAwesomeIcon
+                                                icon={faMessage}
+                                                className="dark:text-white text-xl hover:cursor-pointer"
+                                                onClick={() => {
+                                                    navigate(
+                                                        `/chat/${profile.username}`
+                                                    );
+                                                }}
+                                            />
+                                        </div>
+                                        <button
+                                            className="md:w-16 h-8 rounded-md bg-yellow-400 md:text-sm text-xs hover:bg-yellow-500"
+                                            onClick={handleFollowProfile}
+                                        >
+                                            Follow
+                                        </button>
+                                    </div>
                                 )
                             ) : (
                                 <></>

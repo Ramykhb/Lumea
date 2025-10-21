@@ -29,19 +29,31 @@ const SideBar = (props) => {
     }, []);
 
     return (
-        <div className="h-[100vh] fixed left-0 top-0 w-[20%] bg-primary-light py-2 flex flex-col justify-between border-r-[1px] border-gray-300 dark:bg-primary-dark dark:border-border-dark">
+        <div className="h-[100dvh] fixed left-0 top-0 md:w-[20%] w-[15%] bg-primary-light py-2 flex flex-col justify-between border-r-[1px] border-gray-300 dark:bg-primary-dark dark:border-border-dark">
             <div className="w-full h-auto">
                 <Link to={"/"}>
-                    <img
-                        src="/Lumea.png"
-                        className="block lg:w-[50%] md:w-[70%] sm:w-[80%] w-full mx-auto dark:hidden"
-                        alt="Logo"
-                    />
-                    <img
-                        src="/Lumea-dark.png"
-                        className="hidden lg:w-[50%] md:w-[70%] sm:w-[80%] w-full mx-auto dark:block"
-                        alt="Logo"
-                    />
+                    <picture>
+                        <source
+                            srcSet="/Lumea.png"
+                            media="(min-width: 770px)"
+                        />
+                        <img
+                            src="/lumea-icon.png"
+                            alt="Logo"
+                            className="mx-auto dark:hidden md:w-[50%] w-[65%] sm:w-[55%]"
+                        />
+                    </picture>
+                    <picture>
+                        <source
+                            srcSet="/Lumea-dark.png"
+                            media="(min-width: 770px)"
+                        />
+                        <img
+                            src="/lumea-icon.png"
+                            alt="Logo"
+                            className="hidden mx-auto dark:block md:w-[50%] w-[65%] sm:w-[55%]"
+                        />
+                    </picture>
                 </Link>
                 <hr className="w-full border-t-1 border-gray-300 dark:border-border-dark" />
 

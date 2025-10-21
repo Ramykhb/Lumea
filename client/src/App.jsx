@@ -13,6 +13,7 @@ import Profile from "./pages/Profile.jsx";
 import SavedPosts from "./pages/SavedPosts.jsx";
 import Search from "./pages/Search.jsx";
 import EditProfile from "./pages/EditProfile.jsx";
+import ChatPage from "./pages/ChatPage.jsx";
 
 function App() {
     const [darkMode, setDarkMode] = useState(false);
@@ -189,6 +190,25 @@ function App() {
                                 duration={400}
                             >
                                 <Profile
+                                    username={username}
+                                    onUser={handleUsername}
+                                />
+                            </ClickSpark>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/chat/:username"
+                    element={
+                        <ProtectedRoute>
+                            <ClickSpark
+                                sparkColor={darkMode ? "#fff" : "#000"}
+                                sparkSize={10}
+                                sparkRadius={15}
+                                sparkCount={8}
+                                duration={400}
+                            >
+                                <ChatPage
                                     username={username}
                                     onUser={handleUsername}
                                 />

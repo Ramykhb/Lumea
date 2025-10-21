@@ -2,6 +2,7 @@ import { forwardRef, useEffect, useState } from "react";
 import api from "../api/axios";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { uploadsPath } from "@/config/imagesConfig";
 
 const CommentSection = forwardRef((props, ref) => {
     const [comments, setComments] = useState([]);
@@ -89,7 +90,7 @@ const CommentSection = forwardRef((props, ref) => {
                         <div key={comment.id}>
                             <div className="w-[100%] md:px-6 py-2 px-2 flex dark:text-gray-300 h-auto">
                                 <img
-                                    src={`http://localhost:3000${comment.profileImage}`}
+                                    src={`${uploadsPath}${comment.profileImage}`}
                                     className="w-[40px] h-[40px] my-auto rounded-full mr-5"
                                 />
                                 <div>

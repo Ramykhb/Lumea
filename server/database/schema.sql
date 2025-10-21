@@ -52,6 +52,17 @@ CREATE TABLE Commented_By (
     FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE Messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    senderId INT,
+    receiverId INT,
+    content TEXT,
+    sentAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    isDelivered BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (senderId) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (receiverId) REFERENCES Users(id) ON DELETE CASCADE
+);
+
 CREATE TABLE Refresh_Tokens (
     token VARCHAR(500) PRIMARY KEY,
     userId INT,

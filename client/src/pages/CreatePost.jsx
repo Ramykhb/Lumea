@@ -1,35 +1,80 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import { useEffect } from "react";
+import { uploadsPath } from "@/config/imagesConfig";
 
 function CreatePost(props) {
     const [file, setFile] = useState(null);
     const [filePath, setFilePath] = useState("placeholder-image.png");
+    const [isLoading, setisLoading] = useState(false);
+    const [imageUploading, setImageUploading] = useState(false);
     const [caption, setCaption] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
         const handleUpload = async () => {
+            setError("");
             if (!file) {
                 return;
             }
-            const formData = new FormData();
-            formData.append("image", file);
+            const maxSize = 1024 * 1024;
+
+            if (file.size >= maxSize) {
+                setError("Max file size is 1 MB");
+                setFile(null);
+                return;
+            }
+
+            const checkDimensions = new Promise((resolve, reject) => {
+                const img = new Image();
+                img.src = URL.createObjectURL(file);
+                img.onload = () => {
+                    if (img.width / img.height >= 2) {
+                        reject(
+                            new Error(
+                                "Image too wide, please crop image first."
+                            )
+                        );
+                        return;
+                    }
+                    if (img.height / img.width >= 2) {
+                        reject(
+                            new Error(
+                                "Image too tall, please crop image first."
+                            )
+                        );
+                        return;
+                    }
+                    resolve();
+                };
+            });
 
             try {
-                const res = await api.post(
-                    "http://localhost:3000/api/v1/posts/upload",
-                    formData,
-                    {
-                        headers: { "Content-Type": "multipart/form-data" },
-                    }
-                );
-                setFilePath(res.data.filePath);
+                await checkDimensions;
             } catch (err) {
-                console.log("Error uploading image.");
+                console.log(err);
+                setError(err.message);
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("image", file);
+            if (!imageUploading) {
+                try {
+                    setImageUploading(true);
+                    const res = await api.post("/posts/upload", formData, {
+                        headers: { "Content-Type": "multipart/form-data" },
+                    });
+                    setFilePath(res.data.filePath);
+                } catch (err) {
+                    console.log("Error uploading image.");
+                } finally {
+                    setError("");
+                    setImageUploading(false);
+                }
             }
         };
         handleUpload();
@@ -41,17 +86,23 @@ function CreatePost(props) {
             setError("Please select an image first.");
             return;
         }
-        try {
-            const res = await api.post(
-                "http://localhost:3000/api/v1/posts/create",
-                {
+        if (imageUploading) {
+            setError("Uploading image please wait.");
+            return;
+        }
+        if (!isLoading) {
+            try {
+                setisLoading(true);
+                const res = await api.post("/posts/create", {
                     caption: caption,
                     filePath: filePath,
-                }
-            );
-            navigate("/");
-        } catch (err) {
-            setError("Upload Failed.");
+                });
+                navigate("/");
+            } catch (err) {
+                setError("Upload Failed.");
+            } finally {
+                setisLoading(false);
+            }
         }
     };
 
@@ -79,7 +130,7 @@ function CreatePost(props) {
                             className="2xl:w-[50vh] 2xl:h-[50vh] w-40 h-40 xs:w-60 xs:h-60 md:w-80 md:h-80 border-2 border-dashed border-gray-400 rounded-lg bg-cover bg-center flex items-center justify-center cursor-pointer hover:border-gray-500 hover:bg-gray-100/20 transition relative bg-gray-200"
                             style={{
                                 backgroundImage: file
-                                    ? `url(http://localhost:3000${filePath})`
+                                    ? `url(${uploadsPath}${filePath})`
                                     : `url(${filePath})`,
                             }}
                         />

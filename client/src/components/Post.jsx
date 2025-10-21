@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios.js";
 import LikeSection from "./LikeSection.jsx";
+import { uploadsPath } from "@/config/imagesConfig.js";
 
 const Post = (props) => {
     const [liked, setLiked] = useState(false);
@@ -111,19 +112,23 @@ const Post = (props) => {
     return (
         <div className="md:w-[60%] w-[80%] h-auto bg-primary-light dark:bg-primary-dark flex md:flex-row rounded-2xl border-gray-200 border-[1px] my-[2em] dark:border-border-dark flex-col items-start">
             <div ref={firstDivRef} className="md:w-[50%] w-full flex flex-col">
-                <Link to={`/profile/${props.username}`} className="w-[25%]">
-                    <div className="w-[50%] h-15 flex p-1 py-2 items-center justify-start">
+                <Link
+                    to={`/profile/${props.username}`}
+                    className="flex items-center gap-3 p-2"
+                >
+                    <div className="w-14 h-14 sm:w-10 sm:h-10 md:w-7 md:h-7 rounded-full overflow-hidden">
                         <img
-                            src={`http://localhost:3000${props.profileImage}`}
-                            className="md:w-7 sm:w-10 w-14 h-auto rounded-full mr-3"
+                            src={`${uploadsPath}${props.profileImage}`}
+                            alt={props.username}
+                            className="w-full h-full object-cover"
                         />
-                        <p className="text-sm font-semibold dark:text-gray-100">
-                            {props.username}
-                        </p>
                     </div>
+                    <p className="text-sm font-semibold dark:text-gray-100">
+                        {props.username}
+                    </p>
                 </Link>
                 <img
-                    src={`http://localhost:3000${props.postImage}`}
+                    src={`${uploadsPath}${props.postImage}`}
                     className="w-full h-auto"
                 />
                 <div className="w-full h-8 py-2 px-1 flex">

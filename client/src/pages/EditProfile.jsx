@@ -1,6 +1,7 @@
 import api from "@/api/axios";
 import SideBar from "@/components/SideBar";
 import Stepper, { Step } from "@/components/Stepper";
+import { uploadsPath } from "@/config/imagesConfig";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -48,13 +49,9 @@ const EditProfile = (props) => {
             formData.append("image", file);
 
             try {
-                const res = await api.post(
-                    "http://localhost:3000/api/v1/posts/upload",
-                    formData,
-                    {
-                        headers: { "Content-Type": "multipart/form-data" },
-                    }
-                );
+                const res = await api.post("/posts/upload", formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                });
                 setFilePath(res.data.filePath);
             } catch (err) {
                 console.log("Error uploading image.");
@@ -116,7 +113,7 @@ const EditProfile = (props) => {
                                 htmlFor="fileUpload"
                                 className="w-[25vh] h-[25vh] border-2 border-dashed border-gray-400 rounded-full bg-cover bg-center flex items-center justify-center cursor-pointer hover:border-gray-500 hover:bg-gray-100/20 transition relative bg-gray-200 mx-auto"
                                 style={{
-                                    backgroundImage: `url(http://localhost:3000${filePath})`,
+                                    backgroundImage: `url(${uploadsPath}${filePath})`,
                                 }}
                             />
                         </div>
