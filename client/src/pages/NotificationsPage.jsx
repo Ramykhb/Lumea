@@ -46,10 +46,10 @@ const NotificationsPage = (props) => {
                 </p>
                 {notifications.length > 0 ? (
                     notifications.map((not) => (
-                        <>
+                        <React.Fragment key={not.id}>
                             <Link
                                 to={
-                                    not.id === 1
+                                    not.type === 1
                                         ? `/chat/${not.username}`
                                         : `/profile/${not.username}`
                                 }
@@ -64,7 +64,7 @@ const NotificationsPage = (props) => {
                                         <div
                                             className="bg-red-500 mr-2  w-2 h-2 rounded-full"
                                             style={
-                                                not.isDelivered > 0
+                                                !not.isDelivered > 0
                                                     ? { display: "block" }
                                                     : { display: "none" }
                                             }
@@ -91,7 +91,7 @@ const NotificationsPage = (props) => {
                                 </div>
                             </Link>
                             <hr className="w-[25%] border-t-1 border-gray-300 dark:border-border-dark" />
-                        </>
+                        </React.Fragment>
                     ))
                 ) : (
                     <div className="h-[80dvh] flex items-center justify-center">

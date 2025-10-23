@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideBar from "../components/SideBar";
 import api from "../api/axios";
 import { Link } from "react-router-dom";
@@ -45,7 +45,7 @@ const Search = (props) => {
                 />
                 {profiles.length > 0 ? (
                     profiles.map((profile) => (
-                        <>
+                        <React.Fragment key={profile.id}>
                             <Link
                                 to={`/profile/${profile.username}`}
                                 className="sm:w-[60%] xl:w-[70%] w-[90%] h-15 rounded-xl flex my-2 hover:bg-gray-200 hover:cursor-pointer dark:hover:bg-gray-700"
@@ -61,7 +61,7 @@ const Search = (props) => {
                                 </div>
                             </Link>
                             <hr className="w-[25%] border-t-1 border-gray-300 dark:border-border-dark" />
-                        </>
+                        </React.Fragment>
                     ))
                 ) : (
                     <div className="h-[60vh] flex items-center justify-center">
