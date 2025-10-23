@@ -15,6 +15,7 @@ import {
     updateMessages,
 } from "./services/chatService.js";
 import { addNotification } from "./services/postService.js";
+import { getID } from "./services/userService.js";
 
 dotenv.config();
 
@@ -25,16 +26,16 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173",
-        // origin: "https://b1hqqjqw-5173.euw.devtunnels.ms",
+        // origin: "http://localhost:5173",
+        origin: "https://b1hqqjqw-5173.euw.devtunnels.ms",
         methods: ["GET", "POST"],
     },
 });
 
 app.use(
     cors({
-        origin: "http://localhost:5173",
-        // origin: "https://b1hqqjqw-5173.euw.devtunnels.ms",
+        // origin: "http://localhost:5173",
+        origin: "https://b1hqqjqw-5173.euw.devtunnels.ms",
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
     })
@@ -54,11 +55,13 @@ app.use("/api/v1/auth", userRouter);
 app.use("/api/v1/posts", postRouter);
 
 io.on("connection", (socket) => {
-    socket.on("join", async (username) => {
-        onlineUsers.set(username, socket);
-        const messages = await retrieveMessages(username);
+    socket.on("join", async (username, target) => {
+        const primaryId = await getID(username);
+        const secondaryId = await getID(target);
+        onlineUsers.set(primaryId, { socket, secondaryId });
+        const messages = await retrieveMessages(username, target);
         socket.emit("messages", messages);
-        await updateMessages(username);
+        await updateMessages(username, target);
     });
 
     socket.on(
@@ -70,12 +73,13 @@ io.on("connection", (socket) => {
                 content
             );
 
-            await addNotification(senderUsername, receiverUsername, 1);
+            const senderId = await getID(senderUsername);
+            const receiverId = await getID(receiverUsername);
 
             const message = {
                 id: result.insertId,
-                senderId: result.senderId,
-                receiverId: result.receiverId,
+                senderId: senderId,
+                receiverId: receiverId,
                 content: content,
                 sentAt: new Date(),
                 delivered: false,
@@ -83,18 +87,20 @@ io.on("connection", (socket) => {
 
             socket.emit("messageDelivered", message);
 
-            const receiverSocket = onlineUsers.get(receiverUsername);
-            if (receiverSocket) {
-                receiverSocket.emit("receiveMessage", message);
+            const receiverSocket = onlineUsers.get(receiverId);
+            if (receiverSocket && receiverSocket.secondaryId === senderId) {
+                receiverSocket.socket.emit("receiveMessage", message);
                 await deleteMessage(message.id);
+            } else {
+                await addNotification(senderUsername, receiverUsername, 1);
             }
         }
     );
 
     socket.on("disconnect", () => {
-        for (const [username, userSocket] of onlineUsers.entries()) {
-            if (userSocket.id === socket.id) {
-                onlineUsers.delete(username);
+        for (const [primaryId, userSocket] of onlineUsers.entries()) {
+            if (userSocket.socket.id === socket.id) {
+                onlineUsers.delete(primaryId);
                 break;
             }
         }

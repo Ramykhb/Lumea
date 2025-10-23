@@ -1,7 +1,7 @@
 import api from "@/api/axios";
 import SideBar from "@/components/SideBar";
 import { uploadsPath } from "@/config/imagesConfig";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const NotificationsPage = (props) => {

@@ -41,6 +41,9 @@ export async function getID(username) {
     try {
         const sql = "SELECT id FROM Users WHERE username = ?";
         const [result] = await pool.query(sql, [username]);
+        if (result.length === 0) {
+            throw new Error(`User with username "${username}" not found`);
+        }
         return result[0].id;
     } catch (err) {
         throw err;

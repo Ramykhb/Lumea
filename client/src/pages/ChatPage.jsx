@@ -38,7 +38,10 @@ const ChatPage = (props) => {
     };
 
     useEffect(() => {
+        if (props.username === username) navigate("/");
         socketRef.current = io(uploadsPath);
+        socketRef.current.emit("join", props.username, username);
+
         setIsLoading(true);
         fetchProfile();
 
@@ -61,10 +64,9 @@ const ChatPage = (props) => {
     }, []);
 
     useEffect(() => {
-        if (!props.username) return;
-        if (props.username === username) navigate("/");
-        socketRef.current.emit("join", props.username);
-    }, [props.username]);
+        if (profile) {
+        }
+    }, [profile]);
 
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
@@ -88,11 +90,17 @@ const ChatPage = (props) => {
                     {messages.length > 0 ? (
                         messages.map((message) =>
                             message.senderId == profile.id ? (
-                                <div className="relative max-w-[70%] p-3 rounded-2xl bg-gray-300 text-gray-900 self-start before:content-[''] before:absolute before:left-[-6px] before:top-3 before:border-y-[6px] before:border-r-[6px] before:border-y-transparent before:border-r-gray-300">
+                                <div
+                                    key={message.id}
+                                    className="relative max-w-[70%] p-3 rounded-2xl bg-gray-300 text-gray-900 self-start before:content-[''] before:absolute before:left-[-6px] before:top-3 before:border-y-[6px] before:border-r-[6px] before:border-y-transparent before:border-r-gray-300"
+                                >
                                     {message.content}
                                 </div>
                             ) : (
-                                <div className="relative max-w-[70%] p-3 rounded-2xl bg-yellow-600 text-white self-end before:content-[''] before:absolute before:right-[-6px] before:top-3 before:border-y-[6px] before:border-l-[6px] before:border-y-transparent before:border-l-yellow-600">
+                                <div
+                                    key={message.id}
+                                    className="relative max-w-[70%] p-3 rounded-2xl bg-yellow-600 text-white self-end before:content-[''] before:absolute before:right-[-6px] before:top-3 before:border-y-[6px] before:border-l-[6px] before:border-y-transparent before:border-l-yellow-600"
+                                >
                                     {message.content}
                                 </div>
                             )
