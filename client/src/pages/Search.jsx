@@ -30,8 +30,8 @@ const Search = (props) => {
 
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
-            <SideBar onUser={props.onUser} username={props.username} />
-            <div className="w-[80%] ml-[20%] min-h-[100vh] flex flex-col items-center overflow-y-auto">
+            <SideBar username={props.username} />
+            <div className="md:w-[80%] w-[85%] md:ml-[20%] ml-[15%] min-h-[100vh] flex flex-col items-center overflow-y-auto">
                 <p className="mt-10 text-3xl font-bold dark:text-gray-100">
                     Search
                 </p>
@@ -48,14 +48,14 @@ const Search = (props) => {
                         <>
                             <Link
                                 to={`/profile/${profile.username}`}
-                                className="w-[60%] h-15 rounded-xl flex my-2 hover:bg-gray-200 hover:cursor-pointer dark:hover:bg-gray-700"
+                                className="sm:w-[60%] xl:w-[70%] w-[90%] h-15 rounded-xl flex my-2 hover:bg-gray-200 hover:cursor-pointer dark:hover:bg-gray-700"
                             >
-                                <div className="w-[60%] h-15 rounded-xl p-2 my-1 flex hover:bg-gray-200 hover:cursor-pointer dark:hover:bg-gray-700">
+                                <div className="sm:w-[60%] xl:w-[70%] w-[90%] h-15 rounded-xl p-2 my-1 flex hover:bg-gray-200 hover:cursor-pointer dark:hover:bg-gray-700">
                                     <img
                                         src={`${uploadsPath}${profile.profileImage}`}
-                                        className="w-14 h-14 rounded-full border-[2px] border-yellow-400"
+                                        className="sm:w-14 sm:h-14 h-10 w-10 rounded-full border-[2px] border-yellow-400"
                                     />
-                                    <div className="h-full flex flex-col justify-center items-center ml-5 text-md dark:text-gray-100">
+                                    <div className="h-full flex flex-col justify-center items-center ml-5 text-base dark:text-gray-100">
                                         <p>{profile.username}</p>
                                     </div>
                                 </div>

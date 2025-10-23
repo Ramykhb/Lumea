@@ -68,10 +68,9 @@ const ChatPage = (props) => {
 
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
-            <SideBar onUser={props.onUser} username={props.username} />
-            <div className="w-[80%] ml-[20%] h-[100dvh] flex flex-col relative px-10">
-                {/* Header */}
-                <div className="w-full px-5 py-2 h-20 flex items-center mb-5 border-b-[1px] border-gray-200 dark:border-border-dark">
+            <SideBar username={props.username} />
+            <div className="md:w-[80%] w-[85%] md:ml-[20%] ml-[15%] h-[100dvh] flex flex-col relative md:px-10 px-3">
+                <div className="w-full md:px-5 px-2 py-2 h-20 flex items-center mb-5 border-b-[1px] border-gray-200 dark:border-border-dark">
                     <img
                         src={`${uploadsPath}${profile.profileImage}`}
                         className="w-[40px] h-[40px] my-auto rounded-full mr-5"
@@ -79,10 +78,9 @@ const ChatPage = (props) => {
                     <p className="dark:text-white">{username}</p>
                 </div>
 
-                {/* Messages */}
                 <div className="flex-1 overflow-y-auto flex flex-col space-y-3 p-4">
                     <div className="w-full py-1 mb-5">
-                        <p className="dark:text-gray-200 text-gray-500 text-center">
+                        <p className="dark:text-gray-200 text-gray-500 text-center text-sm md:text-base">
                             Messages are automatically deleted after being read
                         </p>
                     </div>

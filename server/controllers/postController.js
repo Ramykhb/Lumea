@@ -13,6 +13,10 @@ import {
     retrieveUserPosts,
     deletePost,
     retrieveLikes,
+    retrieveNotifications,
+    addNotification,
+    isNewNotifications,
+    updateNotifications,
 } from "../services/postService.js";
 
 export const getAllPosts = async (req, res) => {
@@ -65,6 +69,7 @@ export const savePost = async (req, res) => {
 export const likePost = async (req, res) => {
     try {
         await addLike(req.user.username, req.body.postId);
+        await addNotification(req.user.username, req.body.receiverUsername, 3);
         return res.status(200).json({ success: true });
     } catch (err) {
         return res.status(500).json({ message: "Error performing action." });
@@ -144,6 +149,36 @@ export const getLikes = async (req, res) => {
     return res.status(200).json(likes);
 };
 
+export const getNotifications = async (req, res) => {
+    const username = req.user.username;
+    const notifications = await retrieveNotifications(username);
+    if (!notifications) {
+        return res.status(400).json({
+            title: "Invalid Request",
+            message: "The request data is not valid. Please check your input.",
+        });
+    }
+    return res.status(200).json(notifications);
+};
+
+export const readNotifications = async (req, res) => {
+    const username = req.user.username;
+    await updateNotifications(username);
+    return res.status(200).json({ message: "Notifications read successfully" });
+};
+
+export const getNewNotifications = async (req, res) => {
+    const username = req.user.username;
+    const isNew = await isNewNotifications(username);
+    if (!isNew) {
+        return res.status(400).json({
+            title: "Invalid Request",
+            message: "The request data is not valid. Please check your input.",
+        });
+    }
+    return res.status(200).json(isNew);
+};
+
 export const uploadImage = async (req, res) => {
     const file = req.file;
     if (!file) {
@@ -172,13 +207,14 @@ export const createPost = async (req, res) => {
 export const postComment = async (req, res) => {
     const { username } = req.user;
     const userID = await getID(username);
-    const { content, postId } = req.body;
-    if (!content || !postId) {
+    const { content, postId, receiverUsername } = req.body;
+    if (!content || !postId || !receiverUsername) {
         return res.status(400).json({ message: "Invalid Request." });
     }
     const dateNow = new Date();
     try {
         const result = await addComment(userID, content, postId, dateNow);
+        await addNotification(username, receiverUsername, 4);
         return res.status(200).json({
             message: "Comment added Successfully",
             newComment: {

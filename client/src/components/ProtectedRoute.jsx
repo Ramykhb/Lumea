@@ -3,69 +3,58 @@ import { Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import api from "../api/axios";
 
-function ProtectedRoute({ children }) {
+function ProtectedRoute({ children, onUser }) {
+    const [isReady, setIsReady] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
 
-    const auth = async () => {
-        const token = localStorage.getItem("accessToken");
-
-        if (!token) {
-            setIsAuthenticated(false);
-            return;
-        }
-
-        const decodedToken = jwtDecode(token, { header: false });
-        const expirationDate = decodedToken.exp;
-
-        if (Date.now() / 1000 > expirationDate) {
-            await refresh();
-        } else {
-            setIsAuthenticated(true);
-        }
-    };
-
-    const refresh = async () => {
-        try {
-            const accessToken = localStorage.getItem("accessToken");
-
-            const response = await api.post("/auth/refresh", {
-                accessToken: accessToken,
-            });
-
-            if (response.status == 200) {
-                localStorage.setItem("accessToken", response.data.accessToken);
-                setIsAuthenticated(true);
-                return;
-            } else {
+    useEffect(() => {
+        const verify = async () => {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
                 setIsAuthenticated(false);
+                setIsReady(true);
                 return;
             }
-        } catch (error) {
-            setIsAuthenticated(false);
-            return;
-        }
-    };
 
-    useEffect(() => {
-        auth().catch(() => {
-            setIsAuthenticated(false);
-        });
-        setIsLoading(false);
+            try {
+                const decoded = jwtDecode(token);
+                const expired = Date.now() / 1000 > decoded.exp;
+
+                if (expired) {
+                    try {
+                        const res = await api.post("/auth/refresh", {
+                            accessToken: token,
+                        });
+                        localStorage.setItem(
+                            "accessToken",
+                            res.data.accessToken
+                        );
+                        setIsAuthenticated(true);
+                    } catch {
+                        setIsAuthenticated(false);
+                    }
+                } else {
+                    try {
+                        const res = await api.get("/auth/user");
+                        onUser(res.data.username);
+                    } catch (err) {
+                        console.log(err);
+                    }
+                    setIsAuthenticated(true);
+                }
+            } catch {
+                setIsAuthenticated(false);
+            }
+
+            setIsReady(true);
+        };
+
+        verify();
     }, []);
 
-    useEffect(() => {
-        auth().catch(() => {
-            setIsAuthenticated(false);
-        });
-        setIsLoading(false);
-    }, [location.pathname]);
+    if (!isReady) return <h1>Loading...</h1>;
 
-    if (isLoading) {
-        return <h1>Loading...</h1>;
-    }
-
-    return isAuthenticated ? children : <Navigate to="/login" />;
+    return isAuthenticated ? children : <Navigate to="/login" replace />;
 }
 
 export default ProtectedRoute;

@@ -14,6 +14,7 @@ import {
     retrieveMessages,
     updateMessages,
 } from "./services/chatService.js";
+import { addNotification } from "./services/postService.js";
 
 dotenv.config();
 
@@ -53,10 +54,7 @@ app.use("/api/v1/auth", userRouter);
 app.use("/api/v1/posts", postRouter);
 
 io.on("connection", (socket) => {
-    console.log("🟢 User connected:", socket.id);
-
     socket.on("join", async (username) => {
-        console.log(username);
         onlineUsers.set(username, socket);
         const messages = await retrieveMessages(username);
         socket.emit("messages", messages);
@@ -71,6 +69,8 @@ io.on("connection", (socket) => {
                 receiverUsername,
                 content
             );
+
+            await addNotification(senderUsername, receiverUsername, 1);
 
             const message = {
                 id: result.insertId,
@@ -92,7 +92,6 @@ io.on("connection", (socket) => {
     );
 
     socket.on("disconnect", () => {
-        console.log("🔴 User disconnected:", socket.id);
         for (const [username, userSocket] of onlineUsers.entries()) {
             if (userSocket.id === socket.id) {
                 onlineUsers.delete(username);

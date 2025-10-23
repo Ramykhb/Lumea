@@ -4,28 +4,29 @@ import {
     faHouse,
     faBookmark,
     faUser,
+    faBell,
 } from "@fortawesome/free-regular-svg-icons";
 import {
     faMagnifyingGlass,
     faPlus,
     faGear,
 } from "@fortawesome/free-solid-svg-icons";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import api from "@/api/axios";
 
 const SideBar = (props) => {
+    const [newNotifications, setNewNotifications] = useState(0);
+
     useEffect(() => {
-        const getUser = async () => {
-            if (!props.username) {
-                try {
-                    const res = await api.get("/auth/user");
-                    props.onUser(res.data.username);
-                } catch (err) {
-                    console.log(err);
-                }
+        const fetchNewNotifications = async () => {
+            try {
+                const res = await api.get("/posts/newNotifications");
+                setNewNotifications(res.data.newCount);
+            } catch (err) {
+                console.log(err);
             }
         };
-        getUser();
+        fetchNewNotifications();
     }, []);
 
     return (
@@ -61,9 +62,9 @@ const SideBar = (props) => {
                     <div className="text-black w-[90%] mx-[5%] rounded-xl flex items-center justify-center md:justify-start px-2 text-xl h-[2.5em] my-7 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]">
                         <FontAwesomeIcon
                             icon={faHouse}
-                            className="text-2xl md:mr-4"
+                            className="text-2xl md:mr-2"
                         />
-                        <h1 className="text-xl font-semibold hidden md:block">
+                        <h1 className="xl:text-xl text-base font-semibold hidden md:block">
                             Home
                         </h1>
                     </div>
@@ -73,9 +74,9 @@ const SideBar = (props) => {
                     <div className="text-black w-[90%] mx-[5%] rounded-xl flex items-center justify-center md:justify-start px-2 text-xl h-[2.5em] my-7 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]">
                         <FontAwesomeIcon
                             icon={faMagnifyingGlass}
-                            className="text-2xl md:mr-4"
+                            className="text-2xl md:mr-2"
                         />
-                        <h1 className="text-xl font-semibold hidden md:block">
+                        <h1 className="xl:text-xl text-base font-semibold hidden md:block">
                             Search
                         </h1>
                     </div>
@@ -85,9 +86,9 @@ const SideBar = (props) => {
                     <div className="text-black w-[90%] mx-[5%] rounded-xl flex items-center justify-center md:justify-start px-[10px] text-xl h-[2.5em] my-7 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]">
                         <FontAwesomeIcon
                             icon={faPlus}
-                            className="text-xl md:mr-4 border-black border-2 w-4 h-4 p-1 rounded-full dark:border-white"
+                            className="text-xl md:mr-2 border-black border-2 w-4 h-4 p-1 rounded-full dark:border-white"
                         />
-                        <h1 className="text-xl font-semibold hidden md:block">
+                        <h1 className="xl:text-xl text-base font-semibold hidden md:block">
                             Create
                         </h1>
                     </div>
@@ -97,10 +98,33 @@ const SideBar = (props) => {
                     <div className="text-black w-[90%] mx-[5%] rounded-xl flex items-center justify-center md:justify-start px-2 text-xl h-[2.5em] my-5 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]">
                         <FontAwesomeIcon
                             icon={faBookmark}
-                            className="text-2xl md:mr-4"
+                            className="text-2xl md:mr-2"
                         />
-                        <h1 className="text-xl font-semibold hidden md:block">
+                        <h1 className="xl:text-xl text-base font-semibold hidden md:block">
                             Saved
+                        </h1>
+                    </div>
+                </Link>
+
+                <Link to={"/notifications"}>
+                    <div className="text-black w-[90%] mx-[5%] rounded-xl flex items-center justify-center md:justify-start px-2 text-xl h-[2.5em] my-7 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]">
+                        <FontAwesomeIcon
+                            icon={faBell}
+                            className="text-2xl md:mr-2 relative"
+                            style={newNotifications > 0 ? { color: "red" } : ""}
+                        ></FontAwesomeIcon>
+                        <h1 className="xl:text-xl text-base font-semibold hidden md:block">
+                            <span
+                                className="text-red-600 lg:mr-2 mr-1"
+                                style={
+                                    newNotifications > 0
+                                        ? { display: "inline" }
+                                        : { display: "none" }
+                                }
+                            >
+                                {newNotifications > 0 ? newNotifications : ""}
+                            </span>
+                            Notifications
                         </h1>
                     </div>
                 </Link>
@@ -109,9 +133,9 @@ const SideBar = (props) => {
                     <div className="text-black w-[90%] mx-[5%] rounded-xl flex items-center justify-center md:justify-start px-2 text-xl h-[2.5em] my-7 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]">
                         <FontAwesomeIcon
                             icon={faUser}
-                            className="text-2xl md:mr-4"
+                            className="text-2xl md:mr-2"
                         />
-                        <h1 className="text-xl font-semibold hidden md:block">
+                        <h1 className="xl:text-xl text-base font-semibold hidden md:block">
                             Profile
                         </h1>
                     </div>
@@ -122,9 +146,9 @@ const SideBar = (props) => {
                     <div className="text-black w-[90%] mx-[5%] rounded-xl flex items-center justify-center md:justify-start px-2 text-xl h-[2.5em] my-7 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]">
                         <FontAwesomeIcon
                             icon={faGear}
-                            className="text-2xl md:mr-4"
+                            className="text-2xl md:mr-2"
                         />
-                        <h1 className="text-xl font-semibold hidden md:block">
+                        <h1 className="xl:text-xl text-base font-semibold hidden md:block">
                             Settings
                         </h1>
                     </div>

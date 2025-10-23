@@ -22,6 +22,11 @@ const Post = (props) => {
     const [saved, setSaved] = useState(false);
     const [firstDivHeight, setFirstDivHeight] = useState(0);
     const [showLikes, setShowLikes] = useState(false);
+    const [showComments, setShowComments] = useState(false);
+
+    const [isMd, setIsMd] = useState(
+        window.matchMedia("(min-width: 768px)").matches
+    );
 
     const firstDivRef = useRef(null);
     const commentInput = useRef(null);
@@ -30,12 +35,15 @@ const Post = (props) => {
         try {
             if (liked) {
                 const res = await api.delete("/posts/likePost", {
-                    data: { postId: props.id },
+                    data: {
+                        postId: props.id,
+                    },
                 });
                 setLikes(likes - 1);
             } else {
                 const res = await api.post("/posts/likePost", {
                     postId: props.id,
+                    receiverUsername: props.username,
                 });
                 setLikes(likes + 1);
             }
@@ -66,13 +74,23 @@ const Post = (props) => {
     };
 
     const handleComment = () => {
-        if (commentInput.current) {
-            commentInput.current.focus();
+        if (window.matchMedia("(min-width: 768px)").matches) {
+            if (commentInput.current) {
+                commentInput.current.focus();
+            }
+        } else {
+            toggleShowComments();
         }
     };
 
     const toggleShowLikes = () => {
+        setShowComments(false);
         setShowLikes(!showLikes);
+    };
+
+    const toggleShowComments = () => {
+        setShowComments(!showComments);
+        setShowLikes(false);
     };
 
     useEffect(() => {
@@ -83,16 +101,21 @@ const Post = (props) => {
         setLiked(props.isLiked);
         setSaved(props.isSaved);
 
-        const setHeight = (temp = false) => {
-            if (temp) setFirstDivHeight(5);
-            setFirstDivHeight(el.offsetHeight);
+        const setHeight = () => {
+            if (!showComments && el.offsetHeight > 0) {
+                setFirstDivHeight(el.offsetHeight);
+                if (window.matchMedia("(min-width: 768px)").matches) {
+                    setShowComments(false);
+                    setShowLikes(false);
+                }
+            }
         };
 
         const observer = new ResizeObserver(setHeight);
         observer.observe(el);
 
         const handleResize = () => {
-            setHeight(true);
+            setHeight();
         };
         window.addEventListener("resize", handleResize);
 
@@ -103,7 +126,12 @@ const Post = (props) => {
 
         setHeight();
 
+        const mediaQuery = window.matchMedia("(min-width: 768px)");
+        const handleChange = (e) => setIsMd(e.matches);
+        mediaQuery.addEventListener("change", handleChange);
+
         return () => {
+            mediaQuery.removeEventListener("change", handleChange);
             observer.disconnect();
             images.forEach((img) => img.removeEventListener("load", setHeight));
         };
@@ -111,12 +139,22 @@ const Post = (props) => {
 
     return (
         <div className="md:w-[60%] w-[80%] h-auto bg-primary-light dark:bg-primary-dark flex md:flex-row rounded-2xl border-gray-200 border-[1px] my-[2em] dark:border-border-dark flex-col items-start">
-            <div ref={firstDivRef} className="md:w-[50%] w-full flex flex-col">
+            <div
+                ref={firstDivRef}
+                className="md:w-[50%] w-full flex flex-col"
+                style={
+                    isMd
+                        ? { display: "flex" }
+                        : showComments || showLikes
+                        ? { display: "none" }
+                        : { display: "flex" }
+                }
+            >
                 <Link
                     to={`/profile/${props.username}`}
                     className="flex items-center gap-3 p-2"
                 >
-                    <div className="w-14 h-14 sm:w-10 sm:h-10 md:w-7 md:h-7 rounded-full overflow-hidden">
+                    <div className="w-10 h-10 md:w-7 md:h-7 lg:w-9 lg:h-9 rounded-full overflow-hidden">
                         <img
                             src={`${uploadsPath}${props.profileImage}`}
                             alt={props.username}
@@ -201,11 +239,15 @@ const Post = (props) => {
                 maxHeight={firstDivHeight}
                 postId={props.id}
                 showLikes={showLikes}
+                showComments={showComments}
+                onToggleShowComments={toggleShowComments}
+                author={props.username}
             />
             <LikeSection
                 maxHeight={firstDivHeight}
                 postId={props.id}
                 showLikes={showLikes}
+                onToggleShowLikes={toggleShowLikes}
             />
             <div></div>
         </div>

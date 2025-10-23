@@ -12,6 +12,7 @@ const EditProfile = (props) => {
     const [profile, setProfile] = useState({});
     const [isPublic, setIsPublic] = useState(true);
     const [filePath, setFilePath] = useState("");
+    const [error, setError] = useState("");
 
     const navigate = useNavigate();
 
@@ -45,6 +46,49 @@ const EditProfile = (props) => {
             if (!file) {
                 return;
             }
+            setError("");
+            const maxSize = 1024 * 1024;
+
+            if (file.size >= maxSize) {
+                setError("Max file size is 1 MB");
+                setTimeout(() => {
+                    setFile(null);
+                }, 100);
+                return;
+            }
+
+            const checkDimensions = new Promise((resolve, reject) => {
+                const img = new Image();
+                img.src = URL.createObjectURL(file);
+                img.onload = () => {
+                    if (img.width / img.height >= 2) {
+                        reject(
+                            new Error(
+                                "Image too wide, please crop image first."
+                            )
+                        );
+                        return;
+                    }
+                    if (img.height / img.width >= 2) {
+                        reject(
+                            new Error(
+                                "Image too tall, please crop image first."
+                            )
+                        );
+                        return;
+                    }
+                    resolve();
+                };
+            });
+
+            try {
+                await checkDimensions;
+            } catch (err) {
+                console.log(err);
+                setError(err.message);
+                return;
+            }
+
             const formData = new FormData();
             formData.append("image", file);
 
@@ -76,8 +120,8 @@ const EditProfile = (props) => {
 
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
-            <SideBar onUser={props.onUser} username={props.username} />
-            <div className="w-[80%] ml-[20%] min-h-[100vh] flex items-center justify-center">
+            <SideBar username={props.username} />
+            <div className="md:w-[80%] w-[85%] md:ml-[20%] ml-[15%] min-h-[100vh] flex items-center justify-center">
                 <Stepper
                     initialStep={1}
                     onFinalStepCompleted={handleSaveChanges}
@@ -117,6 +161,9 @@ const EditProfile = (props) => {
                                 }}
                             />
                         </div>
+                        <p className="text-sm text-red-500 my-2 text-center">
+                            {error}
+                        </p>
                     </Step>
                     <Step>
                         <h2 className="text-center text-2xl dark:text-gray-100 mb-5">

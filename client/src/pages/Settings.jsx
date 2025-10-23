@@ -33,8 +33,8 @@ const Settings = (props) => {
 
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
-            <SideBar onUser={props.onUser} username={props.username} />
-            <div className="w-[80%] h-[100vh] ml-[20%] flex flex-col items-center overflow-y-auto justify-center">
+            <SideBar username={props.username} />
+            <div className="md:w-[80%] w-[85%] md:ml-[20%] ml-[15%] h-[100vh] flex flex-col items-center overflow-y-auto justify-center">
                 <div className="md:w-[350px] sm:w-[300px] w-[230px] py-7 dark:bg-primary-dark bg-primary-light dark:border-border-dark rounded-2xl border-gray-300 border-[1px] flex-col flex items-center">
                     <p className="text-2xl font-bold text-black dark:text-white mb-7 w-full text-center">
                         Settings
@@ -59,18 +59,18 @@ const Settings = (props) => {
                         </div>
                     </div>
                     <Link to={"/change-password"} className="w-full">
-                        <div className="text-black w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-md h-[2.5em] my-2 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]">
+                        <div className="text-black w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-base h-[2.5em] my-2 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]">
                             <p className="font-bold">Change Password</p>
                         </div>
                     </Link>
                     <div
-                        className="text-black w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-md h-[2.5em] my-2 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]"
+                        className="text-black w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-base h-[2.5em] my-2 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]"
                         onClick={handleLogout}
                     >
                         <p className="font-bold">Log out</p>
                     </div>
                     <div
-                        className="text-red-500 w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-md h-[2.5em] my-2 hover:bg-[#dfdfe0] hover:cursor-pointer dark:hover:bg-[#2c2c2c]"
+                        className="text-red-500 w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-base h-[2.5em] my-2 hover:bg-[#dfdfe0] hover:cursor-pointer dark:hover:bg-[#2c2c2c]"
                         onClick={() => {
                             confimationRef.current.style.display = "flex";
                         }}
@@ -88,7 +88,7 @@ const Settings = (props) => {
                         Are you sure?
                     </p>
                     <div
-                        className="text-black w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-md h-[2.5em] my-2 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]"
+                        className="text-black w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-base h-[2.5em] my-2 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]"
                         onClick={() => {
                             confimationRef.current.style.display = "none";
                         }}
@@ -96,7 +96,7 @@ const Settings = (props) => {
                         <p className="font-bold">No</p>
                     </div>
                     <div
-                        className="text-red-500 w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-md h-[2.5em] my-2 hover:bg-[#dfdfe0] hover:cursor-pointer dark:hover:bg-[#2c2c2c]"
+                        className="text-red-500 w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-base h-[2.5em] my-2 hover:bg-[#dfdfe0] hover:cursor-pointer dark:hover:bg-[#2c2c2c]"
                         onClick={handleDeleteAccount}
                     >
                         <p className="font-bold">Yes</p>

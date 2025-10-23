@@ -17,6 +17,9 @@ import {
     commentDeletion,
     postDeletion,
     getLikes,
+    getNotifications,
+    getNewNotifications,
+    readNotifications,
 } from "../controllers/postController.js";
 import {
     commentDeletionMiddleware,
@@ -47,6 +50,10 @@ postRouter.get("/comments", authenticateToken, getComments);
 
 postRouter.get("/likes", authenticateToken, getLikes);
 
+postRouter.get("/notifications", authenticateToken, getNotifications);
+
+postRouter.put("/readNotifications", authenticateToken, readNotifications);
+
 postRouter.get("/saved", authenticateToken, getSavedPosts);
 
 postRouter.post("/savePost", authenticateToken, savePost);
@@ -54,6 +61,8 @@ postRouter.post("/savePost", authenticateToken, savePost);
 postRouter.delete("/savePost", authenticateToken, unSavePost);
 
 postRouter.post("/likePost", authenticateToken, likePost);
+
+postRouter.get("/newNotifications", authenticateToken, getNewNotifications);
 
 postRouter.delete("/likePost", authenticateToken, unLikePost);
 

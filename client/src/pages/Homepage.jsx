@@ -51,8 +51,8 @@ const Homepage = (props) => {
 
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
-            <SideBar onUser={props.onUser} username={props.username} />
-            <div className="w-[80%] ml-[20%] min-h-[100vh] flex flex-col items-center overflow-y-auto">
+            <SideBar username={props.username} />
+            <div className="md:w-[80%] w-[85%] md:ml-[20%] ml-[15%] min-h-[100vh] flex flex-col items-center overflow-y-auto">
                 <div className="h-10 flex flex-row justify-center items-center w-full py-5 mt-5">
                     <div className="flex justify-between xl:w-[20%] w-[60%]">
                         <p

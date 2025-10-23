@@ -67,6 +67,54 @@ export const retrieveLikes = async (postId) => {
     }
 };
 
+export const retrieveNotifications = async (username) => {
+    const userID = await getID(username);
+    try {
+        const sql =
+            "SELECT Notifications.*, Users.username, Users.profileImage FROM Notifications JOIN Users ON Users.id = Notifications.senderId WHERE receiverId = ? ORDER BY sentAt DESC";
+        const [result] = await pool.query(sql, [userID]);
+        return result;
+    } catch (err) {
+        console.error("Error Querying Database:", err);
+    }
+};
+
+export const isNewNotifications = async (username) => {
+    const userID = await getID(username);
+    try {
+        const sql =
+            "SELECT COUNT(*) as newCount FROM Notifications WHERE receiverId = ? AND isDelivered = false";
+        const [result] = await pool.query(sql, [userID]);
+        return result[0];
+    } catch (err) {
+        console.error("Error Querying Database:", err);
+    }
+};
+
+export const addNotification = async (username, receiverUsername, type) => {
+    const senderId = await getID(username);
+    const receiverId = await getID(receiverUsername);
+    try {
+        const sql =
+            "INSERT INTO Notifications (senderId, receiverId, type) VALUES (?,?,?)";
+        const [result] = await pool.query(sql, [senderId, receiverId, type]);
+        return result;
+    } catch (err) {
+        console.error("Error Querying Database:", err);
+    }
+};
+
+export const updateNotifications = async (username) => {
+    const userID = await getID(username);
+    try {
+        const sql =
+            "UPDATE Notifications SET isDelivered = true WHERE receiverId = ?";
+        const [result] = await pool.query(sql, [userID]);
+    } catch (err) {
+        console.error("Error Querying Database:", err);
+    }
+};
+
 export const addSave = async (username, postId) => {
     try {
         const userID = await getID(username);

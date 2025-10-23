@@ -1,3 +1,4 @@
+import { addNotification } from "../services/postService.js";
 import {
     addUser,
     deleteRefreshTokenFromDB,
@@ -83,6 +84,7 @@ export const followProfile = async (req, res) => {
     }
     try {
         await followUser(myUsername, profileUsername);
+        await addNotification(myUsername, profileUsername, 2);
         return res
             .status(200)
             .json({ message: "Profile followed successfully" });
@@ -222,7 +224,10 @@ export const refreshToken = (req, res) => {
     const accessToken = generateAccessToken({
         username: req.user.username.toLowerCase(),
     });
-    res.json({ accessToken: accessToken });
+    res.json({
+        accessToken: accessToken,
+        username: req.user.username.toLowerCase(),
+    });
 };
 
 export const logout = async (req, res) => {

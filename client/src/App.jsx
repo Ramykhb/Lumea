@@ -14,6 +14,7 @@ import SavedPosts from "./pages/SavedPosts.jsx";
 import Search from "./pages/Search.jsx";
 import EditProfile from "./pages/EditProfile.jsx";
 import ChatPage from "./pages/ChatPage.jsx";
+import NotificationsPage from "./pages/NotificationsPage.jsx";
 
 function App() {
     const [darkMode, setDarkMode] = useState(false);
@@ -50,7 +51,7 @@ function App() {
                 <Route
                     path="/"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute onUser={handleUsername}>
                             <ClickSpark
                                 sparkColor={darkMode ? "#fff" : "#000"}
                                 sparkSize={10}
@@ -58,10 +59,7 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <Homepage
-                                    username={username}
-                                    onUser={handleUsername}
-                                />
+                                <Homepage username={username} />
                             </ClickSpark>
                         </ProtectedRoute>
                     }
@@ -69,7 +67,7 @@ function App() {
                 <Route
                     path="/saved"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute onUser={handleUsername}>
                             <ClickSpark
                                 sparkColor={darkMode ? "#fff" : "#000"}
                                 sparkSize={10}
@@ -77,10 +75,7 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <SavedPosts
-                                    username={username}
-                                    onUser={handleUsername}
-                                />
+                                <SavedPosts username={username} />
                             </ClickSpark>
                         </ProtectedRoute>
                     }
@@ -88,7 +83,7 @@ function App() {
                 <Route
                     path="/search"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute onUser={handleUsername}>
                             <ClickSpark
                                 sparkColor={darkMode ? "#fff" : "#000"}
                                 sparkSize={10}
@@ -96,10 +91,7 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <Search
-                                    username={username}
-                                    onUser={handleUsername}
-                                />
+                                <Search username={username} />
                             </ClickSpark>
                         </ProtectedRoute>
                     }
@@ -107,7 +99,7 @@ function App() {
                 <Route
                     path="/settings"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute onUser={handleUsername}>
                             <ClickSpark
                                 sparkColor={darkMode ? "#fff" : "#000"}
                                 sparkSize={10}
@@ -119,7 +111,6 @@ function App() {
                                     onToggleDarkMode={toggleDarkMode}
                                     darkModeOn={darkMode}
                                     username={username}
-                                    onUser={handleUsername}
                                 />
                             </ClickSpark>
                         </ProtectedRoute>
@@ -128,7 +119,7 @@ function App() {
                 <Route
                     path="/change-password"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute onUser={handleUsername}>
                             <ClickSpark
                                 sparkColor={darkMode ? "#fff" : "#000"}
                                 sparkSize={10}
@@ -136,10 +127,7 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <ChangePassword
-                                    username={username}
-                                    onUser={handleUsername}
-                                />
+                                <ChangePassword username={username} />
                             </ClickSpark>
                         </ProtectedRoute>
                     }
@@ -162,7 +150,7 @@ function App() {
                 <Route
                     path="/create"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute onUser={handleUsername}>
                             <ClickSpark
                                 sparkColor={darkMode ? "#fff" : "#000"}
                                 sparkSize={10}
@@ -170,10 +158,7 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <CreatePost
-                                    username={username}
-                                    onUser={handleUsername}
-                                />
+                                <CreatePost username={username} />
                             </ClickSpark>
                         </ProtectedRoute>
                     }
@@ -181,7 +166,7 @@ function App() {
                 <Route
                     path="/profile/:username"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute onUser={handleUsername}>
                             <ClickSpark
                                 sparkColor={darkMode ? "#fff" : "#000"}
                                 sparkSize={10}
@@ -189,10 +174,7 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <Profile
-                                    username={username}
-                                    onUser={handleUsername}
-                                />
+                                <Profile username={username} />
                             </ClickSpark>
                         </ProtectedRoute>
                     }
@@ -200,7 +182,7 @@ function App() {
                 <Route
                     path="/chat/:username"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute onUser={handleUsername}>
                             <ClickSpark
                                 sparkColor={darkMode ? "#fff" : "#000"}
                                 sparkSize={10}
@@ -208,10 +190,7 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <ChatPage
-                                    username={username}
-                                    onUser={handleUsername}
-                                />
+                                <ChatPage username={username} />
                             </ClickSpark>
                         </ProtectedRoute>
                     }
@@ -233,7 +212,7 @@ function App() {
                 <Route
                     path="/editProfile"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute onUser={handleUsername}>
                             <ClickSpark
                                 sparkColor={darkMode ? "#fff" : "#000"}
                                 sparkSize={10}
@@ -241,10 +220,23 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <EditProfile
-                                    username={username}
-                                    onUser={handleUsername}
-                                />
+                                <EditProfile username={username} />
+                            </ClickSpark>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/notifications"
+                    element={
+                        <ProtectedRoute onUser={handleUsername}>
+                            <ClickSpark
+                                sparkColor={darkMode ? "#fff" : "#000"}
+                                sparkSize={10}
+                                sparkRadius={15}
+                                sparkCount={8}
+                                duration={400}
+                            >
+                                <NotificationsPage username={username} />
                             </ClickSpark>
                         </ProtectedRoute>
                     }
