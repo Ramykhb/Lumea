@@ -55,43 +55,34 @@ app.use("/api/v1/auth", userRouter);
 app.use("/api/v1/posts", postRouter);
 
 io.on("connection", (socket) => {
-    socket.on("join", async (username, target) => {
-        const primaryId = await getID(username);
-        const secondaryId = await getID(target);
+    socket.on("join", async (primaryId, secondaryId) => {
         onlineUsers.set(primaryId, { socket, secondaryId });
-        const messages = await retrieveMessages(username, target);
+        const messages = await retrieveMessages(primaryId, secondaryId);
         socket.emit("messages", messages);
-        await updateMessages(username, target);
+        await updateMessages(primaryId, secondaryId);
     });
 
-    socket.on(
-        "sendMessage",
-        async ({ senderUsername, receiverUsername, content }) => {
-            const senderId = await getID(senderUsername);
-            const receiverId = await getID(receiverUsername);
+    socket.on("sendMessage", async ({ senderId, receiverId, content }) => {
+        const result = await insertMessage(senderId, receiverId, content);
+        const message = {
+            id: result.insertId,
+            senderId: senderId,
+            receiverId: receiverId,
+            content: content,
+            sentAt: new Date(),
+            delivered: false,
+        };
 
-            const result = await insertMessage(senderId, receiverId, content);
+        socket.emit("messageDelivered", message);
 
-            const message = {
-                id: result.insertId,
-                senderId: senderId,
-                receiverId: receiverId,
-                content: content,
-                sentAt: new Date(),
-                delivered: false,
-            };
-
-            socket.emit("messageDelivered", message);
-
-            const receiverSocket = onlineUsers.get(receiverId);
-            if (receiverSocket && receiverSocket.secondaryId === senderId) {
-                receiverSocket.socket.emit("receiveMessage", message);
-                await deleteMessage(message.id);
-            } else {
-                await addNotification(senderUsername, receiverUsername, 1);
-            }
+        const receiverSocket = onlineUsers.get(receiverId);
+        if (receiverSocket && receiverSocket.secondaryId === senderId) {
+            receiverSocket.socket.emit("receiveMessage", message);
+            await deleteMessage(message.id);
+        } else {
+            await addNotification(senderId, receiverId, 1);
         }
-    );
+    });
 
     socket.on("disconnect", () => {
         for (const [primaryId, userSocket] of onlineUsers.entries()) {

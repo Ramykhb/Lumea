@@ -19,9 +19,11 @@ import NotificationsPage from "./pages/NotificationsPage.jsx";
 function App() {
     const [darkMode, setDarkMode] = useState(false);
     const [username, setUsername] = useState("");
+    const [userId, setUserId] = useState("");
 
-    const handleUsername = (username) => {
+    const handleUsername = (username, id) => {
         setUsername(username);
+        setUserId(id);
     };
 
     useEffect(() => {
@@ -59,7 +61,7 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <Homepage username={username} />
+                                <Homepage username={username} userId={userId} />
                             </ClickSpark>
                         </ProtectedRoute>
                     }
@@ -75,7 +77,10 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <SavedPosts username={username} />
+                                <SavedPosts
+                                    username={username}
+                                    userId={userId}
+                                />
                             </ClickSpark>
                         </ProtectedRoute>
                     }
@@ -91,7 +96,7 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <Search username={username} />
+                                <Search username={username} userId={userId} />
                             </ClickSpark>
                         </ProtectedRoute>
                     }
@@ -111,6 +116,7 @@ function App() {
                                     onToggleDarkMode={toggleDarkMode}
                                     darkModeOn={darkMode}
                                     username={username}
+                                    userId={userId}
                                 />
                             </ClickSpark>
                         </ProtectedRoute>
@@ -127,7 +133,10 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <ChangePassword username={username} />
+                                <ChangePassword
+                                    username={username}
+                                    userId={userId}
+                                />
                             </ClickSpark>
                         </ProtectedRoute>
                     }
@@ -158,7 +167,10 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <CreatePost username={username} />
+                                <CreatePost
+                                    username={username}
+                                    userId={userId}
+                                />
                             </ClickSpark>
                         </ProtectedRoute>
                     }
@@ -174,7 +186,7 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <Profile username={username} />
+                                <Profile username={username} userId={userId} />
                             </ClickSpark>
                         </ProtectedRoute>
                     }
@@ -190,7 +202,7 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <ChatPage username={username} />
+                                <ChatPage username={username} userId={userId} />
                             </ClickSpark>
                         </ProtectedRoute>
                     }
@@ -220,7 +232,10 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <EditProfile username={username} />
+                                <EditProfile
+                                    username={username}
+                                    userId={userId}
+                                />
                             </ClickSpark>
                         </ProtectedRoute>
                     }
@@ -236,7 +251,10 @@ function App() {
                                 sparkCount={8}
                                 duration={400}
                             >
-                                <NotificationsPage username={username} />
+                                <NotificationsPage
+                                    username={username}
+                                    userId={userId}
+                                />
                             </ClickSpark>
                         </ProtectedRoute>
                     }

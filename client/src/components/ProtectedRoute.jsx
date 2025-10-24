@@ -36,7 +36,7 @@ function ProtectedRoute({ children, onUser }) {
                 } else {
                     try {
                         const res = await api.get("/auth/user");
-                        onUser(res.data.username);
+                        onUser(res.data.username, res.data.id);
                     } catch (err) {
                         console.log(err);
                     }

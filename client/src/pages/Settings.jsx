@@ -33,7 +33,7 @@ const Settings = (props) => {
 
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
-            <SideBar username={props.username} />
+            <SideBar username={props.username} userId={props.userId} />
             <div className="md:w-[80%] w-[85%] md:ml-[20%] ml-[15%] h-[100vh] flex flex-col items-center overflow-y-auto justify-center">
                 <div className="md:w-[350px] sm:w-[300px] w-[230px] py-7 dark:bg-primary-dark bg-primary-light dark:border-border-dark rounded-2xl border-gray-300 border-[1px] flex-col flex items-center">
                     <p className="text-2xl font-bold text-black dark:text-white mb-7 w-full text-center">

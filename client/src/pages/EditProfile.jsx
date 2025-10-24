@@ -120,7 +120,7 @@ const EditProfile = (props) => {
 
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
-            <SideBar username={props.username} />
+            <SideBar username={props.username} userId={props.userId} />
             <div className="md:w-[80%] w-[85%] md:ml-[20%] ml-[15%] min-h-[100vh] flex items-center justify-center">
                 <Stepper
                     initialStep={1}

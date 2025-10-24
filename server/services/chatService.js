@@ -1,26 +1,22 @@
 import pool from "../database/dbConfig.js";
 import { getID } from "./userService.js";
 
-export const retrieveMessages = async (primUsername, secUsername) => {
-    const primaryID = await getID(primUsername);
-    const secondaryID = await getID(secUsername);
+export const retrieveMessages = async (primaryId, secondaryId) => {
     try {
         const sql =
             "SELECT * from Messages WHERE receiverId = ? AND senderId = ? AND isDelivered = False ORDER BY sentAt ASC";
-        const [result] = await pool.query(sql, [primaryID, secondaryID]);
+        const [result] = await pool.query(sql, [primaryId, secondaryId]);
         return result;
     } catch (err) {
         console.error("Error Querying Database:", err);
     }
 };
 
-export const updateMessages = async (primUsername, secUsername) => {
-    const primaryID = await getID(primUsername);
-    const secondaryID = await getID(secUsername);
+export const updateMessages = async (primaryId, secondaryId) => {
     try {
         const sql =
             "DELETE FROM Messages WHERE receiverId = ? AND senderId = ?";
-        const [result] = await pool.query(sql, [primaryID, secondaryID]);
+        const [result] = await pool.query(sql, [primaryId, secondaryId]);
     } catch (err) {
         console.error("Error Querying Database:", err);
     }

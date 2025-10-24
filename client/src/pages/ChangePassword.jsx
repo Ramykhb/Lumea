@@ -55,7 +55,7 @@ const ChangePassword = (props) => {
 
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
-            <SideBar username={props.username} />
+            <SideBar username={props.username} userId={props.userId} />
             <div className="md:w-[80%] w-[85%] md:ml-[20%] ml-[15%] h-[100vh] flex flex-col items-center overflow-y-auto justify-center">
                 <form className="md:w-[40%] sm:w-[60%] w-[80%] flex flex-col border-gray-300 border-solid border-[1px] py-6 px-8 rounded-xl dark:border-border-dark">
                     <h2 className="text-3xl mb-4 dark:text-white text-center md:text-start">

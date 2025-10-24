@@ -20,8 +20,8 @@ const ChatPage = (props) => {
         e.preventDefault();
         if (newMessage.length > 0) {
             socketRef.current.emit("sendMessage", {
-                senderUsername: props.username,
-                receiverUsername: username,
+                senderId: props.userId,
+                receiverId: profile.id,
                 content: newMessage,
             });
         }
@@ -40,7 +40,6 @@ const ChatPage = (props) => {
     useEffect(() => {
         if (props.username === username) navigate("/");
         socketRef.current = io(uploadsPath);
-        socketRef.current.emit("join", props.username, username);
 
         setIsLoading(true);
         fetchProfile();
@@ -64,13 +63,14 @@ const ChatPage = (props) => {
     }, []);
 
     useEffect(() => {
-        if (profile) {
+        if (profile?.id && props.userId) {
+            socketRef.current.emit("join", props.userId, profile.id);
         }
     }, [profile]);
 
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
-            <SideBar username={props.username} />
+            <SideBar username={props.username} userId={props.userId} />
             <div className="md:w-[80%] w-[85%] md:ml-[20%] ml-[15%] h-[100dvh] flex flex-col relative md:px-10 px-3">
                 <div className="w-full md:px-5 px-2 py-2 h-20 flex items-center mb-5 border-b-[1px] border-gray-200 dark:border-border-dark">
                     <img

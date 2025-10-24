@@ -14,6 +14,7 @@ import {
     followUser,
     retrieveFollowers,
     retrieveFollowing,
+    getID,
 } from "../services/userService.js";
 
 import jwt from "jsonwebtoken";
@@ -27,7 +28,7 @@ export const signup = async (req, res) => {
         const refreshToken = generateRefreshToken({
             username: username,
         });
-        await addUser(req.body);
+        const result = await addUser(req.body);
         const success = await insertToken(username, refreshToken);
         if (success) {
             res.cookie("refreshToken", refreshToken, {
@@ -39,6 +40,7 @@ export const signup = async (req, res) => {
             res.status(201).json({
                 message: "User created successfully",
                 accessToken: accessToken,
+                id: result.insertId,
             });
         } else {
             res.status(500).json({
@@ -60,7 +62,8 @@ export const checkStatus = (req, res) => {
 
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
         if (err) return res.json({ loggedIn: false });
-        res.json({ loggedIn: true });
+        const accessToken = generateAccessToken({ username: user.username });
+        res.json({ loggedIn: true, accessToken });
     });
 };
 
@@ -165,7 +168,8 @@ export const getProfiles = async (req, res) => {
 };
 
 export const getUser = async (req, res) => {
-    return res.status(200).json({ username: req.user.username });
+    const userId = await getID(req.user.username);
+    return res.status(200).json({ username: req.user.username, id: userId });
 };
 
 export const changePassword = async (req, res) => {
@@ -194,6 +198,7 @@ export const changePassword = async (req, res) => {
 
 export const login = async (req, res) => {
     const username = req.body.username.toLowerCase();
+    const userId = await getID(username);
     const accessToken = generateAccessToken({
         username: username,
     });
@@ -211,6 +216,7 @@ export const login = async (req, res) => {
         res.status(201).json({
             message: "User logged in successfully",
             accessToken: accessToken,
+            id: userId,
         });
     } else {
         return res.status(500).json({

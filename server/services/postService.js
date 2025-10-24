@@ -91,9 +91,7 @@ export const isNewNotifications = async (username) => {
     }
 };
 
-export const addNotification = async (username, receiverUsername, type) => {
-    const senderId = await getID(username);
-    const receiverId = await getID(receiverUsername);
+export const addNotification = async (senderId, receiverId, type) => {
     try {
         const sql =
             "INSERT INTO Notifications (senderId, receiverId, type) VALUES (?,?,?)";
