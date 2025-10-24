@@ -243,7 +243,6 @@ const Post = (props) => {
                                 hour: "2-digit",
                                 minute: "2-digit",
                             })}
-                            w
                         </p>
                     )}
                 </div>
