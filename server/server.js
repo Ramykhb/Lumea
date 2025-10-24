@@ -26,16 +26,16 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        // origin: "http://localhost:5173",
-        origin: "https://b1hqqjqw-5173.euw.devtunnels.ms",
+        origin: "http://localhost:5173",
+        // origin: "https://b1hqqjqw-5173.euw.devtunnels.ms",
         methods: ["GET", "POST"],
     },
 });
 
 app.use(
     cors({
-        // origin: "http://localhost:5173",
-        origin: "https://b1hqqjqw-5173.euw.devtunnels.ms",
+        origin: "http://localhost:5173",
+        // origin: "https://b1hqqjqw-5173.euw.devtunnels.ms",
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
     })
@@ -67,14 +67,10 @@ io.on("connection", (socket) => {
     socket.on(
         "sendMessage",
         async ({ senderUsername, receiverUsername, content }) => {
-            const result = await insertMessage(
-                senderUsername,
-                receiverUsername,
-                content
-            );
-
             const senderId = await getID(senderUsername);
             const receiverId = await getID(receiverUsername);
+
+            const result = await insertMessage(senderId, receiverId, content);
 
             const message = {
                 id: result.insertId,

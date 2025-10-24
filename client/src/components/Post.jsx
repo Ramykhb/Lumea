@@ -215,9 +215,17 @@ const Post = (props) => {
                     {props.isMe ? (
                         <div className="ml-auto flex mt-3 items-center justify-between">
                             <p className="text-[0.65rem] text-gray-400 dark:text-gray-500">
-                                {props.postedAt.split("T")[0]} at{" "}
-                                {props.postedAt.split("T")[1].split(":")[0]}:
-                                {props.postedAt.split("T")[1].split(":")[1]}
+                                {new Date(props.postedAt).toLocaleDateString(
+                                    "en-GB"
+                                )}{" "}
+                                at{" "}
+                                {new Date(props.postedAt).toLocaleTimeString(
+                                    [],
+                                    {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                    }
+                                )}
                             </p>
                             <FontAwesomeIcon
                                 icon={faTrash}
@@ -227,9 +235,14 @@ const Post = (props) => {
                         </div>
                     ) : (
                         <p className="text-[0.65rem] text-gray-400 mt-3 dark:text-gray-500">
-                            {props.postedAt.split("T")[0]} at{" "}
-                            {props.postedAt.split("T")[1].split(":")[0]}:
-                            {props.postedAt.split("T")[1].split(":")[1]}
+                            {new Date(props.postedAt).toLocaleDateString(
+                                "en-GB"
+                            )}{" "}
+                            at{" "}
+                            {new Date(props.postedAt).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                            })}
                         </p>
                     )}
                 </div>

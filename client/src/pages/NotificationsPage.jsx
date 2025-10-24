@@ -83,10 +83,16 @@ const NotificationsPage = (props) => {
                                 </div>
                                 <div className="flex flex-row justify-end mr-5">
                                     <p className="text-gray-500 md:text-[0.6rem] text-[0.5rem] mt-2 text-nowrap">
-                                        {not.sentAt.split("T")[0]} at{" "}
-                                        {not.sentAt.split("T")[1].split(":")[0]}
-                                        :
-                                        {not.sentAt.split("T")[1].split(":")[1]}
+                                        {new Date(
+                                            not.sentAt
+                                        ).toLocaleDateString("en-GB")}{" "}
+                                        at{" "}
+                                        {new Date(
+                                            not.sentAt
+                                        ).toLocaleTimeString([], {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                        })}
                                     </p>
                                 </div>
                             </Link>

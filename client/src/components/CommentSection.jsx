@@ -121,18 +121,16 @@ const CommentSection = forwardRef((props, ref) => {
                                         {` ${comment.content}`}
                                     </p>
                                     <p className="text-gray-500 lg:text-[0.6rem] md:text-[0.4rem] text-[0.6rem] mt-2">
-                                        {comment.commentedAt.split("T")[0]} at{" "}
-                                        {
+                                        {new Date(
                                             comment.commentedAt
-                                                .split("T")[1]
-                                                .split(":")[0]
-                                        }
-                                        :
-                                        {
+                                        ).toLocaleDateString("en-GB")}{" "}
+                                        at{" "}
+                                        {new Date(
                                             comment.commentedAt
-                                                .split("T")[1]
-                                                .split(":")[1]
-                                        }
+                                        ).toLocaleTimeString([], {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                        })}
                                     </p>
                                 </div>
                                 {comment.isMe ? (

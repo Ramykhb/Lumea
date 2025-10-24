@@ -26,9 +26,7 @@ export const updateMessages = async (primUsername, secUsername) => {
     }
 };
 
-export const insertMessage = async (sender, receiver, content) => {
-    const senderID = await getID(sender);
-    const receiverID = await getID(receiver);
+export const insertMessage = async (senderID, receiverID, content) => {
     try {
         const sql =
             "INSERT INTO Messages (senderId, receiverId, content) VALUES (?,?,?)";
