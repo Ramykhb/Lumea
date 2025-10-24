@@ -7,30 +7,15 @@ import { fileURLToPath } from "url";
 import userRouter from "./routers/userRouter.js";
 import cookieParser from "cookie-parser";
 import postRouter from "./routers/postRouter.js";
-import { Server } from "socket.io";
-import {
-    deleteMessage,
-    insertMessage,
-    retrieveMessages,
-    updateMessages,
-} from "./services/chatService.js";
-import { addNotification } from "./services/postService.js";
-import { getID } from "./services/userService.js";
+import { setupChatSocket } from "./socket/chatSocket.js";
 
 dotenv.config();
 
 const port = process.env.PORT || 3000;
 const app = express();
 
-const server = http.createServer(app);
-
-const io = new Server(server, {
-    cors: {
-        origin: "http://localhost:5173",
-        // origin: "https://b1hqqjqw-5173.euw.devtunnels.ms",
-        methods: ["GET", "POST"],
-    },
-});
+app.use(express.json());
+app.use(cookieParser());
 
 app.use(
     cors({
@@ -41,58 +26,17 @@ app.use(
     })
 );
 
-app.use(express.json());
-app.use(cookieParser());
+const server = http.createServer(app);
+
+setupChatSocket(server);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-const onlineUsers = new Map();
-
 app.use("/api/v1/auth", userRouter);
 app.use("/api/v1/posts", postRouter);
-
-io.on("connection", (socket) => {
-    socket.on("join", async (primaryId, secondaryId) => {
-        onlineUsers.set(primaryId, { socket, secondaryId });
-        const messages = await retrieveMessages(primaryId, secondaryId);
-        socket.emit("messages", messages);
-        await updateMessages(primaryId, secondaryId);
-    });
-
-    socket.on("sendMessage", async ({ senderId, receiverId, content }) => {
-        const result = await insertMessage(senderId, receiverId, content);
-        const message = {
-            id: result.insertId,
-            senderId: senderId,
-            receiverId: receiverId,
-            content: content,
-            sentAt: new Date(),
-            delivered: false,
-        };
-
-        socket.emit("messageDelivered", message);
-
-        const receiverSocket = onlineUsers.get(receiverId);
-        if (receiverSocket && receiverSocket.secondaryId === senderId) {
-            receiverSocket.socket.emit("receiveMessage", message);
-            await deleteMessage(message.id);
-        } else {
-            await addNotification(senderId, receiverId, 1);
-        }
-    });
-
-    socket.on("disconnect", () => {
-        for (const [primaryId, userSocket] of onlineUsers.entries()) {
-            if (userSocket.socket.id === socket.id) {
-                onlineUsers.delete(primaryId);
-                break;
-            }
-        }
-    });
-});
 
 server.listen(port, () => {
     console.log(`Server running on port ${port}`);
