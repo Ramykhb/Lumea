@@ -17,6 +17,7 @@ import {
     addNotification,
     isNewNotifications,
     updateNotifications,
+    deleteOldNotifications,
 } from "../services/postService.js";
 
 export const getAllPosts = async (req, res) => {
@@ -164,6 +165,18 @@ export const getNotifications = async (req, res) => {
 export const readNotifications = async (req, res) => {
     const username = req.user.username;
     await updateNotifications(username);
+    return res.status(200).json({ message: "Notifications read successfully" });
+};
+
+export const deleteNotifications = async (req, res) => {
+    const { userId } = req.body;
+    if (!userId) {
+        return res.status(400).json({
+            title: "Invalid Request",
+            message: "The request data is not valid. Please check your input.",
+        });
+    }
+    await deleteOldNotifications(userId);
     return res.status(200).json({ message: "Notifications read successfully" });
 };
 

@@ -42,7 +42,7 @@ const NotificationsPage = (props) => {
                     </h1>
                 </div>
                 <p className="dark:text-gray-100 text-center text-xs md:text-sm mb-2">
-                    Read notifications are automatically deleted after 7 days.
+                    Read notifications are automatically deleted after 3 days.
                 </p>
                 {notifications.length > 0 ? (
                     notifications.map((not) => (

@@ -1,5 +1,5 @@
 import ClickSpark from "./components/ClickSpark.jsx";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate, data } from "react-router-dom";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import Homepage from "./pages/Homepage.jsx";
@@ -15,15 +15,25 @@ import Search from "./pages/Search.jsx";
 import EditProfile from "./pages/EditProfile.jsx";
 import ChatPage from "./pages/ChatPage.jsx";
 import NotificationsPage from "./pages/NotificationsPage.jsx";
+import api from "./api/axios.js";
 
 function App() {
     const [darkMode, setDarkMode] = useState(false);
     const [username, setUsername] = useState("");
     const [userId, setUserId] = useState("");
 
-    const handleUsername = (username, id) => {
+    const handleUsername = async (username, id) => {
         setUsername(username);
         setUserId(id);
+        try {
+            const res = api.delete("/posts/notifications", {
+                data: {
+                    userId: id,
+                },
+            });
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     useEffect(() => {

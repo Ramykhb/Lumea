@@ -113,6 +113,16 @@ export const updateNotifications = async (username) => {
     }
 };
 
+export const deleteOldNotifications = async (userId) => {
+    try {
+        const sql =
+            "DELETE FROM Notifications WHERE sentAt < NOW() - INTERVAL 3 DAY AND isDelivered = true AND receiverId = ?";
+        const [result] = await pool.query(sql, [userId]);
+    } catch (err) {
+        console.error("Error Querying Database:", err);
+    }
+};
+
 export const addSave = async (username, postId) => {
     try {
         const userID = await getID(username);
