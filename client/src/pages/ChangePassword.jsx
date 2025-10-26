@@ -10,6 +10,7 @@ const ChangePassword = (props) => {
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirm, setConfirm] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleOldChange = (event) => {
         setError("");
@@ -27,7 +28,10 @@ const ChangePassword = (props) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setError("");
-        console.log(oldPassword + newPassword + confirm);
+        if (isLoading) {
+            setError("Updating password please wait.");
+            return;
+        }
         if (!oldPassword || !newPassword || !confirm) {
             setError("Please fill out all required fields.");
             return;
@@ -41,6 +45,7 @@ const ChangePassword = (props) => {
             return;
         }
         try {
+            setIsLoading(true);
             const res = await api.put("/auth/updatePassword", {
                 currentPass: oldPassword,
                 newPass: newPassword,
@@ -50,6 +55,8 @@ const ChangePassword = (props) => {
             if (err.status == 401) {
                 setError("Current password is incorrect.");
             } else setError("Server is unreachable at the moment.");
+        } finally {
+            setIsLoading(false);
         }
     };
 

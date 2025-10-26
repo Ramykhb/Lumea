@@ -80,14 +80,13 @@ export const editProfile = async (req, res) => {
 };
 
 export const followProfile = async (req, res) => {
-    const myUsername = req.user.username;
-    const profileUsername = req.body.username;
-    if (!profileUsername || myUsername === profileUsername) {
+    const { senderId, receiverId } = req.body;
+    if (!senderId || !receiverId || senderId === receiverId) {
         return res.status(403).json({ message: "Invalid Request." });
     }
     try {
-        await followUser(myUsername, profileUsername);
-        await addNotification(myUsername, profileUsername, 2);
+        await followUser(senderId, receiverId);
+        await addNotification(senderId, receiverId, 2);
         return res
             .status(200)
             .json({ message: "Profile followed successfully" });

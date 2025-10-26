@@ -7,21 +7,27 @@ import { uploadsPath } from "@/config/imagesConfig";
 
 const FollowSection = forwardRef((props, ref) => {
     const [follows, setFollows] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const getFollows = async () => {
         const path = props.showFollowers
             ? "/auth/followers"
             : "/auth/following";
-        try {
-            const res = await api.get(path, {
-                params: {
-                    username: props.username,
-                },
-            });
-            setFollows(res.data);
-        } catch (error) {
-            console.log("Error getting likes.");
+        if (!isLoading) {
+            try {
+                setIsLoading(true);
+                const res = await api.get(path, {
+                    params: {
+                        username: props.username,
+                    },
+                });
+                setFollows(res.data);
+            } catch (error) {
+                console.log("Error getting likes.");
+            } finally {
+                setIsLoading(false);
+            }
         }
     };
 
@@ -89,12 +95,26 @@ const FollowSection = forwardRef((props, ref) => {
                     </div>
                 ))
             ) : (
-                <div className="w-full h-full flex justify-center items-center">
-                    <h3 className="text-center md:text-sm text-xs text-gray-500 dark:text-gray-100">
-                        {props.showFollowers
-                            ? "No followers available."
-                            : "No following available."}
-                    </h3>
+                <div className="w-full h-full flex flex-col justify-center items-center">
+                    {isLoading ? (
+                        <>
+                            <img
+                                src="/spinner.svg"
+                                className="w-[25%] mx-auto mb-2"
+                            />
+                            <h1 className="sm:text-lg text-base text-center dark:text-gray-300 text-gray-800">
+                                {props.showFollowers
+                                    ? "Fetching followers."
+                                    : "Fetching following."}
+                            </h1>
+                        </>
+                    ) : (
+                        <h1 className="sm:text-lg text-base text-center dark:text-gray-300 text-gray-800">
+                            {props.showFollowers
+                                ? "No followers available."
+                                : "No following available."}
+                        </h1>
+                    )}
                 </div>
             )}
         </div>

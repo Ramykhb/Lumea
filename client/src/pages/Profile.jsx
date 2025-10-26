@@ -16,6 +16,7 @@ const Profile = (props) => {
     const [followerCount, setFollowerCount] = useState();
     const [showFollowers, setShowFollowers] = useState(false);
     const [showFollowings, setShowFollowings] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const handlePostDeletion = async (id) => {
@@ -40,11 +41,16 @@ const Profile = (props) => {
     };
 
     const fetchProfile = async () => {
-        try {
-            const res = await api.get(`/auth/profile/${username}`);
-            setProfile(res.data);
-        } catch (err) {
-            console.log(err);
+        if (!isLoading) {
+            try {
+                setIsLoading(true);
+                const res = await api.get(`/auth/profile/${username}`);
+                setProfile(res.data);
+            } catch (err) {
+                console.log(err);
+            } finally {
+                setIsLoading(false);
+            }
         }
     };
 
@@ -52,6 +58,8 @@ const Profile = (props) => {
         try {
             const res = await api.post("/auth/follow", {
                 username: profile.username,
+                senderId: props.userId,
+                receiverId: profile.id,
             });
             setProfile({
                 ...profile,
@@ -123,7 +131,11 @@ const Profile = (props) => {
                         <div className="relative md:ml-10 xs:ml-5 sm:ml-7 w-[5em] h-[5em] sm:w-[7em] sm:h-[7em] lg:w-[10em] lg:h-[10em] md:w-[8em] md:h-[8em] rounded-full p-[3px] bg-gradient-to-r from-yellow-400 to-orange-500">
                             <div className="w-full h-full rounded-full bg-primary-light dark:bg-primary-dark p-[4px]">
                                 <img
-                                    src={`${uploadsPath}${profile.profileImage}`}
+                                    src={
+                                        profile.profileImage
+                                            ? `${uploadsPath}${profile.profileImage}`
+                                            : `${uploadsPath}/uploads/avatar.svg`
+                                    }
                                     className="w-full h-full rounded-full object-cover"
                                 />
                             </div>
@@ -137,7 +149,7 @@ const Profile = (props) => {
 
                             {profile.isMe ? (
                                 <button
-                                    className=" md:w-24 h-8 rounded-md bg-yellow-400 md:text-sm hover:bg-yellow-500 ml-10 text-xs w-36"
+                                    className="xs:p-2 p-1 text-nowrap rounded-md bg-yellow-400 md:text-sm hover:bg-yellow-500 ml-auto text-xs"
                                     onClick={() => {
                                         navigate("/editProfile");
                                     }}
@@ -159,7 +171,7 @@ const Profile = (props) => {
                                             />
                                         </div>
                                         <button
-                                            className="md:w-16 h-8 rounded-md bg-yellow-400 md:text-sm text-xs hover:bg-yellow-500"
+                                            className="p-2 rounded-md bg-yellow-400 md:text-sm text-xs hover:bg-yellow-500"
                                             onClick={handleUnfollowProfile}
                                         >
                                             Unfollow
@@ -179,7 +191,7 @@ const Profile = (props) => {
                                             />
                                         </div>
                                         <button
-                                            className="md:w-16 h-8 rounded-md bg-yellow-400 md:text-sm text-xs hover:bg-yellow-500"
+                                            className="p-2 rounded-md bg-yellow-400 md:text-sm text-xs hover:bg-yellow-500"
                                             onClick={handleFollowProfile}
                                         >
                                             Follow
@@ -260,6 +272,8 @@ const Profile = (props) => {
                                 likes={post.likes}
                                 isLiked={post.isLiked}
                                 isSaved={post.isSaved}
+                                userID={props.userId}
+                                posterID={post.posterID}
                                 isMe={profile.isMe}
                                 onPostDeletion={handlePostDeletion}
                             />
@@ -267,12 +281,24 @@ const Profile = (props) => {
                         </React.Fragment>
                     ))
                 ) : (
-                    <div className="h-[50vh] flex items-center justify-center">
-                        <h1 className="text-lg dark:text-gray-300 text-gray-800">
-                            {profile.isPublic || profile.isMe
-                                ? "No posts available."
-                                : "The following profile is private."}
-                        </h1>
+                    <div className="h-[50vh] flex flex-col items-center justify-center">
+                        {isLoading ? (
+                            <>
+                                <img
+                                    src="/spinner.svg"
+                                    className="w-[25%] mx-auto mb-2"
+                                />
+                                <h1 className="sm:text-lg text-base text-center dark:text-gray-300 text-gray-800">
+                                    Fetching profile.
+                                </h1>
+                            </>
+                        ) : (
+                            <h1 className="text-lg dark:text-gray-300 text-gray-800">
+                                {profile.isPublic || profile.isMe
+                                    ? "No posts available."
+                                    : "The following profile is private."}
+                            </h1>
+                        )}
                     </div>
                 )}
             </div>

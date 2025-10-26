@@ -70,7 +70,7 @@ export const savePost = async (req, res) => {
 export const likePost = async (req, res) => {
     try {
         await addLike(req.user.username, req.body.postId);
-        await addNotification(req.user.username, req.body.receiverUsername, 3);
+        await addNotification(req.body.senderId, req.body.receiverId, 3);
         return res.status(200).json({ success: true });
     } catch (err) {
         return res.status(500).json({ message: "Error performing action." });
@@ -218,30 +218,35 @@ export const createPost = async (req, res) => {
 };
 
 export const postComment = async (req, res) => {
-    const { username } = req.user;
-    const userID = await getID(username);
-    const { content, postId, receiverUsername } = req.body;
-    if (!content || !postId || !receiverUsername) {
+    const { content, postId } = req.body;
+    if (!content || !postId) {
         return res.status(400).json({ message: "Invalid Request." });
     }
     const dateNow = new Date();
     try {
-        const result = await addComment(userID, content, postId, dateNow);
-        await addNotification(username, receiverUsername, 4);
+        const result = await addComment(
+            req.body.senderId,
+            content,
+            postId,
+            dateNow
+        );
+        await addNotification(req.body.senderId, req.body.receiverId, 4);
         return res.status(200).json({
             message: "Comment added Successfully",
             newComment: {
                 id: result.insertId,
                 profileImage: result["0"].profileImage,
                 postId: postId,
-                userId: userID,
-                posted_by: username,
+                userId: req.body.senderId,
+                posted_by: req.user.username,
                 content: content,
                 commentedAt: dateNow,
                 isMe: true,
             },
         });
     } catch (err) {
-        res.status(500).message("Server is unreachable at the moment.");
+        res.status(500).json({
+            message: "Server is unreachable at the moment.",
+        });
     }
 };

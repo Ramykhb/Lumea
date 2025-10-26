@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import api from "../api/axios";
 import { faClose, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,9 +10,11 @@ const CommentSection = forwardRef((props, ref) => {
         "md:text-base text-blue-200 dark:text-blue-200 text-xs md:mr-0 mr-5"
     );
     const [newComment, setNewComment] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const getComments = async () => {
         try {
+            setIsLoading(true);
             const res = await api.get("/posts/comments", {
                 params: {
                     postId: props.postId,
@@ -22,6 +24,8 @@ const CommentSection = forwardRef((props, ref) => {
             setComments(comments);
         } catch (error) {
             console.log("Error getting comments");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -43,29 +47,40 @@ const CommentSection = forwardRef((props, ref) => {
     };
 
     const handleCommentDeletion = async (id) => {
-        try {
-            const res = await api.delete("/posts/deleteComment", {
-                data: { commentId: id },
-            });
-            setComments(comments.filter((comment) => comment.id !== id));
-        } catch (err) {
-            console.log(err);
+        if (!isLoading) {
+            try {
+                setIsLoading(true);
+                const res = await api.delete("/posts/deleteComment", {
+                    data: { commentId: id },
+                });
+                setComments(comments.filter((comment) => comment.id !== id));
+            } catch (err) {
+                console.log(err);
+            } finally {
+                setIsLoading(false);
+            }
         }
     };
 
     const handleCommentPost = async (e) => {
         e.preventDefault();
-        try {
-            const res = await api.post("posts/comment", {
-                postId: props.postId,
-                content: newComment,
-                receiverUsername: props.author,
-            });
-            setComments([res.data.newComment, ...comments]);
-            setNewComment("");
-            setPostButton("text-base text-blue-200");
-        } catch (error) {
-            console.log(error);
+        if (!isLoading) {
+            try {
+                setIsLoading(true);
+                const res = await api.post("posts/comment", {
+                    postId: props.postId,
+                    content: newComment,
+                    senderId: props.userID,
+                    receiverId: props.posterID,
+                });
+                setComments([res.data.newComment, ...comments]);
+                setNewComment("");
+                setPostButton("text-base text-blue-200");
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setIsLoading(false);
+            }
         }
     };
 
@@ -107,14 +122,14 @@ const CommentSection = forwardRef((props, ref) => {
                 </div>
                 {comments.length > 0 ? (
                     comments.map((comment) => (
-                        <div key={comment.id}>
+                        <React.Fragment key={comment.id}>
                             <div className="w-[100%] md:px-6 py-2 px-2 flex dark:text-gray-300 h-auto">
                                 <img
                                     src={`${uploadsPath}${comment.profileImage}`}
                                     className="lg:w-[40px] lg:h-[40px] w-[30px] h-[30px] my-auto rounded-full lg:mr-5 mr-3"
                                 />
-                                <div>
-                                    <p className="text-xs md:text-[10px] lg-text-xs">
+                                <div className="w-[70%]">
+                                    <p className="text-xs md:text-[10px] lg-text-xs w-[90%] break-words">
                                         <b className="dark:text-white text-gray-700">
                                             {comment.posted_by}
                                         </b>
@@ -150,13 +165,25 @@ const CommentSection = forwardRef((props, ref) => {
                                 )}
                             </div>
                             <hr className="w-[70%] ml-[15%] border-t-1 border-gray-200 dark:border-border-dark" />
-                        </div>
+                        </React.Fragment>
                     ))
                 ) : (
-                    <div className="w-full h-full flex justify-center items-center">
-                        <h3 className="text-center md:text-sm text-xs text-gray-500 dark:text-gray-100">
-                            No comments available...
-                        </h3>
+                    <div className="w-full h-full flex flex-col justify-center items-center">
+                        {isLoading ? (
+                            <>
+                                <img
+                                    src="/spinner.svg"
+                                    className="w-[25%] mx-auto mb-2"
+                                />
+                                <h1 className="text-xs text-center dark:text-gray-300 text-gray-800">
+                                    Fetching comments.
+                                </h1>
+                            </>
+                        ) : (
+                            <h1 className="text-xs text-center dark:text-gray-300 text-gray-800">
+                                No comments available.
+                            </h1>
+                        )}
                     </div>
                 )}
             </div>

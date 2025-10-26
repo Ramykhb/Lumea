@@ -43,7 +43,8 @@ const Post = (props) => {
             } else {
                 const res = await api.post("/posts/likePost", {
                     postId: props.id,
-                    receiverUsername: props.username,
+                    receiverId: props.posterID,
+                    senderId: props.userID,
                 });
                 setLikes(likes + 1);
             }
@@ -255,6 +256,8 @@ const Post = (props) => {
                 showComments={showComments}
                 onToggleShowComments={toggleShowComments}
                 author={props.username}
+                userID={props.userID}
+                posterID={props.posterID}
             />
             <LikeSection
                 maxHeight={firstDivHeight}

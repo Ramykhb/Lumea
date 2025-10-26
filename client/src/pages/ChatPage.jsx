@@ -4,7 +4,7 @@ import { uploadsPath } from "@/config/imagesConfig";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 
 const ChatPage = (props) => {
@@ -14,6 +14,7 @@ const ChatPage = (props) => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const socketRef = useRef(null);
+    const hasJoined = useRef(false);
     const navigate = useNavigate();
 
     const handleMessagePost = (e) => {
@@ -63,8 +64,9 @@ const ChatPage = (props) => {
     }, []);
 
     useEffect(() => {
-        if (profile?.id && props.userId) {
+        if (!hasJoined.current && profile?.id && props.userId) {
             socketRef.current.emit("join", props.userId, profile.id);
+            hasJoined.current = true;
         }
     }, [profile]);
 
@@ -73,11 +75,20 @@ const ChatPage = (props) => {
             <SideBar username={props.username} userId={props.userId} />
             <div className="md:w-[80%] w-[85%] md:ml-[20%] ml-[15%] h-[100dvh] flex flex-col relative md:px-10 px-3">
                 <div className="w-full md:px-5 px-2 py-2 h-20 flex items-center mb-5 border-b-[1px] border-gray-200 dark:border-border-dark">
-                    <img
-                        src={`${uploadsPath}${profile.profileImage}`}
-                        className="w-[40px] h-[40px] my-auto rounded-full mr-5"
-                    />
-                    <p className="dark:text-white">{username}</p>
+                    <Link
+                        to={`/profile/${username}`}
+                        className="flex items-center hover:cursor-pointer"
+                    >
+                        <img
+                            src={
+                                profile.profileImage
+                                    ? `${uploadsPath}${profile.profileImage}`
+                                    : `${uploadsPath}/uploads/avatar.svg`
+                            }
+                            className="w-[40px] h-[40px] my-auto rounded-full mr-5"
+                        />
+                        <p className="dark:text-white">{username}</p>
+                    </Link>
                 </div>
 
                 <div className="flex-1 overflow-y-auto flex flex-col space-y-3 p-4">
@@ -106,17 +117,26 @@ const ChatPage = (props) => {
                             )
                         )
                     ) : (
-                        <div className="w-full h-full flex justify-center items-center">
-                            <h3 className="text-center md:text-sm text-xs text-gray-500 dark:text-gray-100">
-                                {isLoading
-                                    ? "Fetching unread messages."
-                                    : "No unread messages available,"}
-                            </h3>
+                        <div className="w-full h-full flex flex-col justify-center items-center">
+                            {isLoading ? (
+                                <>
+                                    <img
+                                        src="/spinner.svg"
+                                        className="w-[25%] mx-auto mb-2"
+                                    />
+                                    <h1 className="sm:text-lg text-base text-center dark:text-gray-300 text-gray-800">
+                                        Fetching unread messages.
+                                    </h1>
+                                </>
+                            ) : (
+                                <h1 className="sm:text-lg text-base text-center dark:text-gray-300 text-gray-800">
+                                    No unread messages found.
+                                </h1>
+                            )}
                         </div>
                     )}
                 </div>
 
-                {/* Input */}
                 <div className="w-full">
                     <form className="bg-primary-light dark:bg-primary-dark w-full h-12 flex items-center justify-around border-t-[1px] border-gray-200 dark:border-border-dark">
                         <input

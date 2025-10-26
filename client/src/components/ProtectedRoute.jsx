@@ -52,7 +52,12 @@ function ProtectedRoute({ children, onUser }) {
         verify();
     }, []);
 
-    if (!isReady) return <h1>Loading...</h1>;
+    if (!isReady)
+        return (
+            <div className="w-full h-[100dvh] flex items-center justify-center">
+                <img src="/spinner.svg" className="w-[20%] mx-auto" />
+            </div>
+        );
 
     return isAuthenticated ? children : <Navigate to="/login" replace />;
 }

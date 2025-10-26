@@ -6,18 +6,24 @@ import { faClose } from "@fortawesome/free-solid-svg-icons";
 
 const LikeSection = forwardRef((props, ref) => {
     const [likes, setLikes] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const getLikes = async () => {
-        try {
-            const res = await api.get("/posts/likes", {
-                params: {
-                    postId: props.postId,
-                },
-            });
-            const likes = res.data;
-            setLikes(likes);
-        } catch (error) {
-            console.log("Error getting likes.");
+        if (!isLoading) {
+            try {
+                setIsLoading(true);
+                const res = await api.get("/posts/likes", {
+                    params: {
+                        postId: props.postId,
+                    },
+                });
+                const likes = res.data;
+                setLikes(likes);
+            } catch (error) {
+                console.log("Error getting likes.");
+            } finally {
+                setIsLoading(false);
+            }
         }
     };
 
@@ -88,10 +94,22 @@ const LikeSection = forwardRef((props, ref) => {
                         </div>
                     ))
                 ) : (
-                    <div className="w-full h-full flex justify-center items-center">
-                        <h3 className="text-center md:text-sm text-xs text-gray-500 dark:text-gray-100">
-                            No Likes available...
-                        </h3>
+                    <div className="w-full h-full flex flex-col justify-center items-center">
+                        {isLoading ? (
+                            <>
+                                <img
+                                    src="/spinner.svg"
+                                    className="w-[25%] mx-auto mb-2"
+                                />
+                                <h1 className="text-xs text-center dark:text-gray-300 text-gray-800">
+                                    Fetching likes
+                                </h1>
+                            </>
+                        ) : (
+                            <h1 className="text-xs text-center dark:text-gray-300 text-gray-800">
+                                No likes available.
+                            </h1>
+                        )}
                     </div>
                 )}
             </div>

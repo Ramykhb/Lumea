@@ -116,9 +116,7 @@ export async function retrieveFollowing(username) {
     }
 }
 
-export async function followUser(myusername, username) {
-    const userID = await getID(myusername);
-    const profileID = await getID(username);
+export async function followUser(userID, profileID) {
     try {
         const sql = "INSERT INTO Followed_By VALUES (?,?)";
         const [result] = await pool.query(sql, [userID, profileID]);

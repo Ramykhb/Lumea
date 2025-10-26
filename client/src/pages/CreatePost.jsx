@@ -55,7 +55,6 @@ function CreatePost(props) {
             try {
                 await checkDimensions;
             } catch (err) {
-                console.log(err);
                 setError(err.message);
                 return;
             }

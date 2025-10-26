@@ -6,13 +6,19 @@ import React from "react";
 
 const SavedPosts = (props) => {
     const [posts, setPosts] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const fetchPosts = async () => {
-        try {
-            const res = await api.get("/posts/saved");
-            setPosts(res.data);
-        } catch (err) {
-            console.error("Error fetching posts:", err);
+        if (!isLoading) {
+            try {
+                setIsLoading(true);
+                const res = await api.get("/posts/saved");
+                setPosts(res.data);
+            } catch (err) {
+                console.error("Error fetching posts:", err);
+            } finally {
+                setIsLoading(false);
+            }
         }
     };
 
@@ -46,16 +52,30 @@ const SavedPosts = (props) => {
                                 likes={post.likes}
                                 isLiked={post.isLiked}
                                 isSaved={post.isSaved}
+                                posterID={post.posterID}
+                                userID={props.userId}
                                 onFilter={filterPosts}
                             />
                             <hr className="w-[50%] border-t-1 border-gray-400 dark:border-border-dark" />
                         </React.Fragment>
                     ))
                 ) : (
-                    <div className="h-[90vh] flex items-center justify-center">
-                        <h1 className="text-lg dark:text-gray-300 text-gray-800">
-                            No saved posts available
-                        </h1>
+                    <div className="h-[90vh] flex flex-col items-center justify-center w-full">
+                        {isLoading ? (
+                            <>
+                                <img
+                                    src="/spinner.svg"
+                                    className="w-[25%] mx-auto mb-2"
+                                />
+                                <h1 className="sm:text-lg text-base text-center dark:text-gray-300 text-gray-800">
+                                    Fetching saved posts.
+                                </h1>
+                            </>
+                        ) : (
+                            <h1 className="sm:text-lg text-base text-center dark:text-gray-300 text-gray-800">
+                                No saved posts found.
+                            </h1>
+                        )}
                     </div>
                 )}
             </div>

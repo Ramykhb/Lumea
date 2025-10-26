@@ -100,12 +100,22 @@ const NotificationsPage = (props) => {
                         </React.Fragment>
                     ))
                 ) : (
-                    <div className="h-[80dvh] flex items-center justify-center">
-                        <h1 className="text-lg dark:text-gray-300 text-gray-800">
-                            {isLoading
-                                ? "Fetching notifications please wait."
-                                : "No new notifications available."}
-                        </h1>
+                    <div className="h-[80dvh] flex flex-col items-center justify-center w-full">
+                        {isLoading ? (
+                            <>
+                                <img
+                                    src="/spinner.svg"
+                                    className="w-[25%] mx-auto mb-2"
+                                />
+                                <h1 className="sm:text-lg text-base text-center dark:text-gray-300 text-gray-800">
+                                    Fetching notifications
+                                </h1>
+                            </>
+                        ) : (
+                            <h1 className="sm:text-lg text-base text-center dark:text-gray-300 text-gray-800">
+                                No notifications found.
+                            </h1>
+                        )}
                     </div>
                 )}
             </div>
