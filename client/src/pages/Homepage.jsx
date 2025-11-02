@@ -22,7 +22,6 @@ const Homepage = (props) => {
                         allPosts: allPosts,
                         page: newPage,
                         limit: limit,
-                        userId: props.userId,
                     },
                 });
 

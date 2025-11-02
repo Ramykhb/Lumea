@@ -99,47 +99,64 @@ export const retrievedFollowedPosts = async (page = 1, limit = 5, userId) => {
     }
 };
 
-export const retrieveUserPosts = async (user, username) => {
-    const userID = await getID(username);
-    const profileID = await getID(user);
+export const retrieveUserPosts = async (targetId, userId) => {
     try {
         const sql =
             "SELECT Posts.*, Users.username, Users.id AS posterID, Users.profileImage, EXISTS (SELECT 1 FROM Liked_By WHERE Liked_By.postId = Posts.id AND Liked_By.userId = ?) AS isLiked, EXISTS (SELECT 1 FROM Saved_By WHERE Saved_By.postId = Posts.id AND Saved_By.userId = ?) AS isSaved, (SELECT COUNT(*) FROM Liked_By WHERE Liked_By.postId = Posts.id) as likes FROM Posts JOIN Users ON Users.id = Posts.userId WHERE Posts.userId = ? ORDER BY postedAt DESC";
-        const [result] = await pool.query(sql, [userID, userID, profileID]);
+        const [result] = await pool.query(sql, [userId, userId, targetId]);
         return result;
     } catch (err) {
         console.error("Error Querying Database:", err);
     }
 };
 
-export const retrieveSaved = async (username) => {
-    const userID = await getID(username);
+export const checkAccess = async (targetId, userId) => {
+    try {
+        const [rows] = await pool.query(
+            `SELECT 
+            CASE
+                WHEN u.isPublic = 1 THEN 'allowed'
+                WHEN u.isPublic = 0 AND f.followerId IS NOT NULL THEN 'allowed'
+                ELSE 'denied'
+            END AS access_status
+         FROM Users u
+         LEFT JOIN Followed_By f 
+            ON f.followingId = u.id 
+            AND f.followerId = ?
+         WHERE u.id = ?`,
+            [userId, targetId]
+        );
+        return rows;
+    } catch (err) {
+        console.error("Error Querying Database:", err);
+        throw err;
+    }
+};
+
+export const retrieveSaved = async (userId) => {
     try {
         const sql =
             "SELECT Posts.*, Users.username,Users.id AS posterID, Users.profileImage, EXISTS (SELECT 1 FROM Liked_By WHERE Liked_By.postId = Posts.id AND Liked_By.userId = ?) AS isLiked, EXISTS (SELECT 1 FROM Saved_By WHERE Saved_By.postId = Posts.id AND Saved_By.userId = ?) AS isSaved, (SELECT COUNT(*) FROM Liked_By WHERE Liked_By.postId = Posts.id) as likes FROM Posts JOIN Users ON Users.id = Posts.userId WHERE Posts.id IN (SELECT postId FROM Saved_By WHERE userId = ?) ORDER BY postedAt DESC";
-        const [result] = await pool.query(sql, [userID, userID, userID]);
+        const [result] = await pool.query(sql, [userId, userId, userId]);
         return result;
     } catch (err) {
         console.error("Error Querying Database:", err);
     }
 };
 
-export const addPost = async (username, caption, filePath) => {
+export const addPost = async (userId, caption, filePath) => {
     try {
-        const userID = await getID(username);
-
         const sql =
             "INSERT INTO Posts (userId, caption, postImage, postedAt) VALUES (?, ?, ?, ?)";
         const [result] = await pool.query(sql, [
-            userID,
+            userId,
             caption,
             filePath,
             new Date(),
         ]);
-        return true;
     } catch (err) {
-        console.error(err);
-        return false;
+        console.log(err);
+        throw err;
     }
 };
 

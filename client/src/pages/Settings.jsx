@@ -21,7 +21,7 @@ const Settings = (props) => {
 
     const handleDeleteAccount = async () => {
         try {
-            const res = await api.delete("/auth/deleteAccount");
+            const res = await api.delete("/auth/delete-account");
             if (res.status === 200) {
                 localStorage.removeItem("accessToken");
                 navigate("/login");

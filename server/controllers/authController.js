@@ -76,9 +76,6 @@ export const editProfile = async (req, res) => {
 
 export const getProfile = async (req, res) => {
     const username = req.params.username;
-
-    if (!username) return res.status(400).json({ message: "Invalid Request" });
-
     try {
         const profile = await fetchProfile(username, req.user.username);
         return res.status(200).json(profile);
@@ -89,8 +86,6 @@ export const getProfile = async (req, res) => {
 
 export const getProfiles = async (req, res) => {
     const searchVal = req.query.searchVal;
-    if (!searchVal) return res.status(400).json({ message: "Invalid Request" });
-
     try {
         const profiles = await fetchProfiles(searchVal);
         return res.status(200).json(profiles);
@@ -107,9 +102,6 @@ export const getUser = async (req, res) => {
 export const changePassword = async (req, res) => {
     const { username } = req.user;
     const { currentPass, newPass } = req.body;
-    if (!username || !currentPass || !newPass) {
-        return res.status(400).json({ message: "Please fill out all fields" });
-    }
     try {
         const result = await updatePassword(username, currentPass, newPass);
         if (!result) {

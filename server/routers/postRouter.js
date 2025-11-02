@@ -10,7 +10,11 @@ import {
     getUserPosts,
     postDeletion,
 } from "../controllers/postController.js";
-import { postDeletionMiddleware } from "../middleware/postMiddleware.js";
+import {
+    checkGetUserPosts,
+    checkImageUpload,
+    checkPostDeletion,
+} from "../middleware/postMiddleware.js";
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -30,12 +34,17 @@ postRouter.use(express.json());
 
 postRouter.get("/", authenticateToken, getAllPosts);
 
-postRouter.get("/getposts/:username", authenticateToken, getUserPosts);
+postRouter.get(
+    "/get-posts/:username",
+    authenticateToken,
+    checkGetUserPosts,
+    getUserPosts
+);
 
 postRouter.delete(
     "/deletePost",
     authenticateToken,
-    postDeletionMiddleware,
+    checkPostDeletion,
     postDeletion
 );
 
@@ -45,6 +54,7 @@ postRouter.post(
     "/upload",
     authenticateToken,
     upload.single("image"),
+    checkImageUpload,
     uploadImage
 );
 

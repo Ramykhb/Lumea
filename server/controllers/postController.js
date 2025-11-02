@@ -1,3 +1,4 @@
+import { getID } from "../services/authService.js";
 import {
     addPost,
     retrieveAllPosts,
@@ -8,8 +9,8 @@ import {
 } from "../services/postService.js";
 
 export const getAllPosts = async (req, res) => {
-    const allPosts = req.query.allPosts;
-    const userId = req.query.userId;
+    const allPosts = req.query.allPosts || "true";
+    const userId = await getID(req.user.username);
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
     let posts;
@@ -23,13 +24,10 @@ export const getAllPosts = async (req, res) => {
 };
 
 export const getUserPosts = async (req, res) => {
-    const user = req.params.username;
-    const username = req.user.username;
-    if (!user) {
-        return res.status(400).json({ message: "Invalid username." });
-    }
+    const targetId = await getID(req.params.username);
+    const userId = await getID(req.user.username);
     try {
-        const posts = await retrieveUserPosts(user, username);
+        const posts = await retrieveUserPosts(targetId, userId);
         return res.status(200).json(posts || []);
     } catch (err) {
         return res.status(500).json({ message: "Unable to retrieve posts." });
@@ -37,9 +35,9 @@ export const getUserPosts = async (req, res) => {
 };
 
 export const getSavedPosts = async (req, res) => {
-    const { username } = req.user;
+    const userId = await getID(req.user.username);
     try {
-        const posts = await retrieveSaved(username);
+        const posts = await retrieveSaved(userId);
         return res.status(200).json(posts || []);
     } catch (err) {
         return res
@@ -58,11 +56,7 @@ export const postDeletion = async (req, res) => {
 };
 
 export const uploadImage = async (req, res) => {
-    const file = req.file;
-    if (!file) {
-        return res.status(400).json({ message: "Invalid Request." });
-    }
-    const filePath = `/uploads/${file.filename}`;
+    const filePath = `/uploads/${req.file.filename}`;
     return res
         .status(201)
         .json({ message: "Post Uploaded Successfully", filePath: filePath });
@@ -70,14 +64,14 @@ export const uploadImage = async (req, res) => {
 
 export const createPost = async (req, res) => {
     const { caption, filePath } = req.body;
-    if (!caption || !filePath) {
-        return res.status(400).json({ message: "Invalid Request." });
-    }
-    const success = await addPost(req.user.username, caption, filePath);
-    if (success) {
+    const userId = await getID(req.user.username);
+
+    try {
+        await addPost(userId, caption, filePath);
         return res.status(201).json({ message: "Post Uploaded Successfully" });
+    } catch (err) {
+        return res
+            .status(500)
+            .json({ error: "ServerError", message: "Upload failed" });
     }
-    return res
-        .status(500)
-        .json({ error: "ServerError", message: "Upload failed" });
 };

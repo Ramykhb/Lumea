@@ -21,7 +21,7 @@ import {
     unSavePost,
 } from "../controllers/interactionController.js";
 import { authenticateToken } from "../middleware/authMiddleware.js";
-import { commentDeletionMiddleware } from "../middleware/postMiddleware.js";
+import { commentDeletionMiddleware } from "../middleware/interactionMiddleware.js";
 
 interactionRouter.post("/follow", authenticateToken, followProfile);
 

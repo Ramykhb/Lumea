@@ -46,7 +46,7 @@ const ChangePassword = (props) => {
         }
         try {
             setIsLoading(true);
-            const res = await api.put("/auth/updatePassword", {
+            const res = await api.put("/auth/update-password", {
                 currentPass: oldPassword,
                 newPass: newPassword,
             });

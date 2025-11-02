@@ -106,7 +106,7 @@ const Profile = (props) => {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const res = await api.get(`/posts/getposts/${username}`);
+                const res = await api.get(`/posts/get-posts/${username}`);
                 setPosts(res.data);
             } catch (err) {
                 console.log(err);

@@ -8,6 +8,11 @@ import {
 } from "../services/authService.js";
 
 export const checkSignup = async (req, res, next) => {
+    if (!req.body || Object.keys(req.body).length === 0) {
+        return res
+            .status(400)
+            .json({ message: "Request body cannot be empty" });
+    }
     const { username, email, name, password } = req.body;
     if (!username || !email || !name || !password) {
         return res.status(400).json({ message: "Please fill out all fields" });
@@ -39,6 +44,11 @@ export const checkSignup = async (req, res, next) => {
 };
 
 export const checkLogin = async (req, res, next) => {
+    if (!req.body || Object.keys(req.body).length === 0) {
+        return res
+            .status(400)
+            .json({ message: "Request body cannot be empty" });
+    }
     const { username, password } = req.body;
     if (!username || !password) {
         return res.status(400).json({ message: "Please fill out all fields" });
@@ -66,6 +76,44 @@ export const checkLogin = async (req, res, next) => {
             .status(500)
             .json({ message: "Server is unreachable at the moment." });
     }
+};
+
+export const checkProfileEdit = async (req, res, next) => {
+    if (!req.body || Object.keys(req.body).length === 0) {
+        return res
+            .status(400)
+            .json({ message: "Request body cannot be empty" });
+    }
+    const { isPublic, bio, name, profileImage } = req.body;
+    if (isPublic == null || !bio || !name || !profileImage) {
+        return res.status(400).json({ message: "Please fill out all fields" });
+    }
+    next();
+};
+
+export const checkPasswordUpdate = async (req, res, next) => {
+    if (!req.body || Object.keys(req.body).length === 0) {
+        return res
+            .status(400)
+            .json({ message: "Request body cannot be empty" });
+    }
+    const { currentPass, newPass } = req.body;
+    if (!currentPass || !newPass) {
+        return res.status(400).json({ message: "Please fill out all fields" });
+    }
+    next();
+};
+
+export const checkGetProfile = async (req, res, next) => {
+    const username = req.params.username;
+    if (!username) return res.status(400).json({ message: "Invalid Request" });
+    next();
+};
+
+export const checkSearchInput = async (req, res, next) => {
+    const searchVal = req.query.searchVal;
+    if (!searchVal) return res.status(400).json({ message: "Invalid Request" });
+    next();
 };
 
 export const authenticateToken = (req, res, next) => {
