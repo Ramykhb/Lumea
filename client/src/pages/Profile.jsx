@@ -7,7 +7,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage } from "@fortawesome/free-regular-svg-icons";
 import FollowSection from "@/components/FollowSection";
-import { uploadsPath } from "@/config/imagesConfig";
+import { backendPath } from "@/config/backConfig";
 
 const Profile = (props) => {
     const { username } = useParams();
@@ -133,8 +133,8 @@ const Profile = (props) => {
                                 <img
                                     src={
                                         profile.profileImage
-                                            ? `${uploadsPath}${profile.profileImage}`
-                                            : `${uploadsPath}/uploads/avatar.svg`
+                                            ? `${backendPath}${profile.profileImage}`
+                                            : `${backendPath}/uploads/avatar.svg`
                                     }
                                     className="w-full h-full rounded-full object-cover"
                                 />

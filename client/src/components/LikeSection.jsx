@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import api from "../api/axios";
-import { uploadsPath } from "@/config/imagesConfig";
+import { backendPath } from "@/config/backConfig";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 
@@ -79,7 +79,7 @@ const LikeSection = forwardRef((props, ref) => {
                                 }}
                             >
                                 <img
-                                    src={`${uploadsPath}${like.profileImage}`}
+                                    src={`${backendPath}${like.profileImage}`}
                                     className="w-[40px] h-[40px] my-auto rounded-full mr-5"
                                 />
                                 <div>

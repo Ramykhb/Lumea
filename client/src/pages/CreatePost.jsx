@@ -3,7 +3,7 @@ import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import { useEffect } from "react";
-import { uploadsPath } from "@/config/imagesConfig";
+import { backendPath } from "@/config/backConfig";
 
 function CreatePost(props) {
     const [file, setFile] = useState(null);
@@ -129,7 +129,7 @@ function CreatePost(props) {
                             className="2xl:w-[50vh] 2xl:h-[50vh] w-40 h-40 xs:w-60 xs:h-60 md:w-80 md:h-80 border-2 border-dashed border-gray-400 rounded-lg bg-cover bg-center flex items-center justify-center cursor-pointer hover:border-gray-500 hover:bg-gray-100/20 transition relative bg-gray-200"
                             style={{
                                 backgroundImage: file
-                                    ? `url(${uploadsPath}${filePath})`
+                                    ? `url(${backendPath}${filePath})`
                                     : `url(${filePath})`,
                             }}
                         />

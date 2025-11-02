@@ -54,8 +54,11 @@ function ProtectedRoute({ children, onUser }) {
 
     if (!isReady)
         return (
-            <div className="w-full h-[100dvh] flex items-center justify-center">
+            <div className="w-full h-[100dvh] flex flex-col items-center justify-center">
                 <img src="/spinner.svg" className="w-[20%] mx-auto" />
+                <h1 className="text-xl text-center dark:text-gray-300 text-gray-800">
+                    Launching Lumea.
+                </h1>
             </div>
         );
 

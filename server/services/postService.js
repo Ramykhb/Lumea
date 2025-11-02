@@ -1,21 +1,101 @@
 import pool from "../database/dbConfig.js";
 import { getID } from "./userService.js";
 
-export const retrieveAllPosts = async (allPosts, username) => {
-    const userID = await getID(username);
-    let sql;
-    if (allPosts === "true") {
-        sql =
-            "SELECT Posts.*, Users.username, Users.id AS posterID, Users.profileImage, Users.isPublic, EXISTS (SELECT 1 FROM Liked_By WHERE Liked_By.postId = Posts.id AND Liked_By.userId = ?) AS isLiked, EXISTS (SELECT 1 FROM Saved_By WHERE Saved_By.postId = Posts.id AND Saved_By.userId = ?) AS isSaved, (SELECT COUNT(*) FROM Liked_By WHERE Liked_By.postId = Posts.id) as likes, EXISTS (SELECT 1 FROM Followed_By WHERE followerId = ? AND followingId = Users.id) AS isFollowed FROM Posts JOIN Users ON Users.id = Posts.userId ORDER BY postedAt DESC";
-    } else {
-        sql =
-            "SELECT Posts.*, Users.username, Users.id AS posterID, Users.profileImage, Users.isPublic, EXISTS (SELECT 1 FROM Liked_By WHERE Liked_By.postId = Posts.id AND Liked_By.userId = ?) AS isLiked, EXISTS (SELECT 1 FROM Saved_By WHERE Saved_By.postId = Posts.id AND Saved_By.userId = ?) AS isSaved, (SELECT COUNT(*) FROM Liked_By WHERE Liked_By.postId = Posts.id) as likes, 1 as isFollowed FROM Posts JOIN Users ON Users.id = Posts.userId WHERE Posts.userId IN (SELECT followingId FROM Followed_by WHERE followerId = ?) ORDER BY postedAt DESC";
-    }
+export const retrieveAllPosts = async (page = 1, limit = 5, userId) => {
     try {
-        const [result] = await pool.query(sql, [userID, userID, userID]);
+        const offset = (page - 1) * limit;
+
+        const sql = `
+            SELECT 
+                Posts.*, 
+                Users.username, 
+                Users.id AS posterID, 
+                Users.profileImage, 
+                Users.isPublic,
+                EXISTS (
+                    SELECT 1 FROM Liked_By 
+                    WHERE Liked_By.postId = Posts.id 
+                    AND Liked_By.userId = ?
+                ) AS isLiked,
+                EXISTS (
+                    SELECT 1 FROM Saved_By 
+                    WHERE Saved_By.postId = Posts.id 
+                    AND Saved_By.userId = ?
+                ) AS isSaved,
+                (SELECT COUNT(*) FROM Liked_By WHERE Liked_By.postId = Posts.id) AS likes,
+                EXISTS (
+                    SELECT 1 FROM Followed_By 
+                    WHERE followerId = ? AND followingId = Users.id
+                ) AS isFollowed
+            FROM Posts
+            JOIN Users ON Users.id = Posts.userId
+            WHERE 
+                Users.isPublic = 1
+                OR Users.id IN (
+                    SELECT followingId FROM Followed_By WHERE followerId = ?
+                )
+            ORDER BY postedAt DESC
+            LIMIT ? OFFSET ?;
+        `;
+
+        const [result] = await pool.query(sql, [
+            userId,
+            userId,
+            userId,
+            userId,
+            limit,
+            offset,
+        ]);
         return result;
     } catch (err) {
         console.error("Error Querying Database:", err);
+        throw err;
+    }
+};
+
+export const retrievedFollowedPosts = async (page = 1, limit = 5, userId) => {
+    try {
+        const offset = (page - 1) * limit;
+
+        const sql = `
+            SELECT 
+                Posts.*, 
+                Users.username, 
+                Users.id AS posterID, 
+                Users.profileImage, 
+                Users.isPublic,
+                EXISTS (
+                    SELECT 1 FROM Liked_By 
+                    WHERE Liked_By.postId = Posts.id 
+                    AND Liked_By.userId = ?
+                ) AS isLiked,
+                EXISTS (
+                    SELECT 1 FROM Saved_By 
+                    WHERE Saved_By.postId = Posts.id 
+                    AND Saved_By.userId = ?
+                ) AS isSaved,
+                (SELECT COUNT(*) FROM Liked_By WHERE Liked_By.postId = Posts.id) AS likes,
+                1 AS isFollowed
+            FROM Posts
+            JOIN Users ON Users.id = Posts.userId
+            WHERE Posts.userId IN (
+                SELECT followingId FROM Followed_By WHERE followerId = ?
+            )
+            ORDER BY postedAt DESC
+            LIMIT ? OFFSET ?;
+        `;
+
+        const [result] = await pool.query(sql, [
+            userId,
+            userId,
+            userId,
+            limit,
+            offset,
+        ]);
+        return result;
+    } catch (err) {
+        console.error("Error Querying Database:", err);
+        throw err;
     }
 };
 

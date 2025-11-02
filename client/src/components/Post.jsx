@@ -14,7 +14,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios.js";
 import LikeSection from "./LikeSection.jsx";
-import { uploadsPath } from "@/config/imagesConfig.js";
+import { backendPath } from "@/config/backConfig.js";
 
 const Post = (props) => {
     const [liked, setLiked] = useState(false);
@@ -33,22 +33,22 @@ const Post = (props) => {
 
     const handleLike = async () => {
         try {
+            setLiked((prev) => !prev);
             if (liked) {
+                setLikes(likes - 1);
                 const res = await api.delete("/posts/likePost", {
                     data: {
                         postId: props.id,
                     },
                 });
-                setLikes(likes - 1);
             } else {
+                setLikes(likes + 1);
                 const res = await api.post("/posts/likePost", {
                     postId: props.id,
                     receiverId: props.posterID,
                     senderId: props.userID,
                 });
-                setLikes(likes + 1);
             }
-            setLiked((prev) => !prev);
         } catch (error) {
             console.log(error);
         }
@@ -157,7 +157,7 @@ const Post = (props) => {
                 >
                     <div className="w-10 h-10 md:w-7 md:h-7 lg:w-9 lg:h-9 rounded-full overflow-hidden">
                         <img
-                            src={`${uploadsPath}${props.profileImage}`}
+                            src={`${backendPath}${props.profileImage}`}
                             alt={props.username}
                             className="w-full h-full object-cover"
                         />
@@ -167,7 +167,7 @@ const Post = (props) => {
                     </p>
                 </Link>
                 <img
-                    src={`${uploadsPath}${props.postImage}`}
+                    src={`${backendPath}${props.postImage}`}
                     className="w-full h-auto"
                 />
                 <div className="w-full h-8 py-2 px-1 flex">

@@ -1,32 +1,39 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Post from "../components/Post";
 import api from "../api/axios";
 import SideBar from "../components/SideBar";
 import React from "react";
 
 const Homepage = (props) => {
-    const [posts, setposts] = useState([]);
+    const limit = 5;
+    const [posts, setPosts] = useState([]);
     const [allPosts, setAllPosts] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const loader = useRef(null);
 
-    const fetchPosts = async () => {
+    const fetchPosts = async (newPage = page) => {
         if (!isLoading) {
             try {
                 setIsLoading(true);
                 const res = await api.get("/posts", {
                     params: {
                         allPosts: allPosts,
+                        page: newPage,
+                        limit: limit,
+                        userId: props.userId,
                     },
                 });
-                setposts(
-                    res.data.filter((post) => {
-                        return (
-                            post.isFollowed ||
-                            post.isPublic ||
-                            post.username === props.username
-                        );
-                    })
-                );
+
+                if (res.data.posts.length > 0) {
+                    if (newPage == 1) {
+                        setPosts(res.data.posts);
+                    } else {
+                        setPosts((prev) => [...prev, ...res.data.posts]);
+                    }
+                }
+                if (!res.data.hasMore) setHasMore(false);
             } catch (err) {
                 console.error("Error fetching posts:", err);
             } finally {
@@ -36,12 +43,38 @@ const Homepage = (props) => {
     };
 
     useEffect(() => {
-        fetchPosts();
-    }, []);
+        if (page > 1) fetchPosts();
+    }, [page]);
 
     useEffect(() => {
-        fetchPosts();
+        setPosts([]);
+        setPage(1);
+        setHasMore(true);
+        fetchPosts(1);
     }, [allPosts]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (
+                    entries[0].isIntersecting &&
+                    hasMore &&
+                    !isLoading &&
+                    posts.length > 0
+                ) {
+                    setPage((prev) => prev + 1);
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        const currentLoader = loader.current;
+        if (currentLoader) observer.observe(currentLoader);
+
+        return () => {
+            if (currentLoader) observer.unobserve(currentLoader);
+        };
+    }, [hasMore, isLoading]);
 
     const turnOnAllPosts = () => {
         setAllPosts(true);
@@ -50,7 +83,6 @@ const Homepage = (props) => {
     const turnOffAllPosts = () => {
         setAllPosts(false);
     };
-
     return (
         <div className="w-full flex flex-row h-auto bg-primary-light overflow-hidden dark:bg-primary-dark">
             <SideBar username={props.username} userId={props.userId} />
@@ -116,6 +148,16 @@ const Homepage = (props) => {
                             </h1>
                         )}
                     </div>
+                )}
+                {hasMore ? (
+                    <div ref={loader} className="w-full">
+                        <img
+                            src="/spinner.svg"
+                            className="md:w-[5%] w-[15%] mx-auto mb-2"
+                        />
+                    </div>
+                ) : (
+                    <></>
                 )}
             </div>
         </div>

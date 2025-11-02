@@ -3,7 +3,7 @@ import api from "../api/axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { uploadsPath } from "@/config/imagesConfig";
+import { backendPath } from "@/config/backConfig";
 
 const FollowSection = forwardRef((props, ref) => {
     const [follows, setFollows] = useState([]);
@@ -80,7 +80,7 @@ const FollowSection = forwardRef((props, ref) => {
                             }}
                         >
                             <img
-                                src={`${uploadsPath}${follow.profileImage}`}
+                                src={`${backendPath}${follow.profileImage}`}
                                 className="w-[40px] h-[40px] my-auto rounded-full mr-5"
                             />
                             <div>

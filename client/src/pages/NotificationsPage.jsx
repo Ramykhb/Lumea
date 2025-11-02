@@ -1,6 +1,6 @@
 import api from "@/api/axios";
 import SideBar from "@/components/SideBar";
-import { uploadsPath } from "@/config/imagesConfig";
+import { backendPath } from "@/config/backConfig";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -57,7 +57,7 @@ const NotificationsPage = (props) => {
                             >
                                 <div className="h-15 rounded-xl p-2 my-1 flex hover:bg-gray-200 hover:cursor-pointer dark:hover:bg-gray-700">
                                     <img
-                                        src={`${uploadsPath}${not.profileImage}`}
+                                        src={`${backendPath}${not.profileImage}`}
                                         className="sm:w-14 sm:h-14 h-10 w-10 rounded-full border-[2px] border-yellow-400"
                                     />
                                     <div className="h-full w-full flex justify-start items-center ml-2 md:ml-5 md:text-base dark:text-gray-100 text-sm">

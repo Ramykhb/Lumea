@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import SideBar from "../components/SideBar";
 import api from "../api/axios";
 import { Link } from "react-router-dom";
-import { uploadsPath } from "@/config/imagesConfig";
+import { backendPath } from "@/config/backConfig";
 
 const Search = (props) => {
     const [searchVal, setSearchVal] = useState("");
@@ -52,7 +52,7 @@ const Search = (props) => {
                             >
                                 <div className="sm:w-[60%] xl:w-[70%] w-[90%] h-15 rounded-xl p-2 my-1 flex hover:bg-gray-200 hover:cursor-pointer dark:hover:bg-gray-700">
                                     <img
-                                        src={`${uploadsPath}${profile.profileImage}`}
+                                        src={`${backendPath}${profile.profileImage}`}
                                         className="sm:w-14 sm:h-14 h-10 w-10 rounded-full border-[2px] border-yellow-400"
                                     />
                                     <div className="h-full flex flex-col justify-center items-center ml-5 text-base dark:text-gray-100">

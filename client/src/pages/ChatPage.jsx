@@ -1,6 +1,6 @@
 import api from "@/api/axios";
 import SideBar from "@/components/SideBar";
-import { uploadsPath } from "@/config/imagesConfig";
+import { backendPath } from "@/config/backConfig";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
@@ -40,7 +40,7 @@ const ChatPage = (props) => {
 
     useEffect(() => {
         if (props.username === username) navigate("/");
-        socketRef.current = io(uploadsPath);
+        socketRef.current = io(backendPath);
 
         setIsLoading(true);
         fetchProfile();
@@ -82,8 +82,8 @@ const ChatPage = (props) => {
                         <img
                             src={
                                 profile.profileImage
-                                    ? `${uploadsPath}${profile.profileImage}`
-                                    : `${uploadsPath}/uploads/avatar.svg`
+                                    ? `${backendPath}${profile.profileImage}`
+                                    : `${backendPath}/uploads/avatar.svg`
                             }
                             className="w-[40px] h-[40px] my-auto rounded-full mr-5"
                         />

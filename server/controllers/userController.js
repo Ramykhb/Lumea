@@ -37,19 +37,19 @@ export const signup = async (req, res) => {
                 path: "/",
                 sameSite: "lax",
             });
-            res.status(201).json({
+            return res.status(201).json({
                 message: "User created successfully",
                 accessToken: accessToken,
                 id: result.insertId,
             });
         } else {
-            res.status(500).json({
+            return res.status(500).json({
                 error: "ServerError",
                 message: "Something went wrong",
             });
         }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             error: "ServerError",
             message: "Something went wrong",
         });
@@ -63,7 +63,7 @@ export const checkStatus = (req, res) => {
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
         if (err) return res.json({ loggedIn: false });
         const accessToken = generateAccessToken({ username: user.username });
-        res.json({ loggedIn: true, accessToken });
+        return res.json({ loggedIn: true, accessToken });
     });
 };
 
@@ -117,7 +117,7 @@ export const getFollowing = async (req, res) => {
     }
     try {
         let following = await retrieveFollowing(profileUsername);
-        res.status(200).json(following);
+        return res.status(200).json(following);
     } catch (err) {
         return res
             .status(500)
@@ -175,7 +175,7 @@ export const changePassword = async (req, res) => {
     const { username } = req.user;
     const { currentPass, newPass } = req.body;
     if (!username || !currentPass || !newPass) {
-        res.status(400).json({ message: "Please fill out all fields" });
+        return res.status(400).json({ message: "Please fill out all fields" });
     }
     try {
         const result = await updatePassword(username, currentPass, newPass);
@@ -212,7 +212,7 @@ export const login = async (req, res) => {
             path: "/",
             sameSite: "lax",
         });
-        res.status(201).json({
+        return res.status(201).json({
             message: "User logged in successfully",
             accessToken: accessToken,
             id: userId,
@@ -229,7 +229,7 @@ export const refreshToken = (req, res) => {
     const accessToken = generateAccessToken({
         username: req.user.username.toLowerCase(),
     });
-    res.json({
+    return res.status(200).json({
         accessToken: accessToken,
         username: req.user.username.toLowerCase(),
     });
@@ -246,9 +246,9 @@ export const logout = async (req, res) => {
             sameSite: "lax",
             expires: new Date(0),
         });
-        res.status(200).json({ message: "Logged out successfully" });
+        return res.status(200).json({ message: "Logged out successfully" });
     } catch (err) {
-        res.status(500).json({ message: "Logout failed" });
+        return res.status(500).json({ message: "Logout failed" });
     }
 };
 
@@ -264,8 +264,10 @@ export const accountDeletion = async (req, res) => {
             sameSite: "lax",
             expires: new Date(0),
         });
-        res.status(200).json({ message: "Account deleted successfully" });
+        return res
+            .status(200)
+            .json({ message: "Account deleted successfully" });
     } catch (err) {
-        res.status(500).json({ message: "Account deletion failed" });
+        return res.status(500).json({ message: "Account deletion failed" });
     }
 };

@@ -1,9 +1,9 @@
-import { uploadsPath } from "@/config/imagesConfig";
+import { backendPath } from "@/config/backConfig";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 const api = axios.create({
-    baseURL: `${uploadsPath}/api/v1`,
+    baseURL: `${backendPath}/api/v1`,
     withCredentials: true,
 });
 
@@ -35,7 +35,7 @@ api.interceptors.request.use(async (config) => {
 
                 try {
                     const res = await axios.post(
-                        `${uploadsPath}/api/v1/auth/refresh`,
+                        `${backendPath}/api/v1/auth/refresh`,
                         { accessToken: token },
                         { withCredentials: true }
                     );

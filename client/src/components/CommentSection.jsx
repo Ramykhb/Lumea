@@ -2,7 +2,7 @@ import React, { forwardRef, useEffect, useState } from "react";
 import api from "../api/axios";
 import { faClose, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { uploadsPath } from "@/config/imagesConfig";
+import { backendPath } from "@/config/backConfig";
 
 const CommentSection = forwardRef((props, ref) => {
     const [comments, setComments] = useState([]);
@@ -125,7 +125,7 @@ const CommentSection = forwardRef((props, ref) => {
                         <React.Fragment key={comment.id}>
                             <div className="w-[100%] md:px-6 py-2 px-2 flex dark:text-gray-300 h-auto">
                                 <img
-                                    src={`${uploadsPath}${comment.profileImage}`}
+                                    src={`${backendPath}${comment.profileImage}`}
                                     className="lg:w-[40px] lg:h-[40px] w-[30px] h-[30px] my-auto rounded-full lg:mr-5 mr-3"
                                 />
                                 <div className="w-[70%]">

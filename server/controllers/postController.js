@@ -1,4 +1,3 @@
-import { getID } from "../services/userService.js";
 import {
     addPost,
     retrieveAllPosts,
@@ -18,19 +17,28 @@ import {
     isNewNotifications,
     updateNotifications,
     deleteOldNotifications,
+    retrievedFollowedPosts,
 } from "../services/postService.js";
 
 export const getAllPosts = async (req, res) => {
     const allPosts = req.query.allPosts;
-    const { username } = req.user;
-    const posts = await retrieveAllPosts(allPosts, username);
+    const userId = req.query.userId;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    let posts;
+    if (allPosts == "true") {
+        posts = await retrieveAllPosts(page, limit, userId);
+    } else {
+        posts = await retrievedFollowedPosts(page, limit, userId);
+    }
+    let hasMore = posts.length === limit;
     if (!posts) {
         return res.status(400).json({
             title: "Invalid Request",
             message: "The request data is not valid. Please check your input.",
         });
     }
-    res.json(posts);
+    return res.status(200).json({ page, hasMore, posts });
 };
 
 export const getUserPosts = async (req, res) => {
@@ -43,7 +51,7 @@ export const getUserPosts = async (req, res) => {
             message: "The request data is not valid. Please check your input.",
         });
     }
-    res.json(posts);
+    return res.status(200).json(posts);
 };
 
 export const getSavedPosts = async (req, res) => {
@@ -55,7 +63,7 @@ export const getSavedPosts = async (req, res) => {
             message: "The request data is not valid. Please check your input.",
         });
     }
-    res.status(200).json(posts);
+    return res.status(200).json(posts);
 };
 
 export const savePost = async (req, res) => {
@@ -245,7 +253,7 @@ export const postComment = async (req, res) => {
             },
         });
     } catch (err) {
-        res.status(500).json({
+        return res.status(500).json({
             message: "Server is unreachable at the moment.",
         });
     }
