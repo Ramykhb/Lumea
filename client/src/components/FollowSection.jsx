@@ -12,8 +12,8 @@ const FollowSection = forwardRef((props, ref) => {
 
     const getFollows = async () => {
         const path = props.showFollowers
-            ? "/auth/followers"
-            : "/auth/following";
+            ? "/interactions/followers"
+            : "/interactions/following";
         if (!isLoading) {
             try {
                 setIsLoading(true);

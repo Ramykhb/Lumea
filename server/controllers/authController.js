@@ -1,4 +1,3 @@
-import { addNotification } from "../services/postService.js";
 import {
     addUser,
     deleteRefreshTokenFromDB,
@@ -10,12 +9,8 @@ import {
     fetchProfile,
     editUser,
     fetchProfiles,
-    unfollowUser,
-    followUser,
-    retrieveFollowers,
-    retrieveFollowing,
     getID,
-} from "../services/userService.js";
+} from "../services/authService.js";
 
 import jwt from "jsonwebtoken";
 
@@ -61,9 +56,9 @@ export const checkStatus = (req, res) => {
     if (!refreshToken) return res.json({ loggedIn: false });
 
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-        if (err) return res.json({ loggedIn: false });
+        if (err) return res.status(200).json({ loggedIn: false });
         const accessToken = generateAccessToken({ username: user.username });
-        return res.json({ loggedIn: true, accessToken });
+        return res.status(200).json({ loggedIn: true, accessToken });
     });
 };
 
@@ -79,90 +74,28 @@ export const editProfile = async (req, res) => {
     }
 };
 
-export const followProfile = async (req, res) => {
-    const { senderId, receiverId } = req.body;
-    if (!senderId || !receiverId || senderId === receiverId) {
-        return res.status(403).json({ message: "Invalid Request." });
-    }
-    try {
-        await followUser(senderId, receiverId);
-        await addNotification(senderId, receiverId, 2);
-        return res
-            .status(200)
-            .json({ message: "Profile followed successfully" });
-    } catch (err) {
-        return res.status(500).json({ message: "Unable to follow profile" });
-    }
-};
-
-export const getFollowers = async (req, res) => {
-    const profileUsername = req.query.username;
-    if (!profileUsername) {
-        return res.status(403).json({ message: "Invalid Request." });
-    }
-    try {
-        let followers = await retrieveFollowers(profileUsername);
-        return res.status(200).json(followers);
-    } catch (err) {
-        return res
-            .status(500)
-            .json({ message: "Unable to retrieve followers." });
-    }
-};
-
-export const getFollowing = async (req, res) => {
-    const profileUsername = req.query.username;
-    if (!profileUsername) {
-        return res.status(403).json({ message: "Invalid Request." });
-    }
-    try {
-        let following = await retrieveFollowing(profileUsername);
-        return res.status(200).json(following);
-    } catch (err) {
-        return res
-            .status(500)
-            .json({ message: "Unable to retrieve following." });
-    }
-};
-
-export const unfollowProfile = async (req, res) => {
-    const myUsername = req.user.username;
-    const profileUsername = req.body.username;
-    if (!profileUsername || myUsername === profileUsername) {
-        return res.status(403).json({ message: "Invalid Request." });
-    }
-    try {
-        await unfollowUser(myUsername, profileUsername);
-        return res
-            .status(200)
-            .json({ message: "Profile unfollowed successfully" });
-    } catch (err) {
-        return res.status(500).json({ message: "Unable to unfollow profile" });
-    }
-};
-
 export const getProfile = async (req, res) => {
     const username = req.params.username;
 
-    if (!username) return res.status(403).json({ message: "Invalid Request" });
+    if (!username) return res.status(400).json({ message: "Invalid Request" });
 
     try {
         const profile = await fetchProfile(username, req.user.username);
         return res.status(200).json(profile);
     } catch (err) {
-        return res.status(403).json({ message: "Invalid Request" });
+        return res.status(500).json({ message: "Invalid Request" });
     }
 };
 
 export const getProfiles = async (req, res) => {
     const searchVal = req.query.searchVal;
-    if (!searchVal) return res.status(403).json({ message: "Invalid Request" });
+    if (!searchVal) return res.status(400).json({ message: "Invalid Request" });
 
     try {
         const profiles = await fetchProfiles(searchVal);
         return res.status(200).json(profiles);
     } catch (err) {
-        return res.status(403).json({ message: "Invalid Request" });
+        return res.status(500).json({ message: "Invalid Request" });
     }
 };
 
@@ -212,7 +145,7 @@ export const login = async (req, res) => {
             path: "/",
             sameSite: "lax",
         });
-        return res.status(201).json({
+        return res.status(200).json({
             message: "User logged in successfully",
             accessToken: accessToken,
             id: userId,

@@ -5,7 +5,7 @@ import {
     retrieveMessages,
     updateMessages,
 } from "../services/chatService.js";
-import { addNotification } from "../services/postService.js";
+import { addNotification } from "../services/interactionService.js";
 
 const onlineUsers = new Map();
 

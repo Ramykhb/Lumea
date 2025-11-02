@@ -4,7 +4,7 @@ import {
     authenticateToken,
     authenticateRefreshToken,
     checkLogin,
-} from "../middleware/userMiddleware.js";
+} from "../middleware/authMiddleware.js";
 import {
     changePassword,
     checkStatus,
@@ -17,11 +17,7 @@ import {
     getUser,
     editProfile,
     accountDeletion,
-    followProfile,
-    unfollowProfile,
-    getFollowers,
-    getFollowing,
-} from "../controllers/userController.js";
+} from "../controllers/authController.js";
 
 const authRouter = express.Router();
 
@@ -29,7 +25,7 @@ authRouter.use(express.json());
 
 authRouter.post("/signup", checkSignup, signup);
 
-authRouter.put("/editProfile", authenticateToken, editProfile);
+authRouter.put("/edit-profile", authenticateToken, editProfile);
 
 authRouter.post("/login", checkLogin, login);
 
@@ -44,14 +40,6 @@ authRouter.get("/status", checkStatus);
 authRouter.get("/user", authenticateToken, getUser);
 
 authRouter.post("/refresh", authenticateRefreshToken, refreshToken);
-
-authRouter.post("/follow", authenticateToken, followProfile);
-
-authRouter.get("/followers", authenticateToken, getFollowers);
-
-authRouter.get("/following", authenticateToken, getFollowing);
-
-authRouter.delete("/follow", authenticateToken, unfollowProfile);
 
 authRouter.post("/logout", logout);
 

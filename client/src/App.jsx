@@ -26,7 +26,7 @@ function App() {
         setUsername(username);
         setUserId(id);
         try {
-            const res = api.delete("/posts/notifications", {
+            const res = api.delete("/interactions/notifications", {
                 data: {
                     userId: id,
                 },

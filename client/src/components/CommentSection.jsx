@@ -15,7 +15,7 @@ const CommentSection = forwardRef((props, ref) => {
     const getComments = async () => {
         try {
             setIsLoading(true);
-            const res = await api.get("/posts/comments", {
+            const res = await api.get("/interactions/comments", {
                 params: {
                     postId: props.postId,
                 },
@@ -50,7 +50,7 @@ const CommentSection = forwardRef((props, ref) => {
         if (!isLoading) {
             try {
                 setIsLoading(true);
-                const res = await api.delete("/posts/deleteComment", {
+                const res = await api.delete("/interactions/delete-comment", {
                     data: { commentId: id },
                 });
                 setComments(comments.filter((comment) => comment.id !== id));
@@ -67,7 +67,7 @@ const CommentSection = forwardRef((props, ref) => {
         if (!isLoading) {
             try {
                 setIsLoading(true);
-                const res = await api.post("posts/comment", {
+                const res = await api.post("/interactions/comment", {
                     postId: props.postId,
                     content: newComment,
                     senderId: props.userID,

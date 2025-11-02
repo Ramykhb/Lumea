@@ -56,7 +56,7 @@ const Profile = (props) => {
 
     const handleFollowProfile = async () => {
         try {
-            const res = await api.post("/auth/follow", {
+            const res = await api.post("/interactions/follow", {
                 username: profile.username,
                 senderId: props.userId,
                 receiverId: profile.id,
@@ -73,12 +73,15 @@ const Profile = (props) => {
 
     const handleUnfollowProfile = async () => {
         try {
-            const res = await api.delete("/auth/follow", {
+            const res = await api.delete("/interactions/follow", {
                 data: {
                     username: profile.username,
                 },
             });
             fetchProfile();
+            if (!profile.isPublic) {
+                setPosts([]);
+            }
         } catch (err) {
             console.log(err);
         }

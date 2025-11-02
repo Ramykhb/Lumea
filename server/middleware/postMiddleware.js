@@ -1,5 +1,7 @@
-import { getID } from "../services/userService.js";
-import { getCommentAuthor, getPostAuthor } from "../services/postService.js";
+import { getID } from "../services/authService.js";
+import { getCommentAuthor } from "../services/interactionService.js";
+
+import { getPostAuthor } from "../services/postService.js";
 
 export const commentDeletionMiddleware = async (req, res, next) => {
     const userID = await getID(req.user.username);

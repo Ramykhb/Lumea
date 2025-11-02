@@ -110,7 +110,7 @@ const EditProfile = (props) => {
 
     const handleSaveChanges = async () => {
         try {
-            const res = await api.put("/auth/editProfile", {
+            const res = await api.put("/auth/edit-profile", {
                 name: name,
                 profileImage: filePath,
                 bio: bio,

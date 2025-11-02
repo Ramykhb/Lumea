@@ -5,7 +5,7 @@ import {
     tokenExists,
     usernameExists,
     verifyPassword,
-} from "../services/userService.js";
+} from "../services/authService.js";
 
 export const checkSignup = async (req, res, next) => {
     const { username, email, name, password } = req.body;
@@ -17,14 +17,14 @@ export const checkSignup = async (req, res, next) => {
             req.body.username.toLowerCase()
         );
         if (usernameFound) {
-            return res.status(400).json({
+            return res.status(409).json({
                 error: "UsernameAlreadyUsed",
                 message: "The username is already taken...",
             });
         }
         const emailFound = await emailExists(req.body.email);
         if (emailFound) {
-            return res.status(400).json({
+            return res.status(409).json({
                 error: "EmailAlreadyUsed",
                 message: "The email you provided is already registered...",
             });
@@ -48,14 +48,14 @@ export const checkLogin = async (req, res, next) => {
             req.body.username.toLowerCase()
         );
         if (!hashedPassword) {
-            return res.status(400).json({
+            return res.status(401).json({
                 error: "IncorrectCredentials",
                 message: "Invalid Credentials.",
             });
         }
         const found = await verifyPassword(req.body.password, hashedPassword);
         if (!found) {
-            return res.status(400).json({
+            return res.status(401).json({
                 error: "IncorrectCredentials",
                 message: "Invalid Credentials.",
             });

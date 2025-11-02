@@ -36,14 +36,14 @@ const Post = (props) => {
             setLiked((prev) => !prev);
             if (liked) {
                 setLikes(likes - 1);
-                const res = await api.delete("/posts/likePost", {
+                const res = await api.delete("/interactions/like-post", {
                     data: {
                         postId: props.id,
                     },
                 });
             } else {
                 setLikes(likes + 1);
-                const res = await api.post("/posts/likePost", {
+                const res = await api.post("/interactions/like-post", {
                     postId: props.id,
                     receiverId: props.posterID,
                     senderId: props.userID,
@@ -57,11 +57,11 @@ const Post = (props) => {
     const handleSave = async () => {
         try {
             if (saved) {
-                const res = await api.delete("/posts/savePost", {
+                const res = await api.delete("/interactions/savePost", {
                     data: { postId: props.id },
                 });
             } else {
-                const res = await api.post("/posts/savePost", {
+                const res = await api.post("/interactions/savePost", {
                     postId: props.id,
                 });
             }

@@ -1,5 +1,4 @@
 import pool from "../database/dbConfig.js";
-import { getID } from "./userService.js";
 
 export const retrieveMessages = async (primaryId, secondaryId) => {
     try {

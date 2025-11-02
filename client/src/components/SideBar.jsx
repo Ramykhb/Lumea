@@ -20,7 +20,7 @@ const SideBar = (props) => {
     useEffect(() => {
         const fetchNewNotifications = async () => {
             try {
-                const res = await api.get("/posts/newNotifications");
+                const res = await api.get("/interactions/new-notifications");
                 setNewNotifications(res.data.newCount);
             } catch (err) {
                 console.log(err);

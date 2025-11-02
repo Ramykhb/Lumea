@@ -12,7 +12,7 @@ const LikeSection = forwardRef((props, ref) => {
         if (!isLoading) {
             try {
                 setIsLoading(true);
-                const res = await api.get("/posts/likes", {
+                const res = await api.get("/interactions/likes", {
                     params: {
                         postId: props.postId,
                     },

@@ -13,7 +13,7 @@ const NotificationsPage = (props) => {
         if (!isLoading) {
             try {
                 setIsLoading(true);
-                const res = await api.get(`/posts/notifications`);
+                const res = await api.get(`/interactions/notifications`);
                 setNotifications(res.data);
             } catch (err) {
                 console.log(err);
@@ -21,7 +21,7 @@ const NotificationsPage = (props) => {
                 setIsLoading(false);
             }
             try {
-                const res = await api.put(`/posts/readNotifications`);
+                const res = await api.put(`/interactions/read-notifications`);
             } catch (err) {
                 console.log(err);
             }

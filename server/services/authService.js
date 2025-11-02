@@ -92,51 +92,6 @@ export async function editUser(
     }
 }
 
-export async function retrieveFollowers(username) {
-    const userID = await getID(username);
-    try {
-        const sql =
-            "SELECT username, profileImage FROM Users WHERE id IN (SELECT followerId FROM Followed_By WHERE followingId = ?)";
-        const [result] = await pool.query(sql, [userID]);
-        return result;
-    } catch (err) {
-        throw err;
-    }
-}
-
-export async function retrieveFollowing(username) {
-    const userID = await getID(username);
-    try {
-        const sql =
-            "SELECT username, profileImage FROM Users WHERE id IN (SELECT followingId FROM Followed_By WHERE followerId = ?)";
-        const [result] = await pool.query(sql, [userID]);
-        return result;
-    } catch (err) {
-        throw err;
-    }
-}
-
-export async function followUser(userID, profileID) {
-    try {
-        const sql = "INSERT INTO Followed_By VALUES (?,?)";
-        const [result] = await pool.query(sql, [userID, profileID]);
-    } catch (err) {
-        throw err;
-    }
-}
-
-export async function unfollowUser(myusername, username) {
-    const userID = await getID(myusername);
-    const profileID = await getID(username);
-    try {
-        const sql =
-            "DELETE FROM Followed_By WHERE followerId = ? AND followingId = ?";
-        const [result] = await pool.query(sql, [userID, profileID]);
-    } catch (err) {
-        throw err;
-    }
-}
-
 export async function fetchProfile(username, loggedInUsername) {
     const userID = await getID(loggedInUsername);
     try {
