@@ -34,11 +34,13 @@ export const retrieveAllPosts = async (page = 1, limit = 5, userId) => {
                 OR Users.id IN (
                     SELECT followingId FROM Followed_By WHERE followerId = ?
                 )
+                OR Users.id = ?
             ORDER BY postedAt DESC
             LIMIT ? OFFSET ?;
         `;
 
         const [result] = await pool.query(sql, [
+            userId,
             userId,
             userId,
             userId,
@@ -172,7 +174,8 @@ export const deletePost = async (postId) => {
 
 export const getPostAuthor = async (postId) => {
     try {
-        const sql = "SELECT userId FROM Posts WHERE id = ?";
+        const sql =
+            "SELECT userId, Users.username as username FROM Posts JOIN Users ON Posts.userId = Users.id WHERE Posts.id = ?";
         const [result] = await pool.query(sql, [postId]);
         return result;
     } catch (err) {

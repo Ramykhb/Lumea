@@ -10,9 +10,12 @@ import {
     editUser,
     fetchProfiles,
     getID,
+    generateResetToken,
+    resetPass,
 } from "../services/authService.js";
 
 import jwt from "jsonwebtoken";
+import { generateHTML, sendEmail } from "../utils/sendMail.js";
 
 export const signup = async (req, res) => {
     const username = req.body.username.toLowerCase();
@@ -158,6 +161,34 @@ export const refreshToken = (req, res) => {
         accessToken: accessToken,
         username: req.user.username.toLowerCase(),
     });
+};
+
+export const forgetPassword = (req, res) => {
+    const resetToken = generateResetToken({
+        email: req.body.email,
+    });
+    const htmlContent = generateHTML(resetToken);
+    sendEmail(req.body.email, "Reset Your Lumea Password", htmlContent);
+    return res.status(201).json({ message: "Email sent successfully." });
+};
+
+export const checkForgetToken = (req, res) => {
+    return res.status(200).json({ message: "Token is valid." });
+};
+
+export const resetPassword = async (req, res) => {
+    const email = req.user.email;
+    const newPass = req.body.newPass;
+    try {
+        await resetPass(email, newPass);
+        return res.status(200).json({
+            message: "Password updated successfully.",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            message: "Server is unreachable at the moment.",
+        });
+    }
 };
 
 export const logout = async (req, res) => {

@@ -239,7 +239,7 @@ const AuthForm = (props) => {
             )}
             <p className="text-red-500 text-xs mb-1">{passwordError}</p>
             {props.method === "login" ? (
-                <Link to={"/reset-password"}>
+                <Link to={"/forget-password"}>
                     <p className="text-sm text-blue-600 text-center my-1">
                         Forgot password?
                     </p>

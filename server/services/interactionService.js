@@ -10,13 +10,11 @@ export async function followUser(userID, profileID) {
     }
 }
 
-export async function unfollowUser(myusername, username) {
-    const userID = await getID(myusername);
-    const profileID = await getID(username);
+export async function unfollowUser(senderId, receiverId) {
     try {
         const sql =
             "DELETE FROM Followed_By WHERE followerId = ? AND followingId = ?";
-        const [result] = await pool.query(sql, [userID, profileID]);
+        const [result] = await pool.query(sql, [senderId, receiverId]);
     } catch (err) {
         throw err;
     }
@@ -46,12 +44,22 @@ export async function retrieveFollowing(username) {
     }
 }
 
-export const retrieveComments = async (postId, username) => {
-    const userID = await getID(username);
+export const retrieveComments = async (postId, senderId) => {
     try {
         const sql =
             "SELECT Commented_By.*, Users.username AS posted_by, Users.profileImage AS profileImage, IF(Commented_By.userId = ?, 1, 0) AS isMe FROM Commented_By JOIN Users ON Users.id = Commented_By.userId WHERE postId = ? ORDER BY commentedAt DESC";
-        const [result] = await pool.query(sql, [userID, postId]);
+        const [result] = await pool.query(sql, [senderId, postId]);
+        return result;
+    } catch (err) {
+        console.error("Error Querying Database:", err);
+    }
+};
+
+export const isFollowed = async (senderId, receiverId) => {
+    try {
+        const sql =
+            "SELECT * FROM Followed_By WHERE followerId = ? AND followingId = ?";
+        const [result] = await pool.query(sql, [senderId, receiverId]);
         return result;
     } catch (err) {
         console.error("Error Querying Database:", err);
@@ -125,43 +133,37 @@ export const deleteOldNotifications = async (userId) => {
     }
 };
 
-export const addSave = async (username, postId) => {
+export const addSave = async (userId, postId) => {
     try {
-        const userID = await getID(username);
-
         const sql = "INSERT INTO Saved_By (postId, userId) VALUES (?, ?)";
-        const [result] = await pool.query(sql, [postId, userID]);
+        const [result] = await pool.query(sql, [postId, userId]);
     } catch (err) {
         throw err;
     }
 };
 
-export const addLike = async (username, postId) => {
+export const addLike = async (userId, postId) => {
     try {
-        const userID = await getID(username);
-
         const sql = "INSERT INTO Liked_By (postId, userId) VALUES (?, ?)";
-        const [result] = await pool.query(sql, [postId, userID]);
+        const [result] = await pool.query(sql, [postId, userId]);
     } catch (err) {
         throw err;
     }
 };
 
-export const deleteSave = async (username, postId) => {
+export const deleteSave = async (userId, postId) => {
     try {
-        const userID = await getID(username);
         const sql = "DELETE FROM Saved_By WHERE postId = ? AND userId = ?";
-        const [result] = await pool.query(sql, [postId, userID]);
+        const [result] = await pool.query(sql, [postId, userId]);
     } catch (err) {
         throw err;
     }
 };
 
-export const deleteLike = async (username, postId) => {
+export const deleteLike = async (userId, postId) => {
     try {
-        const userID = await getID(username);
         const sql = "DELETE FROM Liked_By WHERE postId = ? AND userId = ?";
-        const [result] = await pool.query(sql, [postId, userID]);
+        const [result] = await pool.query(sql, [postId, userId]);
     } catch (err) {
         throw err;
     }

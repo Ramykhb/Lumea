@@ -6,7 +6,7 @@ import Homepage from "./pages/Homepage.jsx";
 import { useEffect, useState } from "react";
 import Settings from "./pages/Settings.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
-import ResetPassword from "./pages/ResetPassword.jsx";
+import ForgetPassword from "./pages/ForgetPassword.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import CreatePost from "./pages/CreatePost.jsx";
 import Profile from "./pages/Profile.jsx";
@@ -16,6 +16,7 @@ import EditProfile from "./pages/EditProfile.jsx";
 import ChatPage from "./pages/ChatPage.jsx";
 import NotificationsPage from "./pages/NotificationsPage.jsx";
 import api from "./api/axios.js";
+import ResetPassword from "./pages/ResetPassword.jsx";
 
 function App() {
     const [darkMode, setDarkMode] = useState(false);
@@ -26,11 +27,7 @@ function App() {
         setUsername(username);
         setUserId(id);
         try {
-            const res = api.delete("/interactions/notifications", {
-                data: {
-                    userId: id,
-                },
-            });
+            const res = api.delete("/interactions/notifications");
         } catch (err) {
             console.log(err);
         }
@@ -151,7 +148,12 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/forget-password" element={<ForgetPassword />} />
+
+                <Route
+                    path="/reset-password/:token"
+                    element={<ResetPassword />}
+                />
                 <Route
                     path="/login"
                     element={

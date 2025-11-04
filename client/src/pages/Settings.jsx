@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import api from "../api/axios";
 import { useRef } from "react";
+import { backendPath } from "@/config/backConfig";
 
 const Settings = (props) => {
     const navigate = useNavigate();
@@ -61,6 +62,11 @@ const Settings = (props) => {
                     <Link to={"/change-password"} className="w-full">
                         <div className="text-black w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-base h-[2.5em] my-2 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]">
                             <p className="font-bold">Change Password</p>
+                        </div>
+                    </Link>
+                    <Link to={`${backendPath}/api-docs`} className="w-full">
+                        <div className="text-black w-[90%] mx-[5%] rounded-xl flex items-center px-2 text-base h-[2.5em] my-2 hover:bg-[#dfdfe0] hover:cursor-pointer dark:text-white dark:hover:bg-[#2c2c2c]">
+                            <p className="font-bold">API Docs</p>
                         </div>
                     </Link>
                     <div

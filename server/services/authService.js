@@ -37,6 +37,16 @@ export async function updatePassword(username, currentPass, newPass) {
     }
 }
 
+export async function resetPass(email, newPass) {
+    const newPassHash = await hashPassword(newPass);
+    try {
+        const sql = "UPDATE Users SET password = ? WHERE email = ?";
+        const [result] = await pool.query(sql, [newPassHash, email]);
+    } catch (err) {
+        throw err;
+    }
+}
+
 export async function getID(username) {
     try {
         const sql = "SELECT id FROM Users WHERE username = ?";
@@ -204,6 +214,12 @@ export async function verifyPassword(plainPassword, hashFromDb) {
 export function generateAccessToken(user) {
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: "15m",
+    });
+}
+
+export function generateResetToken(email) {
+    return jwt.sign(email, process.env.FORGET_TOKEN_SECRET, {
+        expiresIn: "1h",
     });
 }
 

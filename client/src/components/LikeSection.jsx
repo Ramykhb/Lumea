@@ -3,10 +3,12 @@ import api from "../api/axios";
 import { backendPath } from "@/config/backConfig";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const LikeSection = forwardRef((props, ref) => {
     const [likes, setLikes] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
     const getLikes = async () => {
         if (!isLoading) {
@@ -71,13 +73,15 @@ const LikeSection = forwardRef((props, ref) => {
                 </div>
                 {likes.length > 0 ? (
                     likes.map((like) => (
-                        <div key={like.posted_by}>
-                            <div
-                                className="w-[100%] md:px-6 py-2 px-2 flex dark:text-gray-300 h-auto items-center"
-                                onClick={() => {
-                                    navigate(`/profile/${like.posted_by}`);
-                                }}
-                            >
+                        <div
+                            key={like.posted_by}
+                            className="hover:cursor-pointer"
+                            onClick={() => {
+                                console.log("CLICKED");
+                                navigate(`/profile/${like.posted_by}`);
+                            }}
+                        >
+                            <div className="w-[100%] md:px-6 py-2 px-2 flex dark:text-gray-300 h-auto items-center">
                                 <img
                                     src={`${backendPath}${like.profileImage}`}
                                     className="w-[40px] h-[40px] my-auto rounded-full mr-5"

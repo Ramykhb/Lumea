@@ -1,3 +1,4 @@
+import { getID } from "../services/authService.js";
 import {
     addComment,
     addLike,
@@ -19,10 +20,8 @@ import {
 } from "../services/interactionService.js";
 
 export const followProfile = async (req, res) => {
-    const { senderId, receiverId } = req.body;
-    if (!senderId || !receiverId || senderId === receiverId) {
-        return res.status(400).json({ message: "Invalid Request." });
-    }
+    const receiverId = req.receiverId;
+    const senderId = req.senderId;
     try {
         await followUser(senderId, receiverId);
         await addNotification(senderId, receiverId, 2);
@@ -36,9 +35,6 @@ export const followProfile = async (req, res) => {
 
 export const getFollowers = async (req, res) => {
     const profileUsername = req.query.username;
-    if (!profileUsername) {
-        return res.status(400).json({ message: "Invalid Request." });
-    }
     try {
         let followers = await retrieveFollowers(profileUsername);
         return res.status(200).json(followers);
@@ -51,9 +47,6 @@ export const getFollowers = async (req, res) => {
 
 export const getFollowing = async (req, res) => {
     const profileUsername = req.query.username;
-    if (!profileUsername) {
-        return res.status(400).json({ message: "Invalid Request." });
-    }
     try {
         let following = await retrieveFollowing(profileUsername);
         return res.status(200).json(following);
@@ -65,13 +58,10 @@ export const getFollowing = async (req, res) => {
 };
 
 export const unfollowProfile = async (req, res) => {
-    const myUsername = req.user.username;
-    const profileUsername = req.body.username;
-    if (!profileUsername || myUsername === profileUsername) {
-        return res.status(400).json({ message: "Invalid Request." });
-    }
+    const receiverId = req.receiverId;
+    const senderId = req.senderId;
     try {
-        await unfollowUser(myUsername, profileUsername);
+        await unfollowUser(senderId, receiverId);
         return res
             .status(200)
             .json({ message: "Profile unfollowed successfully" });
@@ -82,14 +72,8 @@ export const unfollowProfile = async (req, res) => {
 
 export const getComments = async (req, res) => {
     const postId = req.query.postId;
-    const username = req.user.username;
-    if (!postId) {
-        return res.status(400).json({
-            title: "Invalid Request",
-            message: "The request data is not valid. Please check your input.",
-        });
-    }
-    const comments = await retrieveComments(postId, username);
+    const senderId = req.senderId;
+    const comments = await retrieveComments(postId, senderId);
     if (!comments) {
         return res.status(400).json({
             title: "Invalid Request",
@@ -101,7 +85,7 @@ export const getComments = async (req, res) => {
 
 export const savePost = async (req, res) => {
     try {
-        await addSave(req.user.username, req.body.postId);
+        await addSave(req.userId, req.body.postId);
         return res.status(201).json({ success: true });
     } catch (err) {
         return res.status(500).json({ message: "Error performing action." });
@@ -110,8 +94,8 @@ export const savePost = async (req, res) => {
 
 export const likePost = async (req, res) => {
     try {
-        await addLike(req.user.username, req.body.postId);
-        await addNotification(req.body.senderId, req.body.receiverId, 3);
+        await addLike(req.senderId, req.body.postId);
+        await addNotification(req.senderId, req.receiverId, 3);
         return res.status(201).json({ success: true });
     } catch (err) {
         return res.status(500).json({ message: "Error performing action." });
@@ -120,7 +104,7 @@ export const likePost = async (req, res) => {
 
 export const unSavePost = async (req, res) => {
     try {
-        await deleteSave(req.user.username, req.body.postId);
+        await deleteSave(req.userId, req.body.postId);
         return res.status(200).json({ success: true });
     } catch (err) {
         return res.status(500).json({ message: "Error performing action." });
@@ -129,7 +113,7 @@ export const unSavePost = async (req, res) => {
 
 export const unLikePost = async (req, res) => {
     try {
-        await deleteLike(req.user.username, req.body.postId);
+        await deleteLike(req.userId, req.body.postId);
         return res.status(200).json({ success: true });
     } catch (err) {
         return res.status(500).json({ message: "Error performing action." });
@@ -138,25 +122,17 @@ export const unLikePost = async (req, res) => {
 
 export const postComment = async (req, res) => {
     const { content, postId } = req.body;
-    if (!content || !postId) {
-        return res.status(400).json({ message: "Invalid Request." });
-    }
     const dateNow = new Date();
     try {
-        const result = await addComment(
-            req.body.senderId,
-            content,
-            postId,
-            dateNow
-        );
-        await addNotification(req.body.senderId, req.body.receiverId, 4);
+        const result = await addComment(req.senderId, content, postId, dateNow);
+        await addNotification(req.senderId, req.receiverId, 4);
         return res.status(201).json({
             message: "Comment added Successfully",
             newComment: {
                 id: result.insertId,
                 profileImage: result["0"].profileImage,
                 postId: postId,
-                userId: req.body.senderId,
+                userId: req.senderId,
                 posted_by: req.user.username,
                 content: content,
                 commentedAt: dateNow,
@@ -181,12 +157,6 @@ export const commentDeletion = async (req, res) => {
 
 export const getLikes = async (req, res) => {
     const postId = req.query.postId;
-    if (!postId) {
-        return res.status(400).json({
-            title: "Invalid Request",
-            message: "The request data is not valid. Please check your input.",
-        });
-    }
     const likes = await retrieveLikes(postId);
     if (!likes) {
         return res.status(401).json({
@@ -210,10 +180,7 @@ export const readNotifications = async (req, res) => {
 };
 
 export const deleteNotifications = async (req, res) => {
-    const { userId } = req.body;
-    if (!userId) {
-        return res.status(400).json({ message: "Invalid Request." });
-    }
+    const userId = await getID(req.user.username);
     try {
         await deleteOldNotifications(userId);
         return res

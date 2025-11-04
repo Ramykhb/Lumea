@@ -6,14 +6,14 @@ import {
     updateMessages,
 } from "../services/chatService.js";
 import { addNotification } from "../services/interactionService.js";
+import { frontendPath } from "../config/frontConfig.js";
 
 const onlineUsers = new Map();
 
 export const setupChatSocket = (server) => {
     const io = new Server(server, {
         cors: {
-            origin: "http://localhost:5173",
-            // origin: "https://b1hqqjqw-5173.euw.devtunnels.ms",
+            origin: frontendPath,
             methods: ["GET", "POST", "PUT", "DELETE"],
             credentials: true,
         },

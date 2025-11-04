@@ -3,12 +3,15 @@ import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
 import http from "http";
+import swaggerUi from "swagger-ui-express";
+import swaggerJSDoc from "swagger-jsdoc";
 import { fileURLToPath } from "url";
 import authRouter from "./routers/authRouter.js";
 import cookieParser from "cookie-parser";
 import postRouter from "./routers/postRouter.js";
 import { setupChatSocket } from "./socket/chatSocket.js";
 import interactionRouter from "./routers/interactionRouter.js";
+import { frontendPath } from "./config/frontConfig.js";
 
 dotenv.config();
 
@@ -18,10 +21,33 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
+const swaggerDefinition = {
+    openapi: "3.0.0",
+    info: {
+        title: "Lumea API",
+        version: "1.0.0",
+        description: "API documentation for my Lumea social media app",
+    },
+    servers: [
+        {
+            url: "http://localhost:3000",
+            description: "Development server",
+        },
+    ],
+};
+
+const options = {
+    swaggerDefinition,
+    apis: ["./routers/*.js"],
+};
+
+const swaggerSpec = swaggerJSDoc(options);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use(
     cors({
-        origin: "http://localhost:5173",
-        // origin: "https://b1hqqjqw-5173.euw.devtunnels.ms",
+        origin: frontendPath,
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
     })

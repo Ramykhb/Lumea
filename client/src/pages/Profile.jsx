@@ -21,7 +21,7 @@ const Profile = (props) => {
 
     const handlePostDeletion = async (id) => {
         try {
-            const res = await api.delete("/posts/deletePost", {
+            const res = await api.delete("/posts/delete-post", {
                 data: { postId: id },
             });
             setPosts(posts.filter((post) => post.id !== id));
@@ -57,9 +57,7 @@ const Profile = (props) => {
     const handleFollowProfile = async () => {
         try {
             const res = await api.post("/interactions/follow", {
-                username: profile.username,
-                senderId: props.userId,
-                receiverId: profile.id,
+                profileUsername: username,
             });
             setProfile({
                 ...profile,
@@ -75,7 +73,7 @@ const Profile = (props) => {
         try {
             const res = await api.delete("/interactions/follow", {
                 data: {
-                    username: profile.username,
+                    profileUsername: username,
                 },
             });
             fetchProfile();

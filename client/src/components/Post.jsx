@@ -45,8 +45,6 @@ const Post = (props) => {
                 setLikes(likes + 1);
                 const res = await api.post("/interactions/like-post", {
                     postId: props.id,
-                    receiverId: props.posterID,
-                    senderId: props.userID,
                 });
             }
         } catch (error) {
@@ -57,11 +55,11 @@ const Post = (props) => {
     const handleSave = async () => {
         try {
             if (saved) {
-                const res = await api.delete("/interactions/savePost", {
+                const res = await api.delete("/interactions/save-post", {
                     data: { postId: props.id },
                 });
             } else {
-                const res = await api.post("/interactions/savePost", {
+                const res = await api.post("/interactions/save-post", {
                     postId: props.id,
                 });
             }

@@ -70,8 +70,6 @@ const CommentSection = forwardRef((props, ref) => {
                 const res = await api.post("/interactions/comment", {
                     postId: props.postId,
                     content: newComment,
-                    senderId: props.userID,
-                    receiverId: props.posterID,
                 });
                 setComments([res.data.newComment, ...comments]);
                 setNewComment("");
