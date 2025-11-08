@@ -17,6 +17,7 @@ const Profile = (props) => {
     const [showFollowers, setShowFollowers] = useState(false);
     const [showFollowings, setShowFollowings] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [postLoading, setPostLoading] = useState(false);
     const navigate = useNavigate();
 
     const handlePostDeletion = async (id) => {
@@ -95,6 +96,7 @@ const Profile = (props) => {
 
     useEffect(() => {
         setPosts([]);
+        setProfile({});
         setFollowerCount(0);
         setShowFollowers(false);
         setShowFollowings(false);
@@ -103,11 +105,14 @@ const Profile = (props) => {
 
     useEffect(() => {
         const fetchPosts = async () => {
+            setPostLoading(true);
             try {
                 const res = await api.get(`/posts/get-posts/${username}`);
                 setPosts(res.data);
             } catch (err) {
                 console.log(err);
+            } finally {
+                setPostLoading(false);
             }
         };
         setFollowerCount(profile.followerCount);
@@ -291,6 +296,16 @@ const Profile = (props) => {
                                 />
                                 <h1 className="sm:text-lg text-base text-center dark:text-gray-300 text-gray-800">
                                     Fetching profile.
+                                </h1>
+                            </>
+                        ) : postLoading ? (
+                            <>
+                                <img
+                                    src="/spinner.svg"
+                                    className="w-[25%] mx-auto mb-2"
+                                />
+                                <h1 className="sm:text-lg text-base text-center dark:text-gray-300 text-gray-800">
+                                    Fetching user posts.
                                 </h1>
                             </>
                         ) : (

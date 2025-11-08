@@ -58,7 +58,7 @@ const NotificationsPage = (props) => {
                                 <div className="h-15 rounded-xl p-2 my-1 flex hover:bg-gray-200 hover:cursor-pointer dark:hover:bg-gray-700">
                                     <img
                                         src={`${backendPath}${not.profileImage}`}
-                                        className="sm:w-14 sm:h-14 h-10 w-10 rounded-full border-[2px] border-yellow-400"
+                                        className="sm:w-14 sm:h-14 h-10 w-10 rounded-full border-[2px] border-yellow-400 object-cover"
                                     />
                                     <div className="h-full w-full flex justify-start items-center ml-2 md:ml-5 md:text-base dark:text-gray-100 text-sm">
                                         <div

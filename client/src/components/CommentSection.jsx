@@ -67,10 +67,20 @@ const CommentSection = forwardRef((props, ref) => {
         if (!isLoading) {
             try {
                 setIsLoading(true);
+                setComments([
+                    {
+                        content: newComment,
+                        profileImage: "/uploads/avatar.svg",
+                        posted_by: props.loggedinUser,
+                        commentedAt: new Date(),
+                    },
+                    ...comments,
+                ]);
                 const res = await api.post("/interactions/comment", {
                     postId: props.postId,
                     content: newComment,
                 });
+                setComments((prevComments) => prevComments.slice(0, -1));
                 setComments([res.data.newComment, ...comments]);
                 setNewComment("");
                 setPostButton("text-base text-blue-200");

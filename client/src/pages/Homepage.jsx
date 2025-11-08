@@ -124,6 +124,7 @@ const Homepage = (props) => {
                                 isLiked={post.isLiked}
                                 isSaved={post.isSaved}
                                 userID={props.userId}
+                                loggedinUser={props.username}
                                 posterID={post.posterID}
                             />
                             <hr className="w-[50%] border-t-1 border-gray-400 dark:border-border-dark" />

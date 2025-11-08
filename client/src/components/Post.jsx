@@ -255,6 +255,7 @@ const Post = (props) => {
                 onToggleShowComments={toggleShowComments}
                 author={props.username}
                 userID={props.userID}
+                loggedinUser={props.loggedinUser}
                 posterID={props.posterID}
             />
             <LikeSection

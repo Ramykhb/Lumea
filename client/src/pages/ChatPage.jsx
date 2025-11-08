@@ -85,7 +85,7 @@ const ChatPage = (props) => {
                                     ? `${backendPath}${profile.profileImage}`
                                     : `${backendPath}/uploads/avatar.svg`
                             }
-                            className="w-[40px] h-[40px] my-auto rounded-full mr-5"
+                            className="w-[40px] h-[40px] my-auto rounded-full mr-5 object-cover"
                         />
                         <p className="dark:text-white">{username}</p>
                     </Link>
