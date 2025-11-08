@@ -66,7 +66,7 @@ export const generateHTML = (token) => {
 
           <p style="color: #666666; font-size: 14px; line-height: 1.6;">
             Or copy and paste this link into your browser:<br />
-            <a href="${resetLink}" style="color: #ffffff; word-break: break-all;">${resetLink}</a>
+            <a href="${resetLink}" style="color: #1052EB; word-break: break-all;">${resetLink}</a>
           </p>
         </td>
       </tr>
