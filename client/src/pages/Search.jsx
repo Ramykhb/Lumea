@@ -7,25 +7,30 @@ import { backendPath } from "@/config/backConfig";
 const Search = (props) => {
     const [searchVal, setSearchVal] = useState("");
     const [profiles, setProfiles] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        const fetchProfiles = async () => {
+        const handler = setTimeout(async () => {
             if (searchVal) {
+                setIsLoading(true);
                 try {
                     const res = await api.get("/auth/profiles", {
-                        params: {
-                            searchVal,
-                        },
+                        params: { searchVal },
                     });
                     setProfiles(res.data);
                 } catch (err) {
                     setProfiles([]);
+                } finally {
+                    setIsLoading(false);
                 }
             } else {
                 setProfiles([]);
             }
+        }, 300);
+
+        return () => {
+            clearTimeout(handler);
         };
-        fetchProfiles();
     }, [searchVal]);
 
     return (
@@ -43,7 +48,17 @@ const Search = (props) => {
                         setSearchVal(event.target.value);
                     }}
                 />
-                {profiles.length > 0 ? (
+                {isLoading ? (
+                    <>
+                        <img
+                            src="/spinner.svg"
+                            className="w-[15%] mx-auto mb-2"
+                        />
+                        <h1 className="sm:text-lg text-base text-center dark:text-gray-300 text-gray-800">
+                            Fetching users
+                        </h1>
+                    </>
+                ) : profiles.length > 0 ? (
                     profiles.map((profile) => (
                         <React.Fragment key={profile.id}>
                             <Link
@@ -65,8 +80,8 @@ const Search = (props) => {
                     ))
                 ) : (
                     <div className="h-[60vh] flex items-center justify-center">
-                        <h1 className="text-lg dark:text-gray-300 text-gray-800">
-                            {searchVal ? "No users found." : ""}
+                        <h1 className="sm:text-lg text-base text-center dark:text-gray-300 text-gray-800">
+                            No Users found.
                         </h1>
                     </div>
                 )}
