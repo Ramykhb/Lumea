@@ -172,7 +172,7 @@ const EditProfile = (props) => {
                                         htmlFor="fileUpload"
                                         className="w-[25vh] h-[25vh] border-2 border-dashed border-gray-400 rounded-full bg-cover bg-center flex items-center justify-center cursor-pointer hover:border-gray-500 hover:bg-gray-100/20 transition relative bg-gray-200 mx-auto"
                                         style={{
-                                            backgroundImage: `url(${backendPath}${filePath})`,
+                                            backgroundImage: `url(${filePath})`,
                                         }}
                                     />
                                 </div>

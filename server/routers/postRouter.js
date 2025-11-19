@@ -1,12 +1,11 @@
 import express from "express";
-import path from "path";
 import multer from "multer";
 import { authenticateToken } from "../middleware/authMiddleware.js";
+import { createClient } from "@supabase/supabase-js";
 import {
     createPost,
     getAllPosts,
     getSavedPosts,
-    uploadImage,
     getUserPosts,
     postDeletion,
 } from "../controllers/postController.js";
@@ -16,17 +15,14 @@ import {
     checkPostDeletion,
 } from "../middleware/postMiddleware.js";
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "uploads/");
-    },
-    filename: (req, file, cb) => {
-        const uniqueName = Date.now() + path.extname(file.originalname);
-        cb(null, uniqueName);
-    },
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 1 * 1024 * 1024 }, // 1MB max size
 });
 
-const upload = multer({ storage });
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 const postRouter = express.Router();
 
@@ -241,8 +237,49 @@ postRouter.post(
     "/upload",
     authenticateToken,
     upload.single("image"),
-    checkImageUpload,
-    uploadImage
+    async (req, res, next) => {
+        try {
+            if (!req.file) {
+                return res.status(400).json({ message: "No file uploaded" });
+            }
+
+            const { originalname, buffer, mimetype } = req.file;
+            const fileExt = originalname.split(".").pop();
+            const uniqueName = `${Date.now()}.${fileExt}`;
+            const bucketName = "Lumea Uploads";
+
+            const { data, error } = await supabase.storage
+                .from(bucketName)
+                .upload(uniqueName, buffer, {
+                    contentType: mimetype,
+                    upsert: false,
+                });
+
+            if (error) {
+                console.error("Supabase upload error:", error);
+                return res
+                    .status(500)
+                    .json({ message: "Failed to upload image" });
+            }
+
+            const { data: dataSupa, error: urlError } = supabase.storage
+                .from(bucketName)
+                .getPublicUrl(uniqueName);
+            const { publicUrl } = dataSupa;
+            if (urlError) {
+                console.error("Supabase URL error:", urlError);
+                return res
+                    .status(500)
+                    .json({ message: "Failed to get image URL" });
+            }
+            res.status(201).json({
+                message: "Image uploaded successfully",
+                filePath: publicUrl,
+            });
+        } catch (err) {
+            next(err);
+        }
+    }
 );
 
 /**

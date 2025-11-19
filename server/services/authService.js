@@ -165,7 +165,7 @@ export async function addUser({ username, name, email, password }) {
             username,
             email,
             hashedPassword,
-            "/uploads/avatar.svg",
+            "https://jwpfsgqlmssdrfogfasp.supabase.co/storage/v1/object/public/Lumea%20Uploads/avatar.svg",
         ]);
         return result;
     } catch (err) {

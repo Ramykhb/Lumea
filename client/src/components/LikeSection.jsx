@@ -83,7 +83,7 @@ const LikeSection = forwardRef((props, ref) => {
                         >
                             <div className="w-[100%] md:px-6 py-2 px-2 flex dark:text-gray-300 h-auto items-center">
                                 <img
-                                    src={`${backendPath}${like.profileImage}`}
+                                    src={`${like.profileImage}`}
                                     className="w-[40px] h-[40px] my-auto rounded-full mr-5"
                                 />
                                 <div>

@@ -139,8 +139,8 @@ const Profile = (props) => {
                                 <img
                                     src={
                                         profile.profileImage
-                                            ? `${backendPath}${profile.profileImage}`
-                                            : `${backendPath}/uploads/avatar.svg`
+                                            ? `${profile.profileImage}`
+                                            : `https://jwpfsgqlmssdrfogfasp.supabase.co/storage/v1/object/public/Lumea%20Uploads/avatar.svg`
                                     }
                                     className="w-full h-full rounded-full object-cover"
                                 />

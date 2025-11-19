@@ -155,7 +155,7 @@ const Post = (props) => {
                 >
                     <div className="w-10 h-10 md:w-7 md:h-7 lg:w-9 lg:h-9 rounded-full overflow-hidden">
                         <img
-                            src={`${backendPath}${props.profileImage}`}
+                            src={`${props.profileImage}`}
                             alt={props.username}
                             className="w-full h-full object-cover"
                         />
@@ -164,10 +164,7 @@ const Post = (props) => {
                         {props.username}
                     </p>
                 </Link>
-                <img
-                    src={`${backendPath}${props.postImage}`}
-                    className="w-full h-auto"
-                />
+                <img src={`${props.postImage}`} className="w-full h-auto" />
                 <div className="w-full h-8 py-2 px-1 flex">
                     {liked ? (
                         <FontAwesomeIcon
