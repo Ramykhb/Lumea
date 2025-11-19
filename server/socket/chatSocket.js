@@ -13,7 +13,7 @@ const onlineUsers = new Map();
 export const setupChatSocket = (server) => {
     const io = new Server(server, {
         cors: {
-            origin: "*",
+            origin: frontendPath,
             methods: ["GET", "POST", "PUT", "DELETE"],
             credentials: true,
         },
