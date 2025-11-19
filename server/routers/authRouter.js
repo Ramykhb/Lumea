@@ -293,7 +293,7 @@ authRouter.get("/profiles", authenticateToken, checkSearchInput, getProfiles);
 /**
  * @openapi
  * /api/v1/auth/status:
- *   get:
+ *   post:
  *     summary: Check user authentication status
  *     tags:
  *       - Authentication
@@ -304,7 +304,7 @@ authRouter.get("/profiles", authenticateToken, checkSearchInput, getProfiles);
  *       500:
  *         description: Server error
  */
-authRouter.get("/status", checkStatus);
+authRouter.post("/status", checkStatus);
 
 /**
  * @openapi

@@ -17,10 +17,8 @@ const AuthForm = (props) => {
 
     useEffect(() => {
         const checkLoggedIn = async () => {
-            const res = await api.get("/auth/status", {
-                data: {
-                    refreshToken: localStorage.getItem("refreshToken"),
-                },
+            const res = await api.post("/auth/status", {
+                refreshToken: localStorage.getItem("refreshToken"),
             });
             if (res.data.loggedIn) {
                 localStorage.setItem("accessToken", res.data.accessToken);
