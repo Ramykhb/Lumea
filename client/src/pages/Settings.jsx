@@ -10,8 +10,11 @@ const Settings = (props) => {
 
     const handleLogout = async () => {
         try {
-            const res = await api.post("/auth/logout");
+            const res = await api.post("/auth/logout", {
+                refreshToken: localStorage.getItem("refreshToken"),
+            });
             if (res.status === 200) {
+                localStorage.removeItem("refreshToken");
                 localStorage.removeItem("accessToken");
                 navigate("/login");
             }
@@ -22,9 +25,14 @@ const Settings = (props) => {
 
     const handleDeleteAccount = async () => {
         try {
-            const res = await api.delete("/auth/delete-account");
+            const res = await api.delete("/auth/delete-account", {
+                data: {
+                    refreshToken: localStorage.getItem("refreshToken"),
+                },
+            });
             if (res.status === 200) {
                 localStorage.removeItem("accessToken");
+                localStorage.removeItem("refreshToken");
                 navigate("/login");
             }
         } catch (err) {

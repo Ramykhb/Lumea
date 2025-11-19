@@ -193,7 +193,7 @@ export const checkResetPassword = (req, res, next) => {
 };
 
 export const authenticateRefreshToken = async (req, res, next) => {
-    const token = req.cookies.refreshToken;
+    const token = req.body.refreshToken;
     if (token == null) {
         return res.status(401).json({
             error: "Unauthorized",

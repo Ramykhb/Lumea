@@ -17,7 +17,11 @@ const AuthForm = (props) => {
 
     useEffect(() => {
         const checkLoggedIn = async () => {
-            const res = await api.get("/auth/status");
+            const res = await api.get("/auth/status", {
+                data: {
+                    refreshToken: localStorage.getItem("refreshToken"),
+                },
+            });
             if (res.data.loggedIn) {
                 localStorage.setItem("accessToken", res.data.accessToken);
                 navigate("/");
@@ -88,8 +92,9 @@ const AuthForm = (props) => {
                     email: email,
                     password: password,
                 });
-                const { accessToken } = res.data;
+                const { accessToken, refreshToken } = res.data;
                 localStorage.setItem("accessToken", accessToken);
+                localStorage.setItem("refreshToken", refreshToken);
                 props.onAuth(username, res.data.id);
                 navigate("/editProfile");
             } catch (err) {
@@ -116,6 +121,7 @@ const AuthForm = (props) => {
                     password: password,
                 });
                 localStorage.setItem("accessToken", res.data.accessToken);
+                localStorage.setItem("refreshToken", res.data.refreshToken);
                 props.onAuth(username, res.data.id);
                 navigate("/");
             } catch (err) {

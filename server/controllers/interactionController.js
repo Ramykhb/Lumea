@@ -169,8 +169,6 @@ export const getLikes = async (req, res) => {
 
 export const getNotifications = async (req, res) => {
     const username = req.user.username;
-    console.log(req.cookies);
-    console.log(req.cookies.refreshToken);
     const notifications = await retrieveNotifications(username);
     return res.status(200).json(notifications || []);
 };

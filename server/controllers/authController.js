@@ -29,15 +29,10 @@ export const signup = async (req, res) => {
         const result = await addUser(req.body);
         const success = await insertToken(username, refreshToken);
         if (success) {
-            res.cookie("refreshToken", refreshToken, {
-                httpOnly: true,
-                secure: true,
-                path: "/",
-                sameSite: "none",
-            });
             return res.status(201).json({
                 message: "User created successfully",
                 accessToken: accessToken,
+                refreshToken: refreshToken,
                 id: result.insertId,
             });
         } else {
@@ -55,7 +50,7 @@ export const signup = async (req, res) => {
 };
 
 export const checkStatus = (req, res) => {
-    const refreshToken = req.cookies.refreshToken;
+    const refreshToken = req.body.refreshToken;
     if (!refreshToken) return res.json({ loggedIn: false });
 
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
@@ -134,15 +129,10 @@ export const login = async (req, res) => {
     });
     const success = await insertToken(username, refreshToken);
     if (success) {
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: true,
-            path: "/",
-            sameSite: "none",
-        });
         return res.status(200).json({
             message: "User logged in successfully",
             accessToken: accessToken,
+            refreshToken: refreshToken,
             id: userId,
         });
     } else {
@@ -192,17 +182,10 @@ export const resetPassword = async (req, res) => {
 };
 
 export const logout = async (req, res) => {
-    const refreshToken = req.cookies.refreshToken;
+    const refreshToken = req.body.refreshToken;
     if (!refreshToken) return res.sendStatus(204);
     try {
         await deleteRefreshTokenFromDB(refreshToken);
-        res.cookie("refreshToken", "", {
-            httpOnly: true,
-            secure: true,
-            path: "/",
-            sameSite: "none",
-            expires: new Date(0),
-        });
         return res.status(200).json({ message: "Logged out successfully" });
     } catch (err) {
         return res.status(500).json({ message: "Logout failed" });
@@ -210,18 +193,11 @@ export const logout = async (req, res) => {
 };
 
 export const accountDeletion = async (req, res) => {
-    const refreshToken = req.cookies.refreshToken;
+    const refreshToken = req.body.refreshToken;
     if (!refreshToken) return res.sendStatus(204);
     try {
         await deleteRefreshTokenFromDB(refreshToken, req.user.username);
         await deleteUser(req.user.username);
-        res.cookie("refreshToken", "", {
-            httpOnly: true,
-            secure: true,
-            path: "/",
-            sameSite: "none",
-            expires: new Date(0),
-        });
         return res
             .status(200)
             .json({ message: "Account deleted successfully" });
