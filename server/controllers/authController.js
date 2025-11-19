@@ -31,9 +31,9 @@ export const signup = async (req, res) => {
         if (success) {
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
-                secure: false,
+                secure: true,
                 path: "/",
-                sameSite: "lax",
+                sameSite: "none",
             });
             return res.status(201).json({
                 message: "User created successfully",
@@ -136,9 +136,9 @@ export const login = async (req, res) => {
     if (success) {
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure: false,
+            secure: true,
             path: "/",
-            sameSite: "lax",
+            sameSite: "none",
         });
         return res.status(200).json({
             message: "User logged in successfully",
@@ -198,8 +198,8 @@ export const logout = async (req, res) => {
         await deleteRefreshTokenFromDB(refreshToken);
         res.cookie("refreshToken", "", {
             httpOnly: true,
-            secure: false,
-            sameSite: "lax",
+            secure: true,
+            sameSite: "none",
             expires: new Date(0),
         });
         return res.status(200).json({ message: "Logged out successfully" });
@@ -216,8 +216,8 @@ export const accountDeletion = async (req, res) => {
         await deleteUser(req.user.username);
         res.cookie("refreshToken", "", {
             httpOnly: true,
-            secure: false,
-            sameSite: "lax",
+            secure: true,
+            sameSite: "none",
             expires: new Date(0),
         });
         return res
