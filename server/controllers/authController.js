@@ -199,6 +199,7 @@ export const logout = async (req, res) => {
         res.cookie("refreshToken", "", {
             httpOnly: true,
             secure: true,
+            path: "/",
             sameSite: "none",
             expires: new Date(0),
         });
@@ -217,6 +218,7 @@ export const accountDeletion = async (req, res) => {
         res.cookie("refreshToken", "", {
             httpOnly: true,
             secure: true,
+            path: "/",
             sameSite: "none",
             expires: new Date(0),
         });
