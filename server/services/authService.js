@@ -213,7 +213,7 @@ export async function verifyPassword(plainPassword, hashFromDb) {
 
 export function generateAccessToken(user) {
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "15m",
+        expiresIn: "2m",
     });
 }
 
