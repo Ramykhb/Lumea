@@ -10,7 +10,7 @@ export const sendEmail = async (to, subject, htmlContent) => {
     try {
         console.log("Sending email to: " + to);
         const data = await resend.emails.send({
-            from: "Lumea <onboarding@resend.dev>",
+            from: "Lumea <no-reply@lumea-lb.site>",
             to,
             subject,
             html: htmlContent,
