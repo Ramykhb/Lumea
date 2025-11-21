@@ -8,12 +8,14 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendEmail = async (to, subject, htmlContent) => {
     try {
+        console.log("Sending email to: " + to);
         const data = await resend.emails.send({
-            from: "Lumea <no-reply@resend.dev>",
+            from: "Lumea <onboarding@resend.dev>",
             to,
             subject,
             html: htmlContent,
         });
+        console.log("Email sent to: " + to);
     } catch (error) {
         console.error("❌ Error sending email:", error.message);
     }
