@@ -1,28 +1,19 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import dotenv from "dotenv";
 import { frontendPath } from "../config/frontConfig.js";
 
 dotenv.config();
 
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 export const sendEmail = async (to, subject, htmlContent) => {
     try {
-        const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: process.env.GMAIL_USER,
-                pass: process.env.GMAIL_PASS,
-            },
-        });
-
-        const mailOptions = {
-            from: `"Lumea Support" <${process.env.GMAIL_USER}>`,
+        const data = await resend.emails.send({
+            from: "Lumea <no-reply@resend.dev>",
             to,
             subject,
             html: htmlContent,
-        };
-        console.log("Sending to " + to);
-        await transporter.sendMail(mailOptions);
-        console.log("sent");
+        });
     } catch (error) {
         console.error("❌ Error sending email:", error.message);
     }
