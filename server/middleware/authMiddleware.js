@@ -85,7 +85,7 @@ export const checkProfileEdit = async (req, res, next) => {
             .json({ message: "Request body cannot be empty" });
     }
     const { isPublic, bio, name, profileImage } = req.body;
-    if (isPublic == null || !bio || !name || !profileImage) {
+    if (isPublic == null || !name || !profileImage) {
         return res.status(400).json({ message: "Please fill out all fields" });
     }
     next();

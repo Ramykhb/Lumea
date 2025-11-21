@@ -23,6 +23,7 @@ const processQueue = (error, token = null) => {
 
 api.interceptors.request.use(async (config) => {
     const token = localStorage.getItem("accessToken");
+    const refresh = localStorage.getItem("refreshToken");
     if (token) {
         try {
             const decoded = jwtDecode(token);
@@ -36,7 +37,7 @@ api.interceptors.request.use(async (config) => {
                 try {
                     const res = await axios.post(
                         `${backendPath}/api/v1/auth/refresh`,
-                        { accessToken: token },
+                        { accessToken: token, refreshToken: refresh },
                         { withCredentials: true }
                     );
 
