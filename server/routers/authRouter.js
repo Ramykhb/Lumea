@@ -27,6 +27,7 @@ import {
     forgetPassword,
     checkForgetToken,
     resetPassword,
+    health,
 } from "../controllers/authController.js";
 
 const authRouter = express.Router();
@@ -305,6 +306,25 @@ authRouter.get("/profiles", authenticateToken, checkSearchInput, getProfiles);
  *         description: Server error
  */
 authRouter.post("/status", checkStatus);
+
+/**
+ * @openapi
+ * /api/v1/auth/health:
+ *   get:
+ *     summary: Health check endpoint
+ *     description: Returns a simple OK response to indicate the server is running.
+ *     tags:
+ *       - System
+ *     responses:
+ *       200:
+ *         description: Server is healthy
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: OK
+ */
+authRouter.get("/health", health);
 
 /**
  * @openapi

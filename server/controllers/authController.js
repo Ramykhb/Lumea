@@ -60,6 +60,10 @@ export const checkStatus = (req, res) => {
     });
 };
 
+export const health = (req, res) => {
+    return res.status(200).send("OK");
+};
+
 export const editProfile = async (req, res) => {
     const { username } = req.user;
     try {
