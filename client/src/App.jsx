@@ -58,8 +58,8 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<UnavailablePage />} />
-                {/* <Route
+                {/* <Route path="/" element={<UnavailablePage />} /> */}
+                <Route
                     path="/"
                     element={
                         <ProtectedRoute onUser={handleUsername}>
@@ -272,7 +272,7 @@ function App() {
                             </ClickSpark>
                         </ProtectedRoute>
                     }
-                /> */}
+                />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </BrowserRouter>
